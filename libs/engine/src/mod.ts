@@ -1,1 +1,1 @@
-export const x = 4;
+export { Renderer, type RendererOptions } from "./renderer.ts";

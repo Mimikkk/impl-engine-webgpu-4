@@ -1,4 +1,7 @@
 {
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.ns", "DOM", "DOM.Iterable", "ESNext"]
+  },
   "name": "@nimir/lib-engine",
   "version": "0.0.0",
   "exports": "./src/mod.ts",

@@ -1,21 +1,25 @@
-import { x } from "@nimir/lib-engine";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { App } from "./App.tsx";
 import "./index.css";
-
-const App = () => {
-  return (
-    <div className="">
-      123 ab 12233123123123 12233
-      <div>{x} 11s</div>
-    </div>
-  );
-};
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 
+const client = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 root.render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={client}>
+      <App />
+    </QueryClientProvider>
   </React.StrictMode>,
 );
