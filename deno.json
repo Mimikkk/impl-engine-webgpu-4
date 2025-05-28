@@ -53,11 +53,11 @@
     },
     "dev:docker:preview": {
       "description": "Run development server for preview in Docker",
-      "command": "docker compose -f docker-compose.yml watch"
+      "command": "docker compose -f docker-compose.yml watch app-development"
     },
     "preview:docker:preview": {
       "description": "Build the preview application in Docker",
-      "command": "docker compose -f docker-compose.yml up --build"
+      "command": "docker compose -f docker-compose.yml up app-production --build"
     }
   },
   "imports": {
