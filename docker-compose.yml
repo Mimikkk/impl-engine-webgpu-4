@@ -1,8 +1,5 @@
-version: '3.8'
-
 services:
-  # Development service
-  app-dev:
+  app-development:
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -16,9 +13,7 @@ services:
       - NODE_ENV=development
     stdin_open: true
     tty: true
-
-  # Production service
-  app-prod:
+  app-production:
     build:
       context: .
       dockerfile: Dockerfile
