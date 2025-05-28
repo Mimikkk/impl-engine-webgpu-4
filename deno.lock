@@ -579,7 +579,6 @@
           "npm:clsx@^2.1.1",
           "npm:react-dom@^19.1.0",
           "npm:react@^19.1.0",
-          "npm:solid-js@1.9.6",
           "npm:tailwindcss@^4.1.5"
         ]
       }
