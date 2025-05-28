@@ -50,6 +50,14 @@
     "test:engine": {
       "description": "Test the engine",
       "command": "deno task -f lib-engine test"
+    },
+    "dev:docker:preview": {
+      "description": "Run development server for preview in Docker",
+      "command": "docker compose -f docker-compose.yml watch"
+    },
+    "preview:docker:preview": {
+      "description": "Build the preview application in Docker",
+      "command": "docker compose -f docker-compose.yml up --build"
     }
   },
   "imports": {
