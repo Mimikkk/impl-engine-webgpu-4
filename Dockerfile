@@ -6,14 +6,6 @@ COPY apps/preview/deno.json ./apps/preview/
 COPY libs/engine/deno.json ./libs/engine/
 
 RUN deno cache --lock=deno.lock deno.json
-RUN deno install --allow-scripts
-
-FROM base AS development
-
-COPY . .
-EXPOSE 3000
-
-CMD ["deno", "task", "dev:preview"]
 
 FROM base AS builder
 

@@ -5,14 +5,15 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
-    volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/vendor
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+        - action: rebuild
+          path: ./deno.json
     environment:
       - NODE_ENV=development
-    stdin_open: true
-    tty: true
   app-production:
     build:
       context: .
