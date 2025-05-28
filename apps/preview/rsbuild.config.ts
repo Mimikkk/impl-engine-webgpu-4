@@ -15,6 +15,16 @@ export default defineConfig({
         plugins: [require("@tailwindcss/postcss")],
       },
     },
+    rspack: {
+      module: {
+        rules: [
+          {
+            test: /\.wgsl$/,
+            type: "asset/source",
+          },
+        ],
+      },
+    },
   },
   resolve: {
     alias: {

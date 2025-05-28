@@ -6,4 +6,16 @@ export default defineConfig({
       index: "./src/mod.ts",
     },
   },
+  tools: {
+    rspack: {
+      module: {
+        rules: [
+          {
+            test: /\.wgsl$/,
+            type: "asset/source",
+          },
+        ],
+      },
+    },
+  },
 });
