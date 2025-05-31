@@ -23,8 +23,6 @@ export const App = () => {
 
   const { data: renderer } = useRenderer({ canvas: ref! });
 
-  console.log({ renderer });
-
   return (
     <main className="grid grid-cols-12 gap-4 bg-gray-900">
       <nav className="col-span-2 bg-violet-500">abc</nav>

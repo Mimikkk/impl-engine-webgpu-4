@@ -16,6 +16,8 @@
     }
   },
   "imports": {
-    "@engine/": "./src/"
+    "@engine/": "./src/",
+    "@std/testing": "jsr:@std/testing@1.0.13",
+    "@std/expect": "jsr:@std/expect@1.0.16"
   }
 }
