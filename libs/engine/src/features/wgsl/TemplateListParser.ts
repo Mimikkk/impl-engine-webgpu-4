@@ -3,10 +3,10 @@
  */
 
 import type { Createable } from "@nimir/lib-shared";
-import { IdentifierMatcher } from "./IdentifierMatcher.ts";
 import { RuleMatcher } from "./matcher/Matcher.ts";
 import { RuleCommentBlock } from "./matcher/rules/RuleCommentBlock.ts";
 import { RuleCommentLine } from "./matcher/rules/RuleCommentLine.ts";
+import { RuleIdentifier } from "./matcher/rules/RuleIdentifier.ts";
 import { RuleWhitespace } from "./matcher/rules/RuleWhitespace.ts";
 import type { WGSLSource } from "./tokens.ts";
 import { isProgramEnd, isSomeToken, isToken, TokenSyntactic } from "./tokens.ts";
@@ -33,7 +33,7 @@ const LogicOperators = [And, Or];
  */
 export class TemplateListParser {
   static create(
-    identifierMatcher: IdentifierMatcher = IdentifierMatcher.create(),
+    identifierMatcher: RuleIdentifier = RuleIdentifier.create(),
     advance: RuleMatcher = RuleMatcher.create([
       RuleWhitespace.create(),
       RuleCommentLine.create(),
@@ -44,7 +44,7 @@ export class TemplateListParser {
   }
 
   private constructor(
-    private readonly identifiers: IdentifierMatcher,
+    private readonly identifiers: RuleIdentifier,
     private readonly advance: RuleMatcher,
   ) {}
 
@@ -58,9 +58,12 @@ export class TemplateListParser {
       indexAt = this.advance.advance(source, indexAt) as number;
       if (isProgramEnd(source, indexAt)) break;
 
-      const match = this.identifiers.match(source, indexAt);
-      if (match !== undefined) {
-        indexAt = match;
+      if (this.identifiers.matches(source, indexAt)) {
+        const result = this.identifiers.advance(source, indexAt);
+        if (result instanceof Error) {
+          return result;
+        }
+        indexAt = result;
         indexAt = this.advance.advance(source, indexAt) as number;
 
         if (source[indexAt] === TokenSyntactic.LessThan) {

@@ -1,9 +1,16 @@
 import { expect } from "@std/expect/expect";
 import { describe, it } from "@std/testing/bdd";
-import { IdentifierMatcher } from "./IdentifierMatcher.ts";
+import { RuleIdentifier } from "./RuleIdentifier.ts";
 
 describe("WGSL - IdentifierMatcher", () => {
-  const matcher = IdentifierMatcher.create();
+  const rule = RuleIdentifier.create();
+
+  // Helper function to maintain test compatibility
+  const matchIdentifier = (source: string, position: number): number | undefined => {
+    if (!rule.matches(source, position)) return undefined;
+    const result = rule.advance(source, position);
+    return result instanceof Error ? undefined : result;
+  };
 
   describe("Valid Identifiers", () => {
     const cases = [
@@ -20,7 +27,7 @@ describe("WGSL - IdentifierMatcher", () => {
 
     for (const { input, expected, description } of cases) {
       it(`should match ${description} identifier`, () => {
-        expect(matcher.match(input, 0)).toBe(expected);
+        expect(matchIdentifier(input, 0)).toBe(expected);
       });
     }
   });
@@ -35,14 +42,14 @@ describe("WGSL - IdentifierMatcher", () => {
 
     for (const { input, description } of cases) {
       it(`should not match identifier ${description}`, () => {
-        expect(matcher.match(input, 0)).toBeUndefined();
+        expect(matchIdentifier(input, 0)).toBeUndefined();
       });
     }
 
     it("should not match special characters", () => {
       const symbols = "!@#$%^&*()-+=[]{}|\\:;'\"<>,.?/".split("");
       for (const symbol of symbols) {
-        expect(matcher.match(symbol, 0)).toBeUndefined();
+        expect(matchIdentifier(symbol, 0)).toBeUndefined();
       }
     });
   });
@@ -58,7 +65,7 @@ describe("WGSL - IdentifierMatcher", () => {
 
     for (const { input, expected, description } of cases) {
       it(`should match identifier ${description}`, () => {
-        expect(matcher.match(input, 0)).toBe(expected);
+        expect(matchIdentifier(input, 0)).toBe(expected);
       });
     }
   });
@@ -66,14 +73,14 @@ describe("WGSL - IdentifierMatcher", () => {
   describe("Position-based Matching", () => {
     it("should match identifiers at different positions", () => {
       const source = "let variable = 42;";
-      expect(matcher.match(source, 0)).toBe(3);
-      expect(matcher.match(source, 4)).toBe(12);
+      expect(matchIdentifier(source, 0)).toBe(3);
+      expect(matchIdentifier(source, 4)).toBe(12);
     });
 
     it("should handle invalid positions", () => {
       const source = "hello";
-      expect(matcher.match(source, 5)).toBeUndefined();
-      expect(matcher.match(source, 10)).toBeUndefined();
+      expect(matchIdentifier(source, 5)).toBeUndefined();
+      expect(matchIdentifier(source, 10)).toBeUndefined();
     });
   });
 });
