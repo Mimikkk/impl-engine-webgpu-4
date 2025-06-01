@@ -1,4 +1,4 @@
-/* @see https://www.unicode.org/reports/tr31/tr31-35.html#unicode-standard-annex-31-for-unicode-version-1400 */
+/** @see https://www.unicode.org/reports/tr31/tr31-35.html#unicode-standard-annex-31-for-unicode-version-1400 */
 import type { Createable } from "@nimir/lib-shared";
 import { isProgramEnd, type WGSLSource } from "../../tokens.ts";
 import type { MatchRule } from "./MatchRule.ts";

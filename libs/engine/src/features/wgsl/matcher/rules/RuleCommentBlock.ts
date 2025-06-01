@@ -5,7 +5,7 @@ import type { Createable } from "@nimir/lib-shared";
 import { isProgramEnd, isToken, TokenSyntactic, type WGSLSource } from "../../tokens.ts";
 import type { MatchRule } from "./MatchRule.ts";
 
-const enum CommentBlockToken {
+const enum TokenCommentBlock {
   // Text: "/*"
   BlockStart = TokenSyntactic.Slash + TokenSyntactic.Asterisk,
   // Text: "*/"
@@ -20,7 +20,7 @@ export class RuleCommentBlock implements MatchRule {
   private constructor() {}
 
   matches(source: WGSLSource, position: number): boolean {
-    return isToken(source, position, CommentBlockToken.BlockStart);
+    return isToken(source, position, TokenCommentBlock.BlockStart);
   }
 
   advance(source: WGSLSource, position: number): number | Error {
@@ -29,13 +29,13 @@ export class RuleCommentBlock implements MatchRule {
     let depth = 1;
 
     while (!isProgramEnd(source, indexAt) && depth > 0) {
-      if (isToken(source, indexAt, CommentBlockToken.BlockStart)) {
+      if (isToken(source, indexAt, TokenCommentBlock.BlockStart)) {
         ++depth;
         indexAt += 2;
         continue;
       }
 
-      if (isToken(source, indexAt, CommentBlockToken.BlockEnd)) {
+      if (isToken(source, indexAt, TokenCommentBlock.BlockEnd)) {
         --depth;
         indexAt += 2;
         continue;

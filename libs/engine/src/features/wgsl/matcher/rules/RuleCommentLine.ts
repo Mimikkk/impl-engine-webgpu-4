@@ -6,7 +6,7 @@ import { isProgramEnd, isToken, TokenSyntactic, type WGSLSource } from "../../to
 import type { MatchRule } from "./MatchRule.ts";
 import { RuleLinebreak } from "./RuleLinebreak.ts";
 
-const enum CommentLineToken {
+const enum TokenCommentLine {
   // Text: "//"
   LineStart = TokenSyntactic.Slash + TokenSyntactic.Slash,
 }
@@ -23,7 +23,7 @@ export class RuleCommentLine implements MatchRule {
   ) {}
 
   matches(source: WGSLSource, position: number): boolean {
-    return isToken(source, position, CommentLineToken.LineStart);
+    return isToken(source, position, TokenCommentLine.LineStart);
   }
 
   advance(source: WGSLSource, position: number): number | Error {
