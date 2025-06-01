@@ -9,10 +9,6 @@ export class RuleMatcher {
 
   private constructor(private readonly rules: MatchRule[]) {}
 
-  matches(source: WGSLSource, position: number): boolean {
-    return this.match(source, position) !== undefined;
-  }
-
   match(source: WGSLSource, position: number): MatchRule | undefined {
     for (const rule of this.rules) {
       if (rule.matches(source, position)) {
@@ -21,6 +17,9 @@ export class RuleMatcher {
     }
 
     return undefined;
+  }
+  matches(source: WGSLSource, position: number): boolean {
+    return this.match(source, position) !== undefined;
   }
 
   advance(source: WGSLSource, startAt: number): number | Error {
