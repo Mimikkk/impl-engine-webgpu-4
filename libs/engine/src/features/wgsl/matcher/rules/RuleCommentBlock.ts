@@ -2,14 +2,14 @@
  * @see https://www.w3.org/TR/WGSL/#block-comment
  */
 import type { Createable } from "@nimir/lib-shared";
-import { isProgramEnd, isToken, TokenSyntactic, type WGSLSource } from "../../tokens.ts";
+import { isProgramEnd, isToken, type WGSLSource } from "../../tokens.ts";
 import type { MatchRule } from "./MatchRule.ts";
 
 const enum TokenCommentBlock {
   // Text: "/*"
-  BlockStart = TokenSyntactic.Slash + TokenSyntactic.Asterisk,
+  BlockStart = "\u002F\u002A",
   // Text: "*/"
-  BlockEnd = TokenSyntactic.Asterisk + TokenSyntactic.Slash,
+  BlockEnd = "\u002A\u002F",
 }
 
 export class RuleCommentBlock implements MatchRule {

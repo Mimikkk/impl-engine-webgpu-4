@@ -2,13 +2,13 @@
  * @see https://www.w3.org/TR/WGSL/#line-comment
  */
 import type { Createable } from "@nimir/lib-shared";
-import { isProgramEnd, isToken, TokenSyntactic, type WGSLSource } from "../../tokens.ts";
+import { isProgramEnd, isToken, type WGSLSource } from "../../tokens.ts";
 import type { MatchRule } from "./MatchRule.ts";
 import { RuleLinebreak } from "./RuleLinebreak.ts";
 
 const enum TokenCommentLine {
   // Text: "//"
-  LineStart = TokenSyntactic.Slash + TokenSyntactic.Slash,
+  LineStart = "\u002F\u002F",
 }
 
 export class RuleCommentLine implements MatchRule {

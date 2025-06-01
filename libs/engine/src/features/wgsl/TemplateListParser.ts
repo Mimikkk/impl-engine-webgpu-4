@@ -4,13 +4,18 @@
 
 import type { Createable } from "@nimir/lib-shared";
 import { RuleMatcher } from "./matcher/Matcher.ts";
-import { RuleCommentBlock } from "./matcher/rules/RuleCommentBlock.ts";
-import { RuleCommentLine } from "./matcher/rules/RuleCommentLine.ts";
+import { RuleComment } from "./matcher/rules/RuleComment.ts";
 import { RuleIdentifier } from "./matcher/rules/RuleIdentifier.ts";
 import { RuleWhitespace } from "./matcher/rules/RuleWhitespace.ts";
 import type { WGSLSource } from "./tokens.ts";
 import { isProgramEnd, isSomeToken, isToken, TokenSyntactic } from "./tokens.ts";
 
+export const enum TemplateToken {
+  // Text: <
+  TemplateStart = "\u003C",
+  // Text: >
+  TemplateEnd = "\u003E",
+}
 interface UnclosedCandidate {
   parameters: { start: number; end: number }[];
   position: number;
@@ -36,8 +41,7 @@ export class TemplateListParser {
     identifierMatcher: RuleIdentifier = RuleIdentifier.create(),
     advance: RuleMatcher = RuleMatcher.create([
       RuleWhitespace.create(),
-      RuleCommentLine.create(),
-      RuleCommentBlock.create(),
+      RuleComment.create(),
     ]),
   ): TemplateListParser {
     return new TemplateListParser(identifierMatcher, advance);
@@ -66,38 +70,28 @@ export class TemplateListParser {
         indexAt = result;
         indexAt = this.advance.advance(source, indexAt) as number;
 
-        if (source[indexAt] === TokenSyntactic.LessThan) {
-          // Candidate for template list start
+        if (source[indexAt] === TemplateToken.TemplateStart) {
+          if (source[indexAt + 1] === TokenSyntactic.LessThan || source[indexAt + 1] === TokenSyntactic.Equal) {
+            indexAt += 2;
+            continue;
+          }
+
           const start = this.advance.advance(source, indexAt + 1) as number;
           candidates.push({ position: indexAt, depth, parameters: [], start });
           ++indexAt;
-
-          // Check for '<<' operator / not a template list
-          if (source[indexAt] === TokenSyntactic.LessThan) {
-            candidates.pop();
-            ++indexAt;
-            continue;
-          }
-          // Check for '<=' operator / not a template list
-          if (source[indexAt] === TokenSyntactic.Equal) {
-            candidates.pop();
-            ++indexAt;
-            continue;
-          }
         }
 
         continue;
       }
 
       const char = source[indexAt];
-      if (char === TokenSyntactic.GreaterThan) {
-        // Candidate for template list end
+      if (char === TemplateToken.TemplateEnd) {
         if (candidates.length > 0) {
           const top = candidates[candidates.length - 1];
 
           if (top.depth === depth) {
-            // Add final parameter, trimming trailing whitespace
             let end = indexAt - 1;
+
             while (end >= top.start && this.advance.matches(source, end)) {
               --end;
             }

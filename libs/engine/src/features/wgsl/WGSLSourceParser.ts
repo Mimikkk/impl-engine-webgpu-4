@@ -4,8 +4,9 @@
  */
 
 import { CommentRemover } from "./CommentRemover.ts";
-import { TemplateListParser } from "./TemplateListParser.ts";
-import type { WGSLSource } from "./tokens.ts";
+import { RuleWhitespace } from "./matcher/rules/RuleWhitespace.ts";
+import { type TemplateList, TemplateListParser } from "./TemplateListParser.ts";
+import { isProgramEnd, TokenSyntactic, type WGSLSource } from "./tokens.ts";
 
 export interface WgslSourceParseResult {
   vertex?: {
@@ -38,7 +39,7 @@ export class WGSLSourceParser {
     private readonly templates: TemplateListParser,
   ) {}
 
-  parse(source: WGSLSource): WgslSourceParseResult | Error {
+  parse(source: WGSLSource): Token[] | Error {
     const changes = this.comments.find(source);
 
     if (changes instanceof Error) {
@@ -48,21 +49,81 @@ export class WGSLSourceParser {
     const sourceWithoutComments = this.comments.remove(source, changes);
     const templateLists = this.templates.find(sourceWithoutComments);
 
-    const vertexEntry = "vertexMain";
-    const fragmentEntry = "fragmentMain";
-    const computeEntry = "computeMain";
+    if (templateLists instanceof Error) {
+      return templateLists;
+    }
 
-    return {
-      vertex: {
-        entry: vertexEntry,
-      },
-      fragment: {
-        entry: fragmentEntry,
-      },
-      compute: {
-        entry: computeEntry,
-      },
-      source,
-    };
+    const tokens = this.tokenize(sourceWithoutComments, templateLists);
+
+    return tokens;
+
+    // const vertexEntry = "vertexMain";
+    // const fragmentEntry = "fragmentMain";
+    // const computeEntry = "computeMain";
+
+    // return {
+    //   vertex: {
+    //     entry: vertexEntry,
+    //   },
+    //   fragment: {
+    //     entry: fragmentEntry,
+    //   },
+    //   compute: {
+    //     entry: computeEntry,
+    //   },
+    //   source,
+    // };
+  }
+
+  tokenize(source: WGSLSource, templateLists: TemplateList[]): Token[] | Error {
+    const blankspace = RuleWhitespace.create();
+    const tokens: Token[] = [];
+
+    let indexAt = 0;
+    while (!isProgramEnd(source, indexAt)) {
+      if (blankspace.matches(source, indexAt)) {
+        const endAt = blankspace.advance(source, indexAt);
+
+        if (endAt instanceof Error) {
+          return endAt;
+        }
+
+        indexAt = endAt;
+        continue;
+      }
+
+      if (source[indexAt] === TokenSyntactic.TemplateArgsStart) {
+        indexAt += 1;
+
+        tokens.push(Token.TemplateArgsStart);
+        continue;
+      }
+
+      if (source[indexAt] === TokenSyntactic.TemplateArgsEnd) {
+        indexAt += 1;
+
+        tokens.push(Token.TemplateArgsEnd);
+        continue;
+      }
+
+      ++indexAt;
+    }
+
+    return tokens;
   }
 }
+export const enum Token {
+  TemplateArgsStart = "_template_args_start",
+  TemplateArgsEnd = "_template_args_end",
+}
+
+/*
+3.4. Tokens
+A token is a contiguous sequence of code points forming one of:
+a literal.
+a keyword.
+a reserved word.
+a syntactic token.
+an identifier.
+a context-dependent name.
+ */

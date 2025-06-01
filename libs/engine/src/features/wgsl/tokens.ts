@@ -117,18 +117,6 @@ export const enum TokenSyntactic {
   DisambiguateTemplate = "\u003C",
 }
 
-export const enum TokenX {}
-
-export const enum TokenX {}
-
-export const enum TokenX {}
-
-export const enum TokenX {}
-
-export const enum TokenX {}
-
-export const enum TokenX {}
-
 export type WGSLSource = string;
 
 export function isToken(source: WGSLSource, start: number, pattern: string): boolean {
