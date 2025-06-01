@@ -26,7 +26,7 @@ export const enum TokenSyntactic {
   // Text: =
   Equal = "\u003D",
   // Text: ==
-  DoubleEqual = "\u003D\u003D",
+  EqualEqual = "\u003D\u003D",
   // Text: !=
   ExclamationEqual = "\u0021\u003D",
   // Text: >
@@ -118,19 +118,6 @@ export const enum TokenSyntactic {
 }
 
 export type WGSLSource = string;
-
-export interface WebgpuSource {
-  vertex?: {
-    entry: string;
-  };
-  fragment?: {
-    entry: string;
-  };
-  compute?: {
-    entry: string;
-  };
-  source: string;
-}
 
 /*
 1. Remove comments:
@@ -246,6 +233,15 @@ export function isToken(source: WGSLSource, start: number, pattern: string): boo
   }
 
   return true;
+}
+export function isSomeToken(source: WGSLSource, start: number, patterns: string[]): boolean {
+  for (const pattern of patterns) {
+    if (isToken(source, start, pattern)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export function isLinebreak(source: WGSLSource, start: number): boolean {

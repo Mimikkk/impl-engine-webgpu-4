@@ -1,9 +1,10 @@
 /**
  * @see https://www.w3.org/TR/WGSL/#comments
  */
+import type { Createable } from "@nimir/lib-shared";
 import { isLinebreak, isProgramEnd, isToken, removeSourceFromTo, TokenSyntactic, type WGSLSource } from "./tokens.ts";
 
-export const enum Tokens {
+export const enum CommentToken {
   // Text: "//"
   LineComment = TokenSyntactic.Slash + TokenSyntactic.Slash,
   // Text: "/*"
@@ -105,7 +106,7 @@ export class CommentRemover {
   }
 
   private findLineComment(source: WGSLSource, indexAt: number): CommentChangeLine | undefined {
-    if (isToken(source, indexAt, Tokens.LineComment)) {
+    if (isToken(source, indexAt, CommentToken.LineComment)) {
       const from = indexAt;
       indexAt += 2;
 
@@ -123,19 +124,19 @@ export class CommentRemover {
   private findBlockComment(source: WGSLSource, indexAt: number): CommentChangeBlock | Error | undefined {
     let depth = 0;
 
-    if (isToken(source, indexAt, Tokens.BlockCommentStart)) {
+    if (isToken(source, indexAt, CommentToken.BlockCommentStart)) {
       const from = indexAt;
       depth += 1;
       indexAt += 2;
 
       while (depth > 0) {
-        if (isToken(source, indexAt, Tokens.BlockCommentStart)) {
+        if (isToken(source, indexAt, CommentToken.BlockCommentStart)) {
           depth += 1;
           indexAt += 2;
           continue;
         }
 
-        if (isToken(source, indexAt, Tokens.BlockCommentEnd)) {
+        if (isToken(source, indexAt, CommentToken.BlockCommentEnd)) {
           depth -= 1;
           indexAt += 2;
           continue;
@@ -154,3 +155,5 @@ export class CommentRemover {
     return undefined;
   }
 }
+
+CommentRemover satisfies Createable<CommentRemover>;
