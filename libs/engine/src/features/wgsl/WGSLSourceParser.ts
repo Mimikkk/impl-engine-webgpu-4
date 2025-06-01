@@ -39,13 +39,13 @@ export class WGSLSourceParser {
   ) {}
 
   parse(source: WGSLSource): WgslSourceParseResult | Error {
-    const changes = this.comments.findChanges(source);
+    const changes = this.comments.find(source);
 
     if (changes instanceof Error) {
       return changes;
     }
 
-    const sourceWithoutComments = this.comments.applyChanges(source, changes);
+    const sourceWithoutComments = this.comments.remove(source, changes);
     const templateLists = this.templates.find(sourceWithoutComments);
 
     const vertexEntry = "vertexMain";

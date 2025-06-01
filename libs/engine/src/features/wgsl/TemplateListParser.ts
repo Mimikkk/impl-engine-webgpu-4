@@ -3,10 +3,13 @@
  */
 
 import type { Createable } from "@nimir/lib-shared";
-import { CommentToken } from "./CommentRemover.ts";
 import { IdentifierMatcher } from "./IdentifierMatcher.ts";
+import { RuleMatcher } from "./matcher/Matcher.ts";
+import { RuleBlankspace } from "./matcher/rules/RuleBlankspace.ts";
+import { RuleCommentBlock } from "./matcher/rules/RuleCommentBlock.ts";
+import { RuleCommentLine } from "./matcher/rules/RuleCommentLine.ts";
 import type { WGSLSource } from "./tokens.ts";
-import { isBlankspace, isLinebreak, isProgramEnd, isSomeToken, isToken, TokenSyntactic } from "./tokens.ts";
+import { isProgramEnd, isSomeToken, isToken, TokenSyntactic } from "./tokens.ts";
 
 interface UnclosedCandidate {
   parameters: { start: number; end: number }[];
@@ -31,12 +34,18 @@ const LogicOperators = [And, Or];
 export class TemplateListParser {
   static create(
     identifierMatcher: IdentifierMatcher = IdentifierMatcher.create(),
+    advance: RuleMatcher = RuleMatcher.create([
+      RuleBlankspace.create(),
+      RuleCommentLine.create(),
+      RuleCommentBlock.create(),
+    ]),
   ): TemplateListParser {
-    return new TemplateListParser(identifierMatcher);
+    return new TemplateListParser(identifierMatcher, advance);
   }
 
   private constructor(
     private readonly identifiers: IdentifierMatcher,
+    private readonly advance: RuleMatcher,
   ) {}
 
   find(source: WGSLSource): TemplateList[] | Error {
@@ -46,17 +55,17 @@ export class TemplateListParser {
     let indexAt = 0;
     let depth = 0;
     while (!isProgramEnd(source, indexAt)) {
-      indexAt = this.advance(source, indexAt);
+      indexAt = this.advance.advance(source, indexAt) as number;
       if (isProgramEnd(source, indexAt)) break;
 
       const match = this.identifiers.match(source, indexAt);
       if (match !== undefined) {
         indexAt = match;
-        indexAt = this.advance(source, indexAt);
+        indexAt = this.advance.advance(source, indexAt) as number;
 
         if (source[indexAt] === TokenSyntactic.LessThan) {
           // Candidate for template list start
-          const start = this.advance(source, indexAt + 1);
+          const start = this.advance.advance(source, indexAt + 1) as number;
           candidates.push({ position: indexAt, depth, parameters: [], start });
           ++indexAt;
 
@@ -86,10 +95,7 @@ export class TemplateListParser {
           if (top.depth === depth) {
             // Add final parameter, trimming trailing whitespace
             let end = indexAt - 1;
-            while (
-              end >= top.start &&
-              (isBlankspace(source, end) || isLinebreak(source, end))
-            ) {
+            while (end >= top.start && this.advance.matches(source, end)) {
               --end;
             }
 
@@ -180,10 +186,7 @@ export class TemplateListParser {
         if (top.depth === depth) {
           let endAt = indexAt - 1;
 
-          while (
-            endAt >= top.start &&
-            (isBlankspace(source, endAt) || isLinebreak(source, endAt))
-          ) {
+          while (endAt >= top.start && this.advance.matches(source, endAt)) {
             endAt--;
           }
 
@@ -191,7 +194,7 @@ export class TemplateListParser {
             top.parameters.push({ start: top.start, end: endAt });
           }
 
-          top.start = this.advance(source, indexAt + 1);
+          top.start = this.advance.advance(source, indexAt + 1) as number;
         }
       }
 
@@ -200,52 +203,6 @@ export class TemplateListParser {
 
     return lists;
   }
-
-  private advance(source: WGSLSource, startAt: number): number {
-    let indexAt = startAt;
-    while (!isProgramEnd(source, indexAt)) {
-      if (isBlankspace(source, indexAt) || isLinebreak(source, indexAt)) {
-        ++indexAt;
-        continue;
-      }
-
-      if (isToken(source, indexAt, CommentToken.LineComment)) {
-        indexAt += 2;
-
-        while (!isProgramEnd(source, indexAt) && !isLinebreak(source, indexAt)) {
-          ++indexAt;
-        }
-
-        continue;
-      }
-
-      if (isToken(source, indexAt, CommentToken.BlockCommentStart)) {
-        indexAt += 2;
-        let depth = 1;
-
-        while (!isProgramEnd(source, indexAt) && depth > 0) {
-          if (isToken(source, indexAt, CommentToken.BlockCommentStart)) {
-            ++depth;
-            indexAt += 2;
-            continue;
-          }
-
-          if (isToken(source, indexAt, CommentToken.BlockCommentEnd)) {
-            --depth;
-            indexAt += 2;
-            continue;
-          }
-
-          ++indexAt;
-        }
-
-        continue;
-      }
-
-      break;
-    }
-
-    return indexAt;
-  }
 }
+
 TemplateListParser satisfies Createable<TemplateListParser>;

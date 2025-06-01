@@ -2,100 +2,89 @@
  * @see https://www.w3.org/TR/WGSL/#comments
  */
 import type { Createable } from "@nimir/lib-shared";
-import { isLinebreak, isProgramEnd, isToken, removeSourceFromTo, TokenSyntactic, type WGSLSource } from "./tokens.ts";
-
-export const enum CommentToken {
-  // Text: "//"
-  LineComment = TokenSyntactic.Slash + TokenSyntactic.Slash,
-  // Text: "/*"
-  BlockCommentStart = TokenSyntactic.Slash + TokenSyntactic.Asterisk,
-  // Text: "*/"
-  BlockCommentEnd = TokenSyntactic.Asterisk + TokenSyntactic.Slash,
-}
+import { RuleMatcher } from "./matcher/Matcher.ts";
+import { RuleBlankspace } from "./matcher/rules/RuleBlankspace.ts";
+import { RuleCommentBlock } from "./matcher/rules/RuleCommentBlock.ts";
+import { RuleCommentLine } from "./matcher/rules/RuleCommentLine.ts";
+import { isProgramEnd, removeSourceFromTo, type WGSLSource } from "./tokens.ts";
 
 export const enum CommentType {
   Block = "block-comment",
   Line = "line-ending",
 }
 
-export interface CommentChangeBlock {
-  type: CommentType.Block;
+export interface Comment {
+  type: CommentType;
   from: number;
   to: number;
 }
 
-export interface CommentChangeLine {
-  type: CommentType.Line;
-  from: number;
-  to: number;
-}
 /**
  * @see https://www.w3.org/TR/WGSL/#comments
  */
-class CommentChange<T extends CommentType = CommentType> {
-  static create<T extends CommentType>(type: T, from: number, to: number): CommentChange<T> {
-    return new CommentChange(type, from, to);
+export class CommentRemover {
+  static create(
+    blankspace: RuleBlankspace = RuleBlankspace.create(),
+    line: RuleCommentLine = RuleCommentLine.create(),
+    block: RuleCommentBlock = RuleCommentBlock.create(),
+  ): CommentRemover {
+    return new CommentRemover(blankspace, line, block);
   }
 
   private constructor(
-    public readonly type: T,
-    public readonly from: number,
-    public readonly to: number,
+    private readonly blankspace: RuleBlankspace,
+    private readonly line: RuleCommentLine,
+    private readonly block: RuleCommentBlock,
   ) {}
 
-  static line(from: number, to: number): CommentChange<CommentType.Line> {
-    return CommentChange.create(CommentType.Line, from, to);
-  }
-
-  static block(from: number, to: number): CommentChange<CommentType.Block> {
-    return CommentChange.create(CommentType.Block, from, to);
-  }
-}
-
-export class CommentRemover {
-  static create(): CommentRemover {
-    return new CommentRemover();
-  }
-
-  private constructor() {}
-
-  remove(source: WGSLSource): WGSLSource | Error {
-    const changes = this.findChanges(source);
+  findAndRemove(source: WGSLSource): WGSLSource | Error {
+    const changes = this.find(source);
 
     if (changes instanceof Error) {
       return changes;
     }
 
-    return this.applyChanges(source, changes);
+    return this.remove(source, changes);
   }
 
-  findChanges(source: WGSLSource): CommentChange[] | Error {
-    const changes: CommentChange[] = [];
-    for (let indexAt = 0; indexAt < source.length; indexAt += 1) {
-      const lineResult = this.findLineComment(source, indexAt);
+  find(source: WGSLSource): Comment[] | Error {
+    const changes: Comment[] = [];
 
-      if (lineResult) {
-        changes.push(lineResult);
-        indexAt = lineResult.to;
-        continue;
+    const advance = RuleMatcher.create([this.blankspace, this.line, this.block]);
+
+    let indexAt = 0;
+    while (!isProgramEnd(source, indexAt)) {
+      const match = advance.match(source, indexAt);
+
+      if (match === undefined) {
+        break;
       }
 
-      const blockResult = this.findBlockComment(source, indexAt);
-      if (blockResult) {
-        if (blockResult instanceof Error) {
-          return blockResult;
-        }
+      const start = indexAt;
 
-        changes.push(blockResult);
-        indexAt = blockResult.to;
-        continue;
+      const result = match.advance(source, indexAt);
+      if (result instanceof Error) {
+        return result;
       }
+
+      switch (match) {
+        case this.line:
+          changes.push({ type: CommentType.Line, from: start, to: result });
+          break;
+        case this.block:
+          changes.push({ type: CommentType.Block, from: start, to: result });
+          break;
+        default:
+          break;
+      }
+
+      indexAt = result;
     }
 
     return changes;
   }
 
-  applyChanges(source: WGSLSource, changes: CommentChange[]): WGSLSource {
+  remove(source: WGSLSource, changes: Comment[]): WGSLSource {
     for (let i = changes.length - 1; i >= 0; --i) {
       const { from, to } = changes[i];
 
@@ -103,56 +92,6 @@ export class CommentRemover {
     }
 
     return source;
-  }
-
-  private findLineComment(source: WGSLSource, indexAt: number): CommentChangeLine | undefined {
-    if (isToken(source, indexAt, CommentToken.LineComment)) {
-      const from = indexAt;
-      indexAt += 2;
-
-      while (!isLinebreak(source, indexAt) && !isProgramEnd(source, indexAt)) {
-        indexAt += 1;
-      }
-
-      const to = indexAt;
-      return CommentChange.line(from, to);
-    }
-
-    return undefined;
-  }
-
-  private findBlockComment(source: WGSLSource, indexAt: number): CommentChangeBlock | Error | undefined {
-    let depth = 0;
-
-    if (isToken(source, indexAt, CommentToken.BlockCommentStart)) {
-      const from = indexAt;
-      depth += 1;
-      indexAt += 2;
-
-      while (depth > 0) {
-        if (isToken(source, indexAt, CommentToken.BlockCommentStart)) {
-          depth += 1;
-          indexAt += 2;
-          continue;
-        }
-
-        if (isToken(source, indexAt, CommentToken.BlockCommentEnd)) {
-          depth -= 1;
-          indexAt += 2;
-          continue;
-        }
-
-        indexAt += 1;
-        if (indexAt > source.length) {
-          return Error("Unterminated block comment");
-        }
-      }
-
-      const to = indexAt;
-      return CommentChange.block(from, to);
-    }
-
-    return undefined;
   }
 }
 
