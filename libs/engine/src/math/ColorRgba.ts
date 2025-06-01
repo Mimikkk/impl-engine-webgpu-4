@@ -1,4 +1,4 @@
-import type { Createable } from "../types/creatable.ts";
+import type { Createable } from "../../../shared/src/types/creatable.ts";
 
 export interface RGBA {
   r: number;

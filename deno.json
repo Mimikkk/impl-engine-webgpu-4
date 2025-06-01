@@ -28,7 +28,7 @@
   },
   "vendor": true,
   "workspace": {
-    "members": ["apps/preview", "libs/engine"]
+    "members": ["apps/preview", "libs/engine", "libs/shared"]
   },
   "tasks": {
     "build:preview": {

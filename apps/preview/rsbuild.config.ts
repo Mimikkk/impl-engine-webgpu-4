@@ -30,6 +30,7 @@ export default defineConfig({
     alias: {
       "@nimir/lib-engine": resolve("../../libs/engine/src/mod.ts"),
       "@engine": resolve("../../libs/engine/src"),
+      "@shared": resolve("../../libs/shared/src"),
     },
   },
   html: {

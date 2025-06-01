@@ -1,6 +1,6 @@
+import type { Createable } from "../../../shared/src/types/creatable.ts";
 import type { ConstructorOf, NumberArray, TypedArray } from "../math/ArrayNs.ts";
 import { create } from "../math/ArrayNs.ts";
-import type { Createable } from "../types/creatable.ts";
 
 export type BufferCreateValue = NumberArray | number;
 export interface BufferCreateOptions {

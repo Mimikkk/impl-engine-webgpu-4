@@ -725,6 +725,12 @@
           "jsr:@std/expect@1.0.16",
           "jsr:@std/testing@1.0.13"
         ]
+      },
+      "libs/shared": {
+        "dependencies": [
+          "jsr:@std/expect@1.0.16",
+          "jsr:@std/testing@1.0.13"
+        ]
       }
     }
   }

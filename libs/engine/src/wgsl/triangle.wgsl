@@ -4,7 +4,7 @@ struct VertexOutput {
 }
 
 @vertex
-fn vertexMain(
+fn vertex_main(
     @location(0) position: vec3f,
     @location(1) color: vec3f
 ) -> VertexOutput {
@@ -15,6 +15,6 @@ fn vertexMain(
 }
 
 @fragment
-fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
+fn fragment_main(input: VertexOutput) -> @location(0) vec4f {
   return input.color;
 }

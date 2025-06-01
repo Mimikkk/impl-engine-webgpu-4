@@ -1,5 +1,5 @@
+import type { Const } from "../../../shared/src/types/creatable.ts";
 import type { NumberArray, TypedArray } from "../math/ArrayNs.ts";
-import type { Const } from "../types/creatable.ts";
 import type { Buffer } from "./Buffer.ts";
 
 export interface AttributeOptions {

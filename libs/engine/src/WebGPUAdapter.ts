@@ -98,7 +98,7 @@ export class WebGPUAdapter {
     };
   }
 
-  attributes(attributes: Record<number, Attribute> | Attribute[]): GPUVertexAttribute[] {
+  attributes(attributes: Record<number, Attribute>): GPUVertexAttribute[] {
     return Object.entries(attributes)
       .map(([location, attribute]) => this.attribute(attribute, Number(location)));
   }

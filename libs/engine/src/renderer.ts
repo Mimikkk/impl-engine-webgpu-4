@@ -32,20 +32,26 @@ const triangle = Buffer.f32([
   stride: 6,
 });
 
+export enum CreateRendererError {
+  NoAdapter = "No adapter found",
+  NoDevice = "No device found",
+  NoContext = "No context found",
+}
+
 export class Renderer {
-  static async create(options: RendererOptions) {
+  static async create(options: RendererOptions): Promise<Renderer | CreateRendererError> {
     const canvas = options?.canvas ?? document.createElement("canvas");
 
     const adapter = await navigator.gpu.requestAdapter();
 
     if (!adapter) {
-      throw new Error("No adapter found");
+      return CreateRendererError.NoAdapter;
     }
 
     const device = await adapter?.requestDevice();
 
     if (!device) {
-      throw new Error("No device found");
+      return CreateRendererError.NoDevice;
     }
 
     const context = canvas.getContext(
@@ -53,15 +59,21 @@ export class Renderer {
     ) as unknown as GPUCanvasContext | undefined;
 
     if (!context) {
-      throw new Error("No context found");
+      return CreateRendererError.NoContext;
     }
 
-    const format = navigator.gpu.getPreferredCanvasFormat();
+    return new Renderer(context, device);
+  }
 
-    context.configure({
-      device,
-      format,
-    });
+  private constructor(
+    private readonly context: GPUCanvasContext,
+    private readonly device: GPUDevice,
+  ) {}
+
+  render() {
+    const { device, context } = this;
+    const format = navigator.gpu.getPreferredCanvasFormat();
+    context.configure({ device, format, alphaMode: "premultiplied", colorSpace: "srgb" });
 
     const shader = device.createShaderModule({
       code: TriangleWgsl,
@@ -77,7 +89,7 @@ export class Renderer {
       layout: "auto",
       vertex: {
         module: shader,
-        entryPoint: "vertexMain",
+        entryPoint: "vertex_main",
         buffers: [
           {
             arrayStride: triangle.elementstride,
@@ -87,12 +99,11 @@ export class Renderer {
       },
       fragment: {
         module: shader,
-        entryPoint: "fragmentMain",
+        entryPoint: "fragment_main",
         targets: [{ format }],
       },
-      primitive: {
-        topology: "triangle-list",
-      },
+      primitive: { topology: "triangle-list" },
+      label: "Triangle Pipeline",
     });
 
     const buffer = device.createBuffer({
@@ -108,20 +119,20 @@ export class Renderer {
     const render = () => {
       clock.tickMs();
       const total = clock.total;
-
       const sinOffset = Math.sin(total);
       const cosOffset = Math.cos(total);
+      const sincosOffset = (sinOffset + cosOffset) / 2;
 
       colorAttribute.setRange(0, 2, [
-        0.0,
         0.5 * sinOffset + 0.5,
         0.0,
         0.0,
         0.0,
         0.5 * cosOffset + 0.5,
-        0.5 * sinOffset + 0.5,
         0.0,
         0.0,
+        0.0,
+        0.5 * sincosOffset + 0.5,
       ]);
 
       device.queue.writeBuffer(buffer, 0, triangle.array);
@@ -148,11 +159,5 @@ export class Renderer {
     };
 
     render();
-
-    return new Renderer(canvas);
   }
-
-  private constructor(
-    private readonly canvas: HTMLCanvasElement,
-  ) {}
 }
