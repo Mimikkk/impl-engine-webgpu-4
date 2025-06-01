@@ -4,6 +4,7 @@
 
 import type { Createable } from "@nimir/lib-shared";
 import { CommentToken } from "./CommentRemover.ts";
+import { IdentifierMatcher } from "./IdentifierMatcher.ts";
 import type { WGSLSource } from "./tokens.ts";
 import { isBlankspace, isLinebreak, isProgramEnd, isSomeToken, isToken, TokenSyntactic } from "./tokens.ts";
 
@@ -248,34 +249,3 @@ export class TemplateListParser {
   }
 }
 TemplateListParser satisfies Createable<TemplateListParser>;
-
-class IdentifierMatcher {
-  static create(): IdentifierMatcher {
-    return new IdentifierMatcher();
-  }
-
-  private constructor() {}
-
-  match(source: WGSLSource, startAt: number): number | undefined {
-    let indexAt = startAt;
-    if (isProgramEnd(source, indexAt)) return undefined;
-    if (!this.isStart(source[indexAt])) return undefined;
-
-    ++indexAt;
-    while (!isProgramEnd(source, indexAt) && this.isValue(source[indexAt])) {
-      ++indexAt;
-    }
-
-    return indexAt;
-  }
-
-  private isStart(char: string): boolean {
-    return (char >= "A" && char <= "Z") || (char >= "a" && char <= "z") || char === "_";
-  }
-
-  private isValue(char: string): boolean {
-    return this.isStart(char) || (char >= "0" && char <= "9");
-  }
-}
-
-IdentifierMatcher satisfies Createable<IdentifierMatcher>;
