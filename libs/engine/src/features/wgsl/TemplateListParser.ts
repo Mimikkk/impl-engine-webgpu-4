@@ -3,7 +3,7 @@
  */
 
 import type { Createable } from "@nimir/lib-shared";
-import { RuleMatcher } from "./matcher/Matcher.ts";
+import { RuleMatcher } from "./matcher/RuleMatcher.ts";
 import { RuleComment } from "./matcher/rules/RuleComment.ts";
 import { RuleIdentifier } from "./matcher/rules/RuleIdentifier.ts";
 import { RuleWhitespace } from "./matcher/rules/RuleWhitespace.ts";

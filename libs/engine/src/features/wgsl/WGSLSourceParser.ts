@@ -4,7 +4,7 @@
  */
 
 import { CommentRemover } from "./CommentRemover.ts";
-import { RuleWhitespace } from "./matcher/rules/RuleWhitespace.ts";
+import { RuleBlankspace } from "./matcher/rules/RuleBlankspace.ts";
 import { type TemplateList, TemplateListParser } from "./TemplateListParser.ts";
 import { isProgramEnd, TokenSyntactic, type WGSLSource } from "./tokens.ts";
 
@@ -76,7 +76,7 @@ export class WGSLSourceParser {
   }
 
   tokenize(source: WGSLSource, templateLists: TemplateList[]): Token[] | Error {
-    const blankspace = RuleWhitespace.create();
+    const blankspace = RuleBlankspace.create();
     const tokens: Token[] = [];
 
     let indexAt = 0;
@@ -116,14 +116,3 @@ export const enum Token {
   TemplateArgsStart = "_template_args_start",
   TemplateArgsEnd = "_template_args_end",
 }
-
-/*
-3.4. Tokens
-A token is a contiguous sequence of code points forming one of:
-a literal.
-a keyword.
-a reserved word.
-a syntactic token.
-an identifier.
-a context-dependent name.
- */

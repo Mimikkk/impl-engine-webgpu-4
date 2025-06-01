@@ -2,7 +2,7 @@
  * @see https://www.w3.org/TR/WGSL/#comments
  */
 import type { Createable } from "@nimir/lib-shared";
-import { RuleMatcher } from "./matcher/Matcher.ts";
+import { RuleMatcher } from "./matcher/RuleMatcher.ts";
 import { RuleCommentBlock } from "./matcher/rules/RuleCommentBlock.ts";
 import { RuleCommentLine } from "./matcher/rules/RuleCommentLine.ts";
 import { RuleWhitespace } from "./matcher/rules/RuleWhitespace.ts";
