@@ -1,7 +1,16 @@
+/**
+ * @see https://www.w3.org/TR/WGSL/#block-comment
+ */
 import type { Createable } from "@nimir/lib-shared";
-import { isProgramEnd, isToken, type WGSLSource } from "../../tokens.ts";
+import { isProgramEnd, isToken, TokenSyntactic, type WGSLSource } from "../../tokens.ts";
 import type { MatchRule } from "./MatchRule.ts";
-import { CommentToken } from "./RuleCommentLine.ts";
+
+const enum CommentBlockToken {
+  // Text: "/*"
+  BlockStart = TokenSyntactic.Slash + TokenSyntactic.Asterisk,
+  // Text: "*/"
+  BlockEnd = TokenSyntactic.Asterisk + TokenSyntactic.Slash,
+}
 
 export class RuleCommentBlock implements MatchRule {
   static create(): RuleCommentBlock {
@@ -11,7 +20,7 @@ export class RuleCommentBlock implements MatchRule {
   private constructor() {}
 
   matches(source: WGSLSource, position: number): boolean {
-    return isToken(source, position, CommentToken.BlockCommentStart);
+    return isToken(source, position, CommentBlockToken.BlockStart);
   }
 
   advance(source: WGSLSource, position: number): number | Error {
@@ -20,13 +29,13 @@ export class RuleCommentBlock implements MatchRule {
     let depth = 1;
 
     while (!isProgramEnd(source, indexAt) && depth > 0) {
-      if (isToken(source, indexAt, CommentToken.BlockCommentStart)) {
+      if (isToken(source, indexAt, CommentBlockToken.BlockStart)) {
         ++depth;
         indexAt += 2;
         continue;
       }
 
-      if (isToken(source, indexAt, CommentToken.BlockCommentEnd)) {
+      if (isToken(source, indexAt, CommentBlockToken.BlockEnd)) {
         --depth;
         indexAt += 2;
         continue;

@@ -5,9 +5,9 @@
 import type { Createable } from "@nimir/lib-shared";
 import { IdentifierMatcher } from "./IdentifierMatcher.ts";
 import { RuleMatcher } from "./matcher/Matcher.ts";
-import { RuleBlankspace } from "./matcher/rules/RuleBlankspace.ts";
 import { RuleCommentBlock } from "./matcher/rules/RuleCommentBlock.ts";
 import { RuleCommentLine } from "./matcher/rules/RuleCommentLine.ts";
+import { RuleWhitespace } from "./matcher/rules/RuleWhitespace.ts";
 import type { WGSLSource } from "./tokens.ts";
 import { isProgramEnd, isSomeToken, isToken, TokenSyntactic } from "./tokens.ts";
 
@@ -35,7 +35,7 @@ export class TemplateListParser {
   static create(
     identifierMatcher: IdentifierMatcher = IdentifierMatcher.create(),
     advance: RuleMatcher = RuleMatcher.create([
-      RuleBlankspace.create(),
+      RuleWhitespace.create(),
       RuleCommentLine.create(),
       RuleCommentBlock.create(),
     ]),

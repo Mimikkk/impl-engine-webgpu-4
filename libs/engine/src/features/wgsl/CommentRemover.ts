@@ -3,9 +3,9 @@
  */
 import type { Createable } from "@nimir/lib-shared";
 import { RuleMatcher } from "./matcher/Matcher.ts";
-import { RuleBlankspace } from "./matcher/rules/RuleBlankspace.ts";
 import { RuleCommentBlock } from "./matcher/rules/RuleCommentBlock.ts";
 import { RuleCommentLine } from "./matcher/rules/RuleCommentLine.ts";
+import { RuleWhitespace } from "./matcher/rules/RuleWhitespace.ts";
 import { isProgramEnd, removeSourceFromTo, type WGSLSource } from "./tokens.ts";
 
 export const enum CommentType {
@@ -24,7 +24,7 @@ export interface Comment {
  */
 export class CommentRemover {
   static create(
-    blankspace: RuleBlankspace = RuleBlankspace.create(),
+    blankspace: RuleWhitespace = RuleWhitespace.create(),
     line: RuleCommentLine = RuleCommentLine.create(),
     block: RuleCommentBlock = RuleCommentBlock.create(),
   ): CommentRemover {
@@ -32,9 +32,10 @@ export class CommentRemover {
   }
 
   private constructor(
-    private readonly blankspace: RuleBlankspace,
+    blankspace: RuleWhitespace,
     private readonly line: RuleCommentLine,
     private readonly block: RuleCommentBlock,
+    private readonly matcher: RuleMatcher = RuleMatcher.create([blankspace, line, block]),
   ) {}
 
   findAndRemove(source: WGSLSource): WGSLSource | Error {
@@ -50,19 +51,17 @@ export class CommentRemover {
   find(source: WGSLSource): Comment[] | Error {
     const changes: Comment[] = [];
 
-    const advance = RuleMatcher.create([this.blankspace, this.line, this.block]);
-
     let indexAt = 0;
     while (!isProgramEnd(source, indexAt)) {
-      const match = advance.match(source, indexAt);
+      const match = this.matcher.match(source, indexAt);
 
       if (match === undefined) {
         break;
       }
 
       const start = indexAt;
-
       const result = match.advance(source, indexAt);
+
       if (result instanceof Error) {
         return result;
       }

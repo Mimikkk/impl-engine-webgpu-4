@@ -1,32 +1,36 @@
+/**
+ * @see https://www.w3.org/TR/WGSL/#line-comment
+ */
 import type { Createable } from "@nimir/lib-shared";
-import { isLinebreak, isProgramEnd, isToken, TokenSyntactic, type WGSLSource } from "../../tokens.ts";
+import { isProgramEnd, isToken, TokenSyntactic, type WGSLSource } from "../../tokens.ts";
 import type { MatchRule } from "./MatchRule.ts";
+import { RuleLinebreak } from "./RuleLinebreak.ts";
 
-export const enum CommentToken {
+const enum CommentLineToken {
   // Text: "//"
-  LineComment = TokenSyntactic.Slash + TokenSyntactic.Slash,
-  // Text: "/*"
-  BlockCommentStart = TokenSyntactic.Slash + TokenSyntactic.Asterisk,
-  // Text: "*/"
-  BlockCommentEnd = TokenSyntactic.Asterisk + TokenSyntactic.Slash,
+  LineStart = TokenSyntactic.Slash + TokenSyntactic.Slash,
 }
 
 export class RuleCommentLine implements MatchRule {
-  static create(): RuleCommentLine {
-    return new RuleCommentLine();
+  static create(
+    linebreak: RuleLinebreak = RuleLinebreak.create(),
+  ): RuleCommentLine {
+    return new RuleCommentLine(linebreak);
   }
 
-  private constructor() {}
+  private constructor(
+    private readonly linebreak: RuleLinebreak,
+  ) {}
 
   matches(source: WGSLSource, position: number): boolean {
-    return isToken(source, position, CommentToken.LineComment);
+    return isToken(source, position, CommentLineToken.LineStart);
   }
 
   advance(source: WGSLSource, position: number): number | Error {
     // Skip "//"
     let indexAt = position + 2;
 
-    while (!isProgramEnd(source, indexAt) && !isLinebreak(source, indexAt)) {
+    while (!isProgramEnd(source, indexAt) && !this.linebreak.matches(source, indexAt)) {
       ++indexAt;
     }
 

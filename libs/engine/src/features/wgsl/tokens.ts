@@ -119,112 +119,6 @@ export const enum TokenSyntactic {
 
 export type WGSLSource = string;
 
-/*
-1. Remove comments:
-  - Replace the first comment with a space code point (U+0020).
-  - Repeat until no comments remain.
-2. Find template lists, using the algorithm in § 3.9 Template Lists.
-3. Parse the whole text, attempting to match the translation_unit grammar rule.
-   Parsing uses a LALR(1) parser (one token of lookahead) [DeRemer1969],
-   with the following customization:
-    - Tokenization is interleaved with parsing, and is context-aware. When the parser requests the next token:
-      - Consume and ignore an initial sequence of blankspace code points.
-      - If the next code point is the start of a template list, consume it and return _template_args_start.
-      - If the next code point is the end of a template list, consume it and return _template_args_end.
-      - Otherwise:
-        - A token candidate is any WGSL token formed from the non-empty prefix of the remaining unconsumed code points.
-        - The token returned is the longest token candidate that is also a valid lookahead token for the current parser state. [VanWyk2007]
-*/
-
-/*
-A comment is a span of text that does not influence the validity or meaning of a WGSL program, except that a comment can separate tokens. Shader authors can use comments to document their programs.
-- A line-ending comment is a kind of comment consisting of the two code points // (U+002F followed by U+002F) and the code points that follow, up until but not including:
-  - the next line break, or
-  - the end of the program.
-- A block comment is a kind of comment consisting of:
-  - The two code points /* (U+002F followed by U+002A)
-  - Then any sequence of:
-    - A block comment, or
-    - Text that does not contain either *\/ (U+002A followed by U+002F) or /* (U+002F followed by U+002A)
-  - Then the two code points *\/ (U+002A followed by U+002F)
-*/
-
-/**
- * A blankspace is a contiguous sequence of code points that are not line breaks.
- * @see https://www.w3.org/TR/WGSL/#blankspace
- */
-export const enum TokenBlankspace {
-  // Text: " "
-  Space = "\u0020",
-  // Text: "\t"
-  HorizontalTab = "\u0009",
-  // Text: "\n"
-  LineFeed = "\u000A",
-  // Text: "\v"
-  VerticalTab = "\u000B",
-  // Text: "\f"
-  FormFeed = "\u000C",
-  // Text: "\r"
-  CarriageReturn = "\u000D",
-  // Text: none
-  NextLine = "\u0085",
-  // Text: none
-  LeftToRightMark = "\u200E",
-  // Text: none
-  RightToLeftMark = "\u200F",
-  // Text: none
-  LineSeparator = "\u2028",
-  // Text: none
-  ParagraphSeparator = "\u2029",
-}
-const blackspaces = [
-  TokenBlankspace.Space,
-  TokenBlankspace.HorizontalTab,
-  TokenBlankspace.LineFeed,
-  TokenBlankspace.VerticalTab,
-  TokenBlankspace.FormFeed,
-  TokenBlankspace.CarriageReturn,
-  TokenBlankspace.NextLine,
-  TokenBlankspace.LeftToRightMark,
-  TokenBlankspace.RightToLeftMark,
-  TokenBlankspace.LineSeparator,
-  TokenBlankspace.ParagraphSeparator,
-];
-
-/**
- * A line break is a contiguous sequence of blankspace code points indicating the end of a line.
- * @see https://www.w3.org/TR/WGSL/#line-break
- */
-export const enum TokenLineBreak {
-  // Text: "\n"
-  LineFeed = "\u000A",
-  // Text: "\v"
-  VerticalTab = "\u000B",
-  // Text: "\f"
-  FormFeed = "\u000C",
-  // Text: "\r"
-  CarriageReturn = "\u000D",
-  // Text: "\r\n"
-  CarriageReturnLineFeed = "\u000D\u000A",
-  // Text: none
-  NextLine = "\u0085",
-  // Text: none
-  LineSeparator = "\u2028",
-  // Text: none
-  ParagraphSeparator = "\u2029",
-}
-
-const linebreaks = [
-  TokenLineBreak.LineFeed,
-  TokenLineBreak.VerticalTab,
-  TokenLineBreak.FormFeed,
-  TokenLineBreak.CarriageReturn,
-  TokenLineBreak.CarriageReturnLineFeed,
-  TokenLineBreak.NextLine,
-  TokenLineBreak.LineSeparator,
-  TokenLineBreak.ParagraphSeparator,
-];
-
 export function isToken(source: WGSLSource, start: number, pattern: string): boolean {
   for (let i = 0; i < pattern.length; ++i) {
     if (source[start + i] !== pattern[i]) {
@@ -237,26 +131,6 @@ export function isToken(source: WGSLSource, start: number, pattern: string): boo
 export function isSomeToken(source: WGSLSource, start: number, patterns: string[]): boolean {
   for (const pattern of patterns) {
     if (isToken(source, start, pattern)) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-export function isLinebreak(source: WGSLSource, start: number): boolean {
-  for (let i = 0; i < linebreaks.length; ++i) {
-    if (isToken(source, start, linebreaks[i])) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-export function isBlankspace(source: WGSLSource, start: number): boolean {
-  for (let i = 0; i < blackspaces.length; ++i) {
-    if (isToken(source, start, blackspaces[i])) {
       return true;
     }
   }
