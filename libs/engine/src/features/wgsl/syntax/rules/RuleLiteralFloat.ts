@@ -1,8 +1,9 @@
-import type { ParseRuleString } from "./ParseSyntax.ts";
+import type { ParseRuleString } from "../ParseSyntax.ts";
+import type { RuleName } from "../RuleRegistry.ts";
 
 export type LiteralDecimalFloat = ParseRuleString<
   `
-decimal_float_literal :
+${RuleName.DecimalFloatLiteral} :
 | '/0[fh]/'
 | '/[1-9][0-9]*[fh]/'
 | '/[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?[fh]?/'
@@ -13,7 +14,7 @@ decimal_float_literal :
 
 export type LiteralFloatHex = ParseRuleString<
   `
-hex_float_literal :
+${RuleName.HexFloatLiteral} :
 | '/0[xX][0-9a-fA-F]*\.[0-9a-fA-F]+([pP][+-]?[0-9]+[fh]?)?/'
 | '/0[xX][0-9a-fA-F]+\.[0-9a-fA-F]*([pP][+-]?[0-9]+[fh]?)?/'
 | '/0[xX][0-9a-fA-F]+[pP][+-]?[0-9]+[fh]?/'
@@ -22,17 +23,8 @@ hex_float_literal :
 
 export type LiteralFloat = ParseRuleString<
   `
-float_literal :
-| decimal_float_literal
-| hex_float_literal
-`
->;
-
-export type Literal = ParseRuleString<
-  `
-literal :
-| int_literal
-| float_literal
-| bool_literal
+${RuleName.FloatLiteral} :
+| ${RuleName.DecimalFloatLiteral}
+| ${RuleName.HexFloatLiteral}
 `
 >;
