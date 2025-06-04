@@ -139,7 +139,7 @@ export function isSomeToken(source: WGSLSource, start: number, patterns: string[
 }
 
 export function isProgramEnd(source: WGSLSource, index: number): boolean {
-  return index === source.length;
+  return index >= source.length;
 }
 
 export function removeSourceFromTo(source: WGSLSource, from: number, to: number): WGSLSource {

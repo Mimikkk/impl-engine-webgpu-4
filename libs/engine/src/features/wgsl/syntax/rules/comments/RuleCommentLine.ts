@@ -25,6 +25,7 @@ export const RuleCommentLine = createRuleMatcher(
       const context = { source, indexAt: i };
       while (!isProgramEnd(source, i) && !RuleLineBreak(context)) {
         ++i;
+        context.indexAt = i;
       }
 
       return { from: indexAt, to: i };
