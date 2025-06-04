@@ -1,0 +1,448 @@
+import { createLongestTokenMatcher } from "../../MatchRule.ts";
+import type { ParseRuleString } from "../../ParseSyntax.ts";
+import { RuleName } from "../../RuleRegistry.ts";
+
+const enum TokenReserved {
+  NULL = "NULL",
+  Self = "Self",
+  Abstract = "abstract",
+  Active = "active",
+  Alignas = "alignas",
+  Alignof = "alignof",
+  As = "as",
+  Asm = "asm",
+  AsmFragment = "asm_fragment",
+  Async = "async",
+  Attribute = "attribute",
+  Auto = "auto",
+  Await = "await",
+  Become = "become",
+  Cast = "cast",
+  Catch = "catch",
+  Class = "class",
+  CoAwait = "co_await",
+  CoReturn = "co_return",
+  CoYield = "co_yield",
+  Coherent = "coherent",
+  ColumnMajor = "column_major",
+  Common = "common",
+  Compile = "compile",
+  CompileFragment = "compile_fragment",
+  Concept = "concept",
+  ConstCast = "const_cast",
+  ConstEval = "consteval",
+  ConstExpr = "constexpr",
+  ConstInit = "constinit",
+  Crate = "crate",
+  Debugger = "debugger",
+  Decltype = "decltype",
+  Delete = "delete",
+  Demote = "demote",
+  DemoteToHelper = "demote_to_helper",
+  Do = "do",
+  DynamicCast = "dynamic_cast",
+  Enum = "enum",
+  Explicit = "explicit",
+  Export = "export",
+  Extends = "extends",
+  Extern = "extern",
+  External = "external",
+  Fallthrough = "fallthrough",
+  Filter = "filter",
+  Final = "final",
+  Finally = "finally",
+  Friend = "friend",
+  From = "from",
+  Fxgroup = "fxgroup",
+  Get = "get",
+  Goto = "goto",
+  Groupshared = "groupshared",
+  Highp = "highp",
+  Impl = "impl",
+  Implements = "implements",
+  Import = "import",
+  Inline = "inline",
+  Instanceof = "instanceof",
+  Interface = "interface",
+  Layout = "layout",
+  Lowp = "lowp",
+  Macro = "macro",
+  MacroRules = "macro_rules",
+  Match = "match",
+  Mediump = "mediump",
+  Meta = "meta",
+  Mod = "mod",
+  Module = "module",
+  Move = "move",
+  Mut = "mut",
+  Mutable = "mutable",
+  Namespace = "namespace",
+  New = "new",
+  Nil = "nil",
+  Noexcept = "noexcept",
+  Noinline = "noinline",
+  Nointerpolation = "nointerpolation",
+  NonCoherent = "non_coherent",
+  Noncoherent = "noncoherent",
+  Noperspective = "noperspective",
+  Null = "null",
+  Nullptr = "nullptr",
+  Of = "of",
+  Operator = "operator",
+  Package = "package",
+  Packoffset = "packoffset",
+  Partition = "partition",
+  Pass = "pass",
+  Patch = "patch",
+  Pixelfragment = "pixelfragment",
+  Precise = "precise",
+  Precision = "precision",
+  Premerge = "premerge",
+  Priv = "priv",
+  Protected = "protected",
+  Pub = "pub",
+  Public = "public",
+  Readonly = "readonly",
+  Ref = "ref",
+  Regardless = "regardless",
+  Register = "register",
+  ReinterpretCast = "reinterpret_cast",
+  Require = "require",
+  Resource = "resource",
+  Restrict = "restrict",
+  Set = "set",
+  Shared = "shared",
+  Sizeof = "sizeof",
+  Smooth = "smooth",
+  Snorm = "snorm",
+  Static = "static",
+  StaticAssert = "static_assert",
+  StaticCast = "static_cast",
+  Std = "std",
+  Subroutine = "subroutine",
+  Super = "super",
+  Target = "target",
+  Template = "template",
+  This = "this",
+  ThreadLocal = "thread_local",
+  Throw = "throw",
+  Trait = "trait",
+  Try = "try",
+  Type = "type",
+  Typedef = "typedef",
+  Typeid = "typeid",
+  Typename = "typename",
+  Typeof = "typeof",
+  Union = "union",
+  Unsafe = "unsafe",
+  Unsized = "unsized",
+  Use = "use",
+  Using = "using",
+  Varying = "varying",
+  Virtual = "virtual",
+  Volatile = "volatile",
+  Wgsl = "wgsl",
+  Where = "where",
+  With = "with",
+  Writeonly = "writeonly",
+  Yield = "yield",
+}
+
+export const reservedWords = [
+  TokenReserved.NULL,
+  TokenReserved.Self,
+  TokenReserved.Abstract,
+  TokenReserved.Active,
+  TokenReserved.Alignas,
+  TokenReserved.Alignof,
+  TokenReserved.As,
+  TokenReserved.Asm,
+  TokenReserved.AsmFragment,
+  TokenReserved.Async,
+  TokenReserved.Attribute,
+  TokenReserved.Auto,
+  TokenReserved.Await,
+  TokenReserved.Become,
+  TokenReserved.Cast,
+  TokenReserved.Catch,
+  TokenReserved.Class,
+  TokenReserved.CoAwait,
+  TokenReserved.CoReturn,
+  TokenReserved.CoYield,
+  TokenReserved.Coherent,
+  TokenReserved.ColumnMajor,
+  TokenReserved.Common,
+  TokenReserved.Compile,
+  TokenReserved.CompileFragment,
+  TokenReserved.Concept,
+  TokenReserved.ConstCast,
+  TokenReserved.ConstEval,
+  TokenReserved.ConstExpr,
+  TokenReserved.ConstInit,
+  TokenReserved.Crate,
+  TokenReserved.Debugger,
+  TokenReserved.Decltype,
+  TokenReserved.Delete,
+  TokenReserved.Demote,
+  TokenReserved.DemoteToHelper,
+  TokenReserved.Do,
+  TokenReserved.DynamicCast,
+  TokenReserved.Enum,
+  TokenReserved.Explicit,
+  TokenReserved.Export,
+  TokenReserved.Extends,
+  TokenReserved.Extern,
+  TokenReserved.External,
+  TokenReserved.Fallthrough,
+  TokenReserved.Filter,
+  TokenReserved.Final,
+  TokenReserved.Finally,
+  TokenReserved.Friend,
+  TokenReserved.From,
+  TokenReserved.Fxgroup,
+  TokenReserved.Get,
+  TokenReserved.Goto,
+  TokenReserved.Groupshared,
+  TokenReserved.Highp,
+  TokenReserved.Impl,
+  TokenReserved.Implements,
+  TokenReserved.Import,
+  TokenReserved.Inline,
+  TokenReserved.Instanceof,
+  TokenReserved.Interface,
+  TokenReserved.Layout,
+  TokenReserved.Lowp,
+  TokenReserved.Macro,
+  TokenReserved.MacroRules,
+  TokenReserved.Match,
+  TokenReserved.Mediump,
+  TokenReserved.Meta,
+  TokenReserved.Mod,
+  TokenReserved.Module,
+  TokenReserved.Move,
+  TokenReserved.Mut,
+  TokenReserved.Mutable,
+  TokenReserved.Namespace,
+  TokenReserved.New,
+  TokenReserved.Nil,
+  TokenReserved.Noexcept,
+  TokenReserved.Noinline,
+  TokenReserved.Nointerpolation,
+  TokenReserved.NonCoherent,
+  TokenReserved.Noncoherent,
+  TokenReserved.Noperspective,
+  TokenReserved.Null,
+  TokenReserved.Nullptr,
+  TokenReserved.Of,
+  TokenReserved.Operator,
+  TokenReserved.Package,
+  TokenReserved.Packoffset,
+  TokenReserved.Partition,
+  TokenReserved.Pass,
+  TokenReserved.Patch,
+  TokenReserved.Pixelfragment,
+  TokenReserved.Precise,
+  TokenReserved.Precision,
+  TokenReserved.Premerge,
+  TokenReserved.Priv,
+  TokenReserved.Protected,
+  TokenReserved.Pub,
+  TokenReserved.Public,
+  TokenReserved.Readonly,
+  TokenReserved.Ref,
+  TokenReserved.Regardless,
+  TokenReserved.Register,
+  TokenReserved.ReinterpretCast,
+  TokenReserved.Require,
+  TokenReserved.Resource,
+  TokenReserved.Restrict,
+  TokenReserved.Set,
+  TokenReserved.Shared,
+  TokenReserved.Sizeof,
+  TokenReserved.Smooth,
+  TokenReserved.Snorm,
+  TokenReserved.Static,
+  TokenReserved.StaticAssert,
+  TokenReserved.StaticCast,
+  TokenReserved.Std,
+  TokenReserved.Subroutine,
+  TokenReserved.Super,
+  TokenReserved.Target,
+  TokenReserved.Template,
+  TokenReserved.This,
+  TokenReserved.ThreadLocal,
+  TokenReserved.Throw,
+  TokenReserved.Trait,
+  TokenReserved.Try,
+  TokenReserved.Type,
+  TokenReserved.Typedef,
+  TokenReserved.Typeid,
+  TokenReserved.Typename,
+  TokenReserved.Typeof,
+  TokenReserved.Union,
+  TokenReserved.Unsafe,
+  TokenReserved.Unsized,
+  TokenReserved.Use,
+  TokenReserved.Using,
+  TokenReserved.Varying,
+  TokenReserved.Virtual,
+  TokenReserved.Volatile,
+  TokenReserved.Wgsl,
+  TokenReserved.Where,
+  TokenReserved.With,
+  TokenReserved.Writeonly,
+  TokenReserved.Yield,
+];
+export type ReservedWord = ParseRuleString<
+  `
+${RuleName.ReservedWord} :
+| '${TokenReserved.NULL}'
+| '${TokenReserved.Self}'
+| '${TokenReserved.Abstract}'
+| '${TokenReserved.Active}'
+| '${TokenReserved.Alignas}'
+| '${TokenReserved.Alignof}'
+| '${TokenReserved.As}'
+| '${TokenReserved.Asm}'
+| '${TokenReserved.AsmFragment}'
+| '${TokenReserved.Async}'
+| '${TokenReserved.Attribute}'
+| '${TokenReserved.Auto}'
+| '${TokenReserved.Await}'
+| '${TokenReserved.Become}'
+| '${TokenReserved.Cast}'
+| '${TokenReserved.Catch}'
+| '${TokenReserved.Class}'
+| '${TokenReserved.CoAwait}'
+| '${TokenReserved.CoReturn}'
+| '${TokenReserved.CoYield}'
+| '${TokenReserved.Coherent}'
+| '${TokenReserved.ColumnMajor}'
+| '${TokenReserved.Common}'
+| '${TokenReserved.Compile}'
+| '${TokenReserved.CompileFragment}'
+| '${TokenReserved.Concept}'
+| '${TokenReserved.ConstCast}'
+| '${TokenReserved.ConstEval}'
+| '${TokenReserved.ConstExpr}'
+| '${TokenReserved.ConstInit}'
+| '${TokenReserved.Crate}'
+| '${TokenReserved.Debugger}'
+| '${TokenReserved.Decltype}'
+| '${TokenReserved.Delete}'
+| '${TokenReserved.Demote}'
+| '${TokenReserved.DemoteToHelper}'
+| '${TokenReserved.Do}'
+| '${TokenReserved.DynamicCast}'
+| '${TokenReserved.Enum}'
+| '${TokenReserved.Explicit}'
+| '${TokenReserved.Export}'
+| '${TokenReserved.Extends}'
+| '${TokenReserved.Extern}'
+| '${TokenReserved.External}'
+| '${TokenReserved.Fallthrough}'
+| '${TokenReserved.Filter}'
+| '${TokenReserved.Final}'
+| '${TokenReserved.Finally}'
+| '${TokenReserved.Friend}'
+| '${TokenReserved.From}'
+| '${TokenReserved.Fxgroup}'
+| '${TokenReserved.Get}'
+| '${TokenReserved.Goto}'
+| '${TokenReserved.Groupshared}'
+| '${TokenReserved.Highp}'
+| '${TokenReserved.Impl}'
+| '${TokenReserved.Implements}'
+| '${TokenReserved.Import}'
+| '${TokenReserved.Inline}'
+| '${TokenReserved.Instanceof}'
+| '${TokenReserved.Interface}'
+| '${TokenReserved.Layout}'
+| '${TokenReserved.Lowp}'
+| '${TokenReserved.Macro}'
+| '${TokenReserved.MacroRules}'
+| '${TokenReserved.Match}'
+| '${TokenReserved.Mediump}'
+| '${TokenReserved.Meta}'
+| '${TokenReserved.Mod}'
+| '${TokenReserved.Module}'
+| '${TokenReserved.Move}'
+| '${TokenReserved.Mut}'
+| '${TokenReserved.Mutable}'
+| '${TokenReserved.Namespace}'
+| '${TokenReserved.New}'
+| '${TokenReserved.Nil}'
+| '${TokenReserved.Noexcept}'
+| '${TokenReserved.Noinline}'
+| '${TokenReserved.Nointerpolation}'
+| '${TokenReserved.NonCoherent}'
+| '${TokenReserved.Noncoherent}'
+| '${TokenReserved.Noperspective}'
+| '${TokenReserved.Null}'
+| '${TokenReserved.Nullptr}'
+| '${TokenReserved.Of}'
+| '${TokenReserved.Operator}'
+| '${TokenReserved.Package}'
+| '${TokenReserved.Packoffset}'
+| '${TokenReserved.Partition}'
+| '${TokenReserved.Pass}'
+| '${TokenReserved.Patch}'
+| '${TokenReserved.Pixelfragment}'
+| '${TokenReserved.Precise}'
+| '${TokenReserved.Precision}'
+| '${TokenReserved.Premerge}'
+| '${TokenReserved.Priv}'
+| '${TokenReserved.Protected}'
+| '${TokenReserved.Pub}'
+| '${TokenReserved.Public}'
+| '${TokenReserved.Readonly}'
+| '${TokenReserved.Ref}'
+| '${TokenReserved.Regardless}'
+| '${TokenReserved.Register}'
+| '${TokenReserved.ReinterpretCast}'
+| '${TokenReserved.Require}'
+| '${TokenReserved.Resource}'
+| '${TokenReserved.Restrict}'
+| '${TokenReserved.Set}'
+| '${TokenReserved.Shared}'
+| '${TokenReserved.Sizeof}'
+| '${TokenReserved.Smooth}'
+| '${TokenReserved.Snorm}'
+| '${TokenReserved.Static}'
+| '${TokenReserved.StaticAssert}'
+| '${TokenReserved.StaticCast}'
+| '${TokenReserved.Std}'
+| '${TokenReserved.Subroutine}'
+| '${TokenReserved.Super}'
+| '${TokenReserved.Target}'
+| '${TokenReserved.Template}'
+| '${TokenReserved.This}'
+| '${TokenReserved.ThreadLocal}'
+| '${TokenReserved.Throw}'
+| '${TokenReserved.Trait}'
+| '${TokenReserved.Try}'
+| '${TokenReserved.Type}'
+| '${TokenReserved.Typedef}'
+| '${TokenReserved.Typeid}'
+| '${TokenReserved.Typename}'
+| '${TokenReserved.Typeof}'
+| '${TokenReserved.Union}'
+| '${TokenReserved.Unsafe}'
+| '${TokenReserved.Unsized}'
+| '${TokenReserved.Use}'
+| '${TokenReserved.Using}'
+| '${TokenReserved.Varying}'
+| '${TokenReserved.Virtual}'
+| '${TokenReserved.Volatile}'
+| '${TokenReserved.Wgsl}'
+| '${TokenReserved.Where}'
+| '${TokenReserved.With}'
+| '${TokenReserved.Writeonly}'
+| '${TokenReserved.Yield}'
+`
+>;
+
+export const RuleReservedWord = createLongestTokenMatcher(
+  RuleName.ReservedWord,
+  reservedWords,
+);

@@ -1,3 +1,4 @@
+import { isToken } from "../tokens.ts";
 import type { RuleName } from "./RuleRegistry.ts";
 
 export interface RuleMatchResult<T extends RuleName, A extends RuleMatch<T, A> | undefined = undefined> {
@@ -107,6 +108,33 @@ export const createLongestRegexRuleMatcher = <R extends RuleName>(name: R, regex
 
       if (longestMatch > 0) {
         return { from: indexAt, to: indexAt + longestMatch };
+      }
+
+      return undefined;
+    },
+  );
+
+export const createLongestTokenMatcher = (
+  name: RuleName,
+  tokens: string[],
+) =>
+  createRuleMatcher(
+    name,
+    ({ source, indexAt }) => {
+      let longest = -1;
+
+      for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
+
+        if (isToken(source, indexAt, token)) {
+          if (token.length > longest) {
+            longest = token.length;
+          }
+        }
+      }
+
+      if (longest > 0) {
+        return { from: indexAt, to: indexAt + longest };
       }
 
       return undefined;

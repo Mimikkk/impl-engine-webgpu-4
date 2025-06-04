@@ -1,7 +1,7 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
-import { RuleName } from "../RuleRegistry.ts";
-import { RuleLiteralBool } from "./RuleLiteralBool.ts";
+import { RuleName } from "../../../RuleRegistry.ts";
+import { RuleLiteralBool } from "../../tokens/literals/RuleLiteralBool.ts";
 
 describe("RuleLiteralBool", () => {
   it("should match true", () => {

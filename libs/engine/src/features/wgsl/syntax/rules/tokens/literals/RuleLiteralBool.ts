@@ -1,7 +1,7 @@
-import { isToken } from "../../tokens.ts";
-import { createRuleMatcher } from "../MatchRule.ts";
-import type { ParseRuleString } from "../ParseSyntax.ts";
-import { RuleName } from "../RuleRegistry.ts";
+import { isToken } from "../../../../tokens.ts";
+import { createRuleMatcher } from "../../../MatchRule.ts";
+import type { ParseRuleString } from "../../../ParseSyntax.ts";
+import { RuleName } from "../../../RuleRegistry.ts";
 
 export const enum TokenLiteralBool {
   True = "true",

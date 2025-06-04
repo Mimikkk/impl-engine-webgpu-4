@@ -1,6 +1,6 @@
-import { composeLongestRuleMatcher, createLongestRegexRuleMatcher } from "../MatchRule.ts";
-import type { ParseRuleString } from "../ParseSyntax.ts";
-import { RuleName } from "../RuleRegistry.ts";
+import { composeLongestRuleMatcher, createLongestRegexRuleMatcher } from "../../../MatchRule.ts";
+import type { ParseRuleString } from "../../../ParseSyntax.ts";
+import { RuleName } from "../../../RuleRegistry.ts";
 
 export type LiteralDecimalFloat = ParseRuleString<
   `
