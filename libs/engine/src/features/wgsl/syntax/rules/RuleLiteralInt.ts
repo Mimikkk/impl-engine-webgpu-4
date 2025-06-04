@@ -1,4 +1,4 @@
-import { composeLongestRuleMatcher, createRuleMatcher } from "../MatchRule.ts";
+import { composeLongestRuleMatcher, createLongestRegexRuleMatcher } from "../MatchRule.ts";
 import type { ParseRuleString } from "../ParseSyntax.ts";
 import { RuleName } from "../RuleRegistry.ts";
 
@@ -10,35 +10,9 @@ ${RuleName.DecimalIntLiteral} :
 `
 >;
 
-const isDigit = (char: string) => char >= "0" && char <= "9";
-const isPositiveDigit = (char: string) => char >= "1" && char <= "9";
-export const RuleDecimalIntLiteral = createRuleMatcher(
+export const RuleDecimalIntLiteral = createLongestRegexRuleMatcher(
   RuleName.DecimalIntLiteral,
-  ({ source, indexAt }) => {
-    if (source[indexAt] === "0") {
-      let i = indexAt + 1;
-
-      if (source[i] === "u" || source[i] === "i") {
-        ++i;
-      }
-
-      return { from: indexAt, to: i };
-    }
-
-    if (isPositiveDigit(source[indexAt])) {
-      let i = indexAt;
-
-      while (isDigit(source[i])) ++i;
-
-      if (source[i] === "u" || source[i] === "i") {
-        ++i;
-      }
-
-      return { from: indexAt, to: i };
-    }
-
-    return undefined;
-  },
+  [/0[iu]?/y, /[1-9][0-9]*[iu]?/y],
 );
 
 export type LiteralIntHex = ParseRuleString<
@@ -48,31 +22,9 @@ ${RuleName.HexIntLiteral} :
 `
 >;
 
-const isHexDigit = (char: string) =>
-  char >= "0" && char <= "9" || char >= "a" && char <= "f" || char >= "A" && char <= "F";
-
-export const RuleHexIntLiteral = createRuleMatcher(
+export const RuleHexIntLiteral = createLongestRegexRuleMatcher(
   RuleName.HexIntLiteral,
-  ({ source, indexAt }) => {
-    if (source[indexAt] === "0" && (source[indexAt + 1] === "x" || source[indexAt + 1] === "X")) {
-      let i = indexAt + 2;
-
-      if (!isHexDigit(source[i])) {
-        return undefined;
-      }
-
-      ++i;
-      while (isHexDigit(source[i])) ++i;
-
-      if (source[i] === "u" || source[i] === "i") {
-        ++i;
-      }
-
-      return { from: indexAt, to: i };
-    }
-
-    return undefined;
-  },
+  [/0[xX][0-9a-fA-F]+[iu]?/y],
 );
 
 export type LiteralInt = ParseRuleString<

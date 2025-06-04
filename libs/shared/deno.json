@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "lib": ["deno.window", "deno.ns", "DOM", "DOM.Iterable", "ESNext"]
+    "lib": ["deno.window", "deno.ns", "DOM", "DOM.Iterable", "ESNext"],
+    "noErrorTruncation": true
   },
   "name": "@nimir/lib-shared",
   "version": "0.0.0",

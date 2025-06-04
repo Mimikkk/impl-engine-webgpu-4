@@ -1,5 +1,6 @@
-import type { Literal, LiteralDecimalFloat, LiteralFloat, LiteralFloatHex } from "./Grammar.ts";
+import type { Literal } from "./rules/RuleLiteral.ts";
 import type { LiteralBool } from "./rules/RuleLiteralBool.ts";
+import type { LiteralDecimalFloat, LiteralFloat, LiteralFloatHex } from "./rules/RuleLiteralFloat.ts";
 import type { LiteralInt, LiteralIntDecimal, LiteralIntHex } from "./rules/RuleLiteralInt.ts";
 
 export const enum RuleName {
