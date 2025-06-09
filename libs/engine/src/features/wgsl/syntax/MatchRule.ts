@@ -12,6 +12,7 @@ export interface MatchRuleResult<R extends RuleName, A extends MatchRule<any, an
 export interface MatchRuleContext {
   source: string;
   indexAt: number;
+  match?: MatchRuleResult<any, any>;
 }
 
 export interface Match {
@@ -27,17 +28,27 @@ const createMatchResult = <R extends RuleName, A extends MatchRule<any, any> | u
   subtype: A,
   from: number,
   size: number,
-): MatchRuleResult<R, A> => ({ type, subtype, from, to: from + size, size });
+  into: MatchRuleResult<R, A> = { type, subtype, from, to: from + size, size },
+): MatchRuleResult<R, A> => {
+  into.type = type;
+  into.subtype = subtype;
+  into.from = from;
+  into.to = from + size;
+  into.size = size;
+
+  return into;
+};
 
 export const createMatch = <R extends RuleName>(name: R, match: Match): MatchRule<R, undefined> => (context) => {
   const result = match(context);
+  if (!result) return;
 
-  return result ? createMatchResult(name, undefined, context.indexAt, result) : undefined;
+  return createMatchResult(name, undefined, context.indexAt, result, context.match);
 };
 
 export const composeAlternatives =
   <R extends RuleName, A extends MatchRule<any, any>>(name: R, alternatives: A[]): MatchRule<R, A> => (context) => {
-    let bestSize: number | undefined;
+    let bestCandidate: MatchRuleResult<R, A> | undefined;
     let bestAlternative: A | undefined;
 
     for (let i = 0; i < alternatives.length; ++i) {
@@ -46,15 +57,15 @@ export const composeAlternatives =
 
       if (!candidate) continue;
 
-      if (bestSize === undefined || bestSize < candidate.size) {
-        bestSize = candidate.size;
+      if (bestCandidate === undefined || bestCandidate.size < candidate.size) {
+        bestCandidate = candidate;
         bestAlternative = alternative;
       }
     }
 
-    return bestSize === undefined || bestAlternative === undefined
+    return bestCandidate === undefined
       ? undefined
-      : createMatchResult(name, bestAlternative, context.indexAt, bestSize);
+      : createMatchResult(name, bestAlternative, context.indexAt, bestCandidate.size, context.match);
   };
 
 export const createMatchRegex = <R extends RuleName>(name: R, regexes: RegExp[]) =>
@@ -68,10 +79,10 @@ export const createMatchRegex = <R extends RuleName>(name: R, regexes: RegExp[])
       const match = regex.exec(source);
 
       if (!match) continue;
-      const length = match[0].length;
+      const size = match[0].length;
 
-      if (bestSize === undefined || bestSize < length) {
-        bestSize = length;
+      if (bestSize === undefined || bestSize < size) {
+        bestSize = size;
       }
     }
 
