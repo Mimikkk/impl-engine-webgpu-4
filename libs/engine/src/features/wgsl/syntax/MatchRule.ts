@@ -40,10 +40,11 @@ const createMatchResult = <R extends RuleName, A extends MatchRule<any, any> | u
 };
 
 export const createMatch = <R extends RuleName>(name: R, match: Match): MatchRule<R, undefined> => (context) => {
-  const result = match(context);
-  if (!result) return;
+  const size = match(context);
 
-  return createMatchResult(name, undefined, context.indexAt, result, context.match);
+  if (size === undefined) return;
+
+  return createMatchResult(name, undefined, context.indexAt, size, context.match);
 };
 
 export const composeAlternatives =
