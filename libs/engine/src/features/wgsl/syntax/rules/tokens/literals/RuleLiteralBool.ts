@@ -1,5 +1,4 @@
-import { isToken } from "../../../../tokens.ts";
-import { createRuleMatcher } from "../../../MatchRule.ts";
+import { createMatchToken } from "../../../MatchRule.ts";
 import type { ParseRuleString } from "../../../ParseSyntax.ts";
 import { RuleName } from "../../../RuleRegistry.ts";
 
@@ -16,19 +15,6 @@ ${RuleName.BoolLiteral} :
 `
 >;
 
-export const RuleLiteralBool = createRuleMatcher(
-  RuleName.BoolLiteral,
-  ({ source, indexAt }) => {
-    if (isToken(source, indexAt, TokenLiteralBool.True)) {
-      const len = TokenLiteralBool.True.length;
-      return { from: indexAt, to: indexAt + len };
-    }
+const booleans = [TokenLiteralBool.True, TokenLiteralBool.False];
 
-    if (isToken(source, indexAt, TokenLiteralBool.False)) {
-      const len = TokenLiteralBool.False.length;
-      return { from: indexAt, to: indexAt + len };
-    }
-
-    return undefined;
-  },
-);
+export const RuleLiteralBool = createMatchToken(RuleName.BoolLiteral, booleans);

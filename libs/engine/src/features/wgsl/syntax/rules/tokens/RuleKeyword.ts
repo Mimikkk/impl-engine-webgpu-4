@@ -1,4 +1,4 @@
-import { createLongestTokenMatcher } from "../../MatchRule.ts";
+import { createMatchToken } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleName } from "../../RuleRegistry.ts";
 
@@ -92,7 +92,4 @@ ${RuleName.Keyword} :
 `
 >;
 
-export const RuleKeyword = createLongestTokenMatcher(
-  RuleName.Keyword,
-  keywords,
-);
+export const RuleKeyword = createMatchToken(RuleName.Keyword, keywords);

@@ -1,4 +1,4 @@
-import { composeLongestRuleMatcher, createLongestRegexRuleMatcher } from "../../../MatchRule.ts";
+import { composeAlternatives, createMatchRegex } from "../../../MatchRule.ts";
 import type { ParseRuleString } from "../../../ParseSyntax.ts";
 import { RuleName } from "../../../RuleRegistry.ts";
 
@@ -13,16 +13,13 @@ ${RuleName.DecimalFloatLiteral} :
 `
 >;
 
-export const RuleDecimalFloatLiteral = createLongestRegexRuleMatcher(
-  RuleName.DecimalFloatLiteral,
-  [
-    /0[fh]/y,
-    /[1-9][0-9]*[fh]/y,
-    /[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?[fh]?/y,
-    /[0-9]+\.[0-9]*([eE][+-]?[0-9]+)?[fh]?/y,
-    /[0-9]+[eE][+-]?[0-9]+[fh]?/y,
-  ],
-);
+export const RuleDecimalFloatLiteral = createMatchRegex(RuleName.DecimalFloatLiteral, [
+  /0[fh]/y,
+  /[1-9][0-9]*[fh]/y,
+  /[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?[fh]?/y,
+  /[0-9]+\.[0-9]*([eE][+-]?[0-9]+)?[fh]?/y,
+  /[0-9]+[eE][+-]?[0-9]+[fh]?/y,
+]);
 
 export type LiteralFloatHex = ParseRuleString<
   `
@@ -33,14 +30,11 @@ ${RuleName.HexFloatLiteral} :
 `
 >;
 
-export const RuleHexFloatLiteral = createLongestRegexRuleMatcher(
-  RuleName.HexFloatLiteral,
-  [
-    /0[xX][0-9a-fA-F]*\.[0-9a-fA-F]+([pP][+-]?[0-9]+[fh]?)?/y,
-    /0[xX][0-9a-fA-F]+\.[0-9a-fA-F]*([pP][+-]?[0-9]+[fh]?)?/y,
-    /0[xX][0-9a-fA-F]+[pP][+-]?[0-9]+[fh]?/y,
-  ],
-);
+export const RuleHexFloatLiteral = createMatchRegex(RuleName.HexFloatLiteral, [
+  /0[xX][0-9a-fA-F]*\.[0-9a-fA-F]+([pP][+-]?[0-9]+[fh]?)?/y,
+  /0[xX][0-9a-fA-F]+\.[0-9a-fA-F]*([pP][+-]?[0-9]+[fh]?)?/y,
+  /0[xX][0-9a-fA-F]+[pP][+-]?[0-9]+[fh]?/y,
+]);
 
 export type LiteralFloat = ParseRuleString<
   `
@@ -50,7 +44,7 @@ ${RuleName.FloatLiteral} :
 `
 >;
 
-export const RuleFloatLiteral = composeLongestRuleMatcher(
-  RuleName.FloatLiteral,
-  [RuleDecimalFloatLiteral, RuleHexFloatLiteral],
-);
+export const RuleFloatLiteral = composeAlternatives(RuleName.FloatLiteral, [
+  RuleDecimalFloatLiteral,
+  RuleHexFloatLiteral,
+]);

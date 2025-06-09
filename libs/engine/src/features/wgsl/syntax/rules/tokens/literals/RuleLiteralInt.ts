@@ -1,4 +1,4 @@
-import { composeLongestRuleMatcher, createLongestRegexRuleMatcher } from "../../../MatchRule.ts";
+import { composeAlternatives, createMatchRegex } from "../../../MatchRule.ts";
 import type { ParseRuleString } from "../../../ParseSyntax.ts";
 import { RuleName } from "../../../RuleRegistry.ts";
 
@@ -10,10 +10,10 @@ ${RuleName.DecimalIntLiteral} :
 `
 >;
 
-export const RuleDecimalIntLiteral = createLongestRegexRuleMatcher(
-  RuleName.DecimalIntLiteral,
-  [/0[iu]?/y, /[1-9][0-9]*[iu]?/y],
-);
+export const RuleDecimalIntLiteral = createMatchRegex(RuleName.DecimalIntLiteral, [
+  /0[iu]?/y,
+  /[1-9][0-9]*[iu]?/y,
+]);
 
 export type LiteralIntHex = ParseRuleString<
   `
@@ -22,7 +22,7 @@ ${RuleName.HexIntLiteral} :
 `
 >;
 
-export const RuleHexIntLiteral = createLongestRegexRuleMatcher(
+export const RuleHexIntLiteral = createMatchRegex(
   RuleName.HexIntLiteral,
   [/0[xX][0-9a-fA-F]+[iu]?/y],
 );
@@ -35,7 +35,7 @@ ${RuleName.IntLiteral} :
 `
 >;
 
-export const RuleIntLiteral = composeLongestRuleMatcher(
-  RuleName.IntLiteral,
-  [RuleDecimalIntLiteral, RuleHexIntLiteral],
-);
+export const RuleIntLiteral = composeAlternatives(RuleName.IntLiteral, [
+  RuleDecimalIntLiteral,
+  RuleHexIntLiteral,
+]);

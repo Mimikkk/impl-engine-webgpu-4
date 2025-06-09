@@ -1,4 +1,4 @@
-import { createLongestTokenMatcher } from "../../MatchRule.ts";
+import { createMatchToken } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleName } from "../../RuleRegistry.ts";
 
@@ -442,7 +442,4 @@ ${RuleName.ReservedWord} :
 `
 >;
 
-export const RuleReservedWord = createLongestTokenMatcher(
-  RuleName.ReservedWord,
-  reservedWords,
-);
+export const RuleReservedWord = createMatchToken(RuleName.ReservedWord, reservedWords);

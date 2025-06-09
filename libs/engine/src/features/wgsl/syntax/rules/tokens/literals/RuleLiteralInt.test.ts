@@ -21,7 +21,7 @@ describe("RuleLiteralInt", () => {
           const result = RuleDecimalIntLiteral({ source, indexAt: 0 });
 
           expect(result).toBeDefined();
-          expect(result?.rule).toBe(RuleName.DecimalIntLiteral);
+          expect(result?.type).toBe(RuleName.DecimalIntLiteral);
           expect(result?.from).toBe(expected.from);
           expect(result?.to).toBe(expected.to);
         });
@@ -62,7 +62,7 @@ describe("RuleLiteralInt", () => {
           const result = RuleHexIntLiteral({ source, indexAt: 0 });
 
           expect(result).toBeDefined();
-          expect(result?.rule).toBe(RuleName.HexIntLiteral);
+          expect(result?.type).toBe(RuleName.HexIntLiteral);
           expect(result?.from).toBe(expected.from);
           expect(result?.to).toBe(expected.to);
         });
@@ -107,8 +107,8 @@ describe("RuleLiteralInt", () => {
           const result = RuleIntLiteral({ source, indexAt: 0 });
 
           expect(result).toBeDefined();
-          expect(result?.rule).toBe(RuleName.IntLiteral);
-          expect(result?.child).toBe(match);
+          expect(result?.type).toBe(RuleName.IntLiteral);
+          expect(result?.subtype).toBe(match);
           expect(result?.from).toBe(expected.from);
           expect(result?.to).toBe(expected.to);
         });

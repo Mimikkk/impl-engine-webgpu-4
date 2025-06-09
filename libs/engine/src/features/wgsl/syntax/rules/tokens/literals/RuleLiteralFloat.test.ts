@@ -15,7 +15,7 @@ describe("RuleDecimalFloatLiteral", () => {
         const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.DecimalFloatLiteral);
+        expect(result?.type).toBe(RuleName.DecimalFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -38,7 +38,7 @@ describe("RuleDecimalFloatLiteral", () => {
         const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.DecimalFloatLiteral);
+        expect(result?.type).toBe(RuleName.DecimalFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -67,7 +67,7 @@ describe("RuleDecimalFloatLiteral", () => {
         const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.DecimalFloatLiteral);
+        expect(result?.type).toBe(RuleName.DecimalFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -92,7 +92,7 @@ describe("RuleDecimalFloatLiteral", () => {
         const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.DecimalFloatLiteral);
+        expect(result?.type).toBe(RuleName.DecimalFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -138,7 +138,7 @@ describe("RuleDecimalFloatLiteral", () => {
         const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.DecimalFloatLiteral);
+        expect(result?.type).toBe(RuleName.DecimalFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -162,7 +162,7 @@ describe("RuleDecimalFloatLiteral", () => {
         const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.DecimalFloatLiteral);
+        expect(result?.type).toBe(RuleName.DecimalFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -202,7 +202,7 @@ describe("RuleDecimalFloatLiteral", () => {
       const result = RuleDecimalFloatLiteral({ source, indexAt: 4 });
 
       expect(result).toBeDefined();
-      expect(result?.rule).toBe(RuleName.DecimalFloatLiteral);
+      expect(result?.type).toBe(RuleName.DecimalFloatLiteral);
       expect(result?.from).toBe(4);
       expect(result?.to).toBe(9);
     });
@@ -219,7 +219,7 @@ describe("RuleDecimalFloatLiteral", () => {
       const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
 
       expect(result).toBeDefined();
-      expect(result?.rule).toBe(RuleName.DecimalFloatLiteral);
+      expect(result?.type).toBe(RuleName.DecimalFloatLiteral);
       expect(result?.from).toBe(0);
       expect(result?.to).toBe(5);
     });
@@ -231,7 +231,7 @@ describe("RuleDecimalFloatLiteral", () => {
       const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
 
       expect(result).toBeDefined();
-      expect(result?.rule).toBe(RuleName.DecimalFloatLiteral);
+      expect(result?.type).toBe(RuleName.DecimalFloatLiteral);
       expect(result?.from).toBe(0);
       expect(result?.to).toBe(2);
     });
@@ -241,7 +241,7 @@ describe("RuleDecimalFloatLiteral", () => {
       const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
 
       expect(result).toBeDefined();
-      expect(result?.rule).toBe(RuleName.DecimalFloatLiteral);
+      expect(result?.type).toBe(RuleName.DecimalFloatLiteral);
       expect(result?.from).toBe(0);
       expect(result?.to).toBe(4);
     });
@@ -272,7 +272,7 @@ describe("RuleHexFloatLiteral", () => {
         const result = RuleHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.HexFloatLiteral);
+        expect(result?.type).toBe(RuleName.HexFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -298,7 +298,7 @@ describe("RuleHexFloatLiteral", () => {
         const result = RuleHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.HexFloatLiteral);
+        expect(result?.type).toBe(RuleName.HexFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -320,7 +320,7 @@ describe("RuleHexFloatLiteral", () => {
         const result = RuleHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.HexFloatLiteral);
+        expect(result?.type).toBe(RuleName.HexFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -349,7 +349,7 @@ describe("RuleHexFloatLiteral", () => {
         const result = RuleHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.HexFloatLiteral);
+        expect(result?.type).toBe(RuleName.HexFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -372,7 +372,7 @@ describe("RuleHexFloatLiteral", () => {
         const result = RuleHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.HexFloatLiteral);
+        expect(result?.type).toBe(RuleName.HexFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -394,7 +394,7 @@ describe("RuleHexFloatLiteral", () => {
         const result = RuleHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.HexFloatLiteral);
+        expect(result?.type).toBe(RuleName.HexFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -425,7 +425,7 @@ describe("RuleHexFloatLiteral", () => {
         const result = RuleHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.HexFloatLiteral);
+        expect(result?.type).toBe(RuleName.HexFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -449,7 +449,7 @@ describe("RuleHexFloatLiteral", () => {
         const result = RuleHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.HexFloatLiteral);
+        expect(result?.type).toBe(RuleName.HexFloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -485,7 +485,7 @@ describe("RuleHexFloatLiteral", () => {
       const result = RuleHexFloatLiteral({ source, indexAt: 4 });
 
       expect(result).toBeDefined();
-      expect(result?.rule).toBe(RuleName.HexFloatLiteral);
+      expect(result?.type).toBe(RuleName.HexFloatLiteral);
       expect(result?.from).toBe(4);
       expect(result?.to).toBe(11);
     });
@@ -495,7 +495,7 @@ describe("RuleHexFloatLiteral", () => {
       const result = RuleHexFloatLiteral({ source, indexAt: 0 });
 
       expect(result).toBeDefined();
-      expect(result?.rule).toBe(RuleName.HexFloatLiteral);
+      expect(result?.type).toBe(RuleName.HexFloatLiteral);
       expect(result?.from).toBe(0);
       expect(result?.to).toBe(7);
     });
@@ -516,7 +516,7 @@ describe("RuleFloatLiteral", () => {
         const result = RuleFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.FloatLiteral);
+        expect(result?.type).toBe(RuleName.FloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -537,7 +537,7 @@ describe("RuleFloatLiteral", () => {
         const result = RuleFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.rule).toBe(RuleName.FloatLiteral);
+        expect(result?.type).toBe(RuleName.FloatLiteral);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });

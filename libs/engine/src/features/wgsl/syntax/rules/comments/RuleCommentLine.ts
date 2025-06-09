@@ -1,5 +1,5 @@
 import { isProgramEnd, isToken } from "../../../tokens.ts";
-import { createRuleMatcher } from "../../MatchRule.ts";
+import { createMatch } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleName } from "../../RuleRegistry.ts";
 import { RuleLineBreak } from "../blanks/RuleLineBreak.ts";
@@ -16,21 +16,18 @@ ${RuleName.CommentLine} :
 `
 >;
 
-export const RuleCommentLine = createRuleMatcher(
-  RuleName.CommentLine,
-  ({ source, indexAt }) => {
-    if (isToken(source, indexAt, TokenCommentLine.LineStart)) {
-      let i = indexAt + 2;
+export const RuleCommentLine = createMatch(RuleName.CommentLine, ({ source, indexAt }) => {
+  if (isToken(source, indexAt, TokenCommentLine.LineStart)) {
+    let endAt = indexAt + 2;
 
-      const context = { source, indexAt: i };
-      while (!isProgramEnd(source, i) && !RuleLineBreak(context)) {
-        ++i;
-        context.indexAt = i;
-      }
-
-      return { from: indexAt, to: i };
+    const context = { source, indexAt: endAt };
+    while (!isProgramEnd(source, endAt) && !RuleLineBreak(context)) {
+      ++endAt;
+      context.indexAt = endAt;
     }
 
-    return undefined;
-  },
-);
+    return endAt - indexAt;
+  }
+
+  return undefined;
+});

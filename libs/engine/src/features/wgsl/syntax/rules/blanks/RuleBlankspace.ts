@@ -1,4 +1,4 @@
-import { createLongestTokenMatcher } from "../../MatchRule.ts";
+import { createMatchToken } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleName } from "../../RuleRegistry.ts";
 export const enum TokenBlankspace {
@@ -57,7 +57,4 @@ ${RuleName.BlankspaceToken} :
 `
 >;
 
-export const RuleBlankspace = createLongestTokenMatcher(
-  RuleName.BlankspaceToken,
-  blankspaces,
-);
+export const RuleBlankspace = createMatchToken(RuleName.BlankspaceToken, blankspaces);

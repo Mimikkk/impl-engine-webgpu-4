@@ -1,6 +1,7 @@
-import { createLongestTokenMatcher } from "../../MatchRule.ts";
+import { createMatchToken } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleName } from "../../RuleRegistry.ts";
+
 export const enum TokenSyntactic {
   // Text: &
   Ampersand = "\u0026",
@@ -225,7 +226,4 @@ ${RuleName.SyntacticToken} :
 `
 >;
 
-export const RuleSyntacticToken = createLongestTokenMatcher(
-  RuleName.SyntacticToken,
-  keywords,
-);
+export const RuleSyntacticToken = createMatchToken(RuleName.SyntacticToken, keywords);

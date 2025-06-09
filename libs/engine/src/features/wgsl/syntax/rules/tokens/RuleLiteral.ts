@@ -1,4 +1,4 @@
-import { composeLongestRuleMatcher } from "../../MatchRule.ts";
+import { composeAlternatives } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleName } from "../../RuleRegistry.ts";
 import { RuleLiteralBool } from "./literals/RuleLiteralBool.ts";
@@ -14,7 +14,8 @@ ${RuleName.Literal} :
 `
 >;
 
-export const RuleLiteral = composeLongestRuleMatcher(
-  RuleName.Literal,
-  [RuleIntLiteral, RuleFloatLiteral, RuleLiteralBool],
-);
+export const RuleLiteral = composeAlternatives(RuleName.Literal, [
+  RuleIntLiteral,
+  RuleFloatLiteral,
+  RuleLiteralBool,
+]);

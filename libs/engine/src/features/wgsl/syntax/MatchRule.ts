@@ -1,142 +1,97 @@
 import { isToken } from "../tokens.ts";
 import type { RuleName } from "./RuleRegistry.ts";
 
-export interface RuleMatchResult<T extends RuleName, A extends RuleMatch<T, A> | undefined = undefined> {
-  rule: T;
-  child: A;
+export interface MatchRuleResult<R extends RuleName, A extends MatchRule<any, any> | undefined> {
+  type: R;
+  subtype: A;
   from: number;
   to: number;
-  length: number;
+  size: number;
 }
 
-export interface MatchContext {
+export interface MatchRuleContext {
   source: string;
   indexAt: number;
 }
 
-export interface MatchResult {
-  from: number;
-  to: number;
-}
-
 export interface Match {
-  (context: MatchContext): MatchResult | undefined;
+  (context: MatchRuleContext): number | undefined;
 }
 
-export interface RuleMatch<T extends RuleName, A extends RuleMatch<T, A> | undefined = undefined> {
-  (context: MatchContext): RuleMatchResult<T, A> | undefined;
+export interface MatchRule<R extends RuleName, A extends MatchRule<any, any> | undefined> {
+  (context: MatchRuleContext): MatchRuleResult<R, A> | undefined;
 }
 
-export interface MatchComposeStrategy<T extends RuleName, A extends RuleMatch<T, A> | undefined> {
-  (best: RuleMatchResult<T, A>, current: RuleMatchResult<T, A>): boolean;
-}
+const createMatchResult = <R extends RuleName, A extends MatchRule<any, any> | undefined>(
+  type: R,
+  subtype: A,
+  from: number,
+  size: number,
+): MatchRuleResult<R, A> => ({ type, subtype, from, to: from + size, size });
 
-export const createComposeStrategy = <T extends RuleName, A extends RuleMatch<T, A> | undefined>(
-  strategy: MatchComposeStrategy<T, A>,
-): MatchComposeStrategy<T, A> => strategy;
-
-const createMatchResult = <R extends RuleName, A extends RuleMatch<R, A> | undefined>(
-  name: R,
-  child: A,
-  { from, to }: MatchResult,
-): RuleMatchResult<R, A> => ({
-  rule: name,
-  child,
-  from,
-  to,
-  length: to - from,
-});
-
-export const createRuleMatcher = <T extends RuleName>(
-  name: T,
-  match: Match,
-): RuleMatch<T> =>
-(context) => {
+export const createMatch = <R extends RuleName>(name: R, match: Match): MatchRule<R, undefined> => (context) => {
   const result = match(context);
-  return result ? createMatchResult(name, undefined, result) : undefined;
+
+  return result ? createMatchResult(name, undefined, context.indexAt, result) : undefined;
 };
 
-export const composeRuleAlternatives = <T extends RuleName, A extends RuleMatch<T, A>>(
-  name: T,
-  rules: A[],
-  strategy: MatchComposeStrategy<T, A>,
-): RuleMatch<T, A> =>
-(context) => {
-  let best: RuleMatchResult<T, A> | undefined;
-  let bestrule: A | undefined;
+export const composeAlternatives =
+  <R extends RuleName, A extends MatchRule<any, any>>(name: R, alternatives: A[]): MatchRule<R, A> => (context) => {
+    let bestSize: number | undefined;
+    let bestAlternative: A | undefined;
 
-  for (const rule of rules) {
-    const candidate = rule(context) as unknown as RuleMatchResult<T, A>;
+    for (let i = 0; i < alternatives.length; ++i) {
+      const alternative = alternatives[i];
+      const candidate = alternative(context);
 
-    if (candidate) {
-      if (!best || strategy(best, candidate)) {
-        best = candidate;
-        bestrule = rule;
+      if (!candidate) continue;
+
+      if (bestSize === undefined || bestSize < candidate.size) {
+        bestSize = candidate.size;
+        bestAlternative = alternative;
       }
     }
-  }
 
-  return best ? createMatchResult(name, bestrule!, best) : undefined;
-};
+    return bestSize === undefined || bestAlternative === undefined
+      ? undefined
+      : createMatchResult(name, bestAlternative, context.indexAt, bestSize);
+  };
 
-const LongestStrategy = createComposeStrategy((a, b) => a.length < b.length);
-export const composeLongestRuleMatcher = <R extends RuleName, A extends RuleMatch<any, any>>(
-  name: R,
-  alternatives: A[],
-): RuleMatch<R, A> => composeRuleAlternatives(name, alternatives, LongestStrategy);
+export const createMatchRegex = <R extends RuleName>(name: R, regexes: RegExp[]) =>
+  createMatch(name, ({ source, indexAt }) => {
+    let bestSize: number | undefined;
 
-export const createLongestRegexRuleMatcher = <R extends RuleName>(name: R, regexes: RegExp[]) =>
-  createRuleMatcher(
-    name,
-    ({ source, indexAt }) => {
-      let longestMatch = -1;
+    for (let i = 0; i < regexes.length; ++i) {
+      const regex = regexes[i];
+      regex.lastIndex = indexAt;
 
-      for (let i = 0; i < regexes.length; ++i) {
-        const regex = regexes[i];
-        regex.lastIndex = indexAt;
+      const match = regex.exec(source);
 
-        const match = regex.exec(source);
+      if (!match) continue;
+      const length = match[0].length;
 
-        if (match) {
-          const length = match[0].length;
-
-          if (longestMatch < length) {
-            longestMatch = length;
-          }
-        }
+      if (bestSize === undefined || bestSize < length) {
+        bestSize = length;
       }
+    }
 
-      if (longestMatch > 0) {
-        return { from: indexAt, to: indexAt + longestMatch };
+    return bestSize;
+  });
+
+export const createMatchToken = <R extends RuleName>(name: R, tokens: string[]) =>
+  createMatch(name, ({ source, indexAt }) => {
+    let bestSize: number | undefined;
+
+    for (let i = 0; i < tokens.length; ++i) {
+      const token = tokens[i];
+
+      if (!isToken(source, indexAt, token)) continue;
+      const size = token.length;
+
+      if (bestSize === undefined || bestSize < size) {
+        bestSize = size;
       }
+    }
 
-      return undefined;
-    },
-  );
-
-export const createLongestTokenMatcher = (
-  name: RuleName,
-  tokens: string[],
-) =>
-  createRuleMatcher(
-    name,
-    ({ source, indexAt }) => {
-      let longest = -1;
-
-      for (let i = 0; i < tokens.length; i++) {
-        const token = tokens[i];
-
-        if (isToken(source, indexAt, token)) {
-          if (token.length > longest) {
-            longest = token.length;
-          }
-        }
-      }
-
-      if (longest > 0) {
-        return { from: indexAt, to: indexAt + longest };
-      }
-
-      return undefined;
-    },
-  );
+    return bestSize;
+  });

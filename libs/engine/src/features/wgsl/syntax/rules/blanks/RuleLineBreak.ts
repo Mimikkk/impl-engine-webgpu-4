@@ -1,4 +1,4 @@
-import { createLongestTokenMatcher } from "../../MatchRule.ts";
+import { createMatchToken } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleName } from "../../RuleRegistry.ts";
 
@@ -46,7 +46,4 @@ ${RuleName.LineBreakToken} :
 `
 >;
 
-export const RuleLineBreak = createLongestTokenMatcher(
-  RuleName.LineBreakToken,
-  linebreaks,
-);
+export const RuleLineBreak = createMatchToken(RuleName.LineBreakToken, linebreaks);

@@ -1,5 +1,5 @@
 import { isProgramEnd, isToken } from "../../../tokens.ts";
-import { createRuleMatcher } from "../../MatchRule.ts";
+import { createMatch } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleName } from "../../RuleRegistry.ts";
 
@@ -18,34 +18,29 @@ ${RuleName.CommentBlock} :
 `
 >;
 
-export const RuleCommentBlock = createRuleMatcher(
-  RuleName.CommentBlock,
-  (context) => {
-    const { source, indexAt } = context;
+export const RuleCommentBlock = createMatch(RuleName.CommentBlock, ({ source, indexAt }) => {
+  if (isToken(source, indexAt, TokenCommentBlock.BlockStart)) {
+    let endAt = indexAt + 2;
+    let depth = 1;
 
-    if (isToken(source, indexAt, TokenCommentBlock.BlockStart)) {
-      let i = indexAt + 2;
-      let depth = 1;
-
-      while (!isProgramEnd(source, i) && depth > 0) {
-        if (isToken(source, i, TokenCommentBlock.BlockStart)) {
-          ++depth;
-          i += 2;
-          continue;
-        }
-
-        if (isToken(source, i, TokenCommentBlock.BlockEnd)) {
-          --depth;
-          i += 2;
-          continue;
-        }
-
-        ++i;
+    while (!isProgramEnd(source, endAt) && depth > 0) {
+      if (isToken(source, endAt, TokenCommentBlock.BlockStart)) {
+        ++depth;
+        endAt += 2;
+        continue;
       }
 
-      return { from: indexAt, to: i };
+      if (isToken(source, endAt, TokenCommentBlock.BlockEnd)) {
+        --depth;
+        endAt += 2;
+        continue;
+      }
+
+      ++endAt;
     }
 
-    return undefined;
-  },
-);
+    return endAt - indexAt;
+  }
+
+  return undefined;
+});

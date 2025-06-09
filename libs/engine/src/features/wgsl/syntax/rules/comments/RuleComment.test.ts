@@ -1,6 +1,6 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
-import type { RuleMatch } from "../../MatchRule.ts";
+import type { MatchRule } from "../../MatchRule.ts";
 import { RuleName } from "../../RuleRegistry.ts";
 import { RuleComment } from "./RuleComment.ts";
 import { RuleCommentBlock } from "./RuleCommentBlock.ts";
@@ -12,17 +12,17 @@ const expectComment = (
     expected: string;
     indexAt: number;
     rule: RuleName;
-    child: RuleMatch<RuleName, any>;
+    child: MatchRule<RuleName, any>;
   },
 ) => {
   const result = RuleComment({ source, indexAt });
 
   expect(result).toBeDefined();
-  expect(result?.rule).toBe(rule);
+  expect(result?.type).toBe(rule);
   expect(result?.from).toBe(0);
   expect(result?.to).toBe(expected.length);
   expect(source.slice(result?.from, result?.to)).toBe(expected);
-  expect(result?.child).toBe(child);
+  expect(result?.subtype).toBe(child);
 };
 
 describe("RuleComment", () => {

@@ -1,4 +1,4 @@
-import { composeLongestRuleMatcher } from "../../MatchRule.ts";
+import { composeAlternatives } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleName } from "../../RuleRegistry.ts";
 import { RuleCommentBlock } from "./RuleCommentBlock.ts";
@@ -12,7 +12,7 @@ ${RuleName.Comment} :
 `
 >;
 
-export const RuleComment = composeLongestRuleMatcher(
-  RuleName.Comment,
-  [RuleCommentLine, RuleCommentBlock],
-);
+export const RuleComment = composeAlternatives(RuleName.Comment, [
+  RuleCommentLine,
+  RuleCommentBlock,
+]);
