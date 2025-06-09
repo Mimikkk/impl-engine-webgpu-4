@@ -174,7 +174,7 @@ const keywords = [
 
 export type SyntacticToken = ParseRuleString<
   `
-${RuleName.SyntacticToken} :
+${RuleName.Syntactic} :
 | '${TokenSyntactic.Ampersand}'
 | '${TokenSyntactic.AmpersandAmpersand}'
 | '${TokenSyntactic.Arrow}'
@@ -226,4 +226,4 @@ ${RuleName.SyntacticToken} :
 `
 >;
 
-export const RuleSyntacticToken = createMatchToken(RuleName.SyntacticToken, keywords);
+export const RuleSyntacticToken = createMatchToken(RuleName.Syntactic, keywords);

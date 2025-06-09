@@ -4,7 +4,7 @@ import { RuleName } from "../../RuleRegistry.ts";
 import { RuleCommentBlock } from "./RuleCommentBlock.ts";
 import { RuleCommentLine } from "./RuleCommentLine.ts";
 
-export type CommentLine = ParseRuleString<
+export type Comment = ParseRuleString<
   `
 ${RuleName.Comment} :
 | ${RuleName.CommentLine}

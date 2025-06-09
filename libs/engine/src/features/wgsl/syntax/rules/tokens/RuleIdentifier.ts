@@ -8,7 +8,7 @@ import { reservedWords } from "./RuleReservedWord.ts";
 export type Identifier = ParseRuleString<
   `
 ${RuleName.Identifier} :
-| ${RuleName.IdentifierPattern}
+| ${RuleName.IdentifierPattern} ${RuleName.DisambiguateTemplate}
 `
 >;
 

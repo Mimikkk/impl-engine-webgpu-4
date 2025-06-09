@@ -9,7 +9,7 @@ export const enum TokenLiteralBool {
 
 export type LiteralBool = ParseRuleString<
   `
-${RuleName.BoolLiteral} :
+${RuleName.LiteralBool} :
 | '${TokenLiteralBool.True}'
 | '${TokenLiteralBool.False}'
 `
@@ -17,4 +17,4 @@ ${RuleName.BoolLiteral} :
 
 const booleans = [TokenLiteralBool.True, TokenLiteralBool.False];
 
-export const RuleLiteralBool = createMatchToken(RuleName.BoolLiteral, booleans);
+export const RuleLiteralBool = createMatchToken(RuleName.LiteralBool, booleans);

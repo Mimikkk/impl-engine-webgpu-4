@@ -8,9 +8,9 @@ import { RuleIntLiteral } from "./literals/RuleLiteralInt.ts";
 export type Literal = ParseRuleString<
   `
 ${RuleName.Literal} :
-| ${RuleName.IntLiteral}
-| ${RuleName.FloatLiteral}
-| ${RuleName.BoolLiteral}
+| ${RuleName.LiteralInt}
+| ${RuleName.LiteralFloat}
+| ${RuleName.LiteralBool}
 `
 >;
 

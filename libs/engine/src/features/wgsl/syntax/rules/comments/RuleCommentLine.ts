@@ -2,7 +2,7 @@ import { isProgramEnd, isToken } from "../../../tokens.ts";
 import { createMatch } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleName } from "../../RuleRegistry.ts";
-import { RuleLineBreak } from "../blanks/RuleLineBreak.ts";
+import { RuleLineBreak } from "../tokens/RuleLineBreak.ts";
 
 const enum TokenCommentLine {
   // Text: "//"
@@ -12,7 +12,7 @@ export type CommentLine = ParseRuleString<
   `
 ${RuleName.CommentLine} :
 | '${TokenCommentLine.LineStart}' (${RuleName.Any}).* ${RuleName.ProgramEnd}
-| '${TokenCommentLine.LineStart}' (${RuleName.Any}).* ${RuleName.LineBreakToken}
+| '${TokenCommentLine.LineStart}' (${RuleName.Any}).* ${RuleName.LineBreak}
 `
 >;
 

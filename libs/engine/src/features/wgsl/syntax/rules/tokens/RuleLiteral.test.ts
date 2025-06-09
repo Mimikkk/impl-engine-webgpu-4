@@ -8,7 +8,7 @@ describe("RuleLiteralBool", () => {
     const result = RuleLiteralBool({ source: "true", indexAt: 0 });
 
     expect(result).toBeDefined();
-    expect(result?.type).toBe(RuleName.BoolLiteral);
+    expect(result?.type).toBe(RuleName.LiteralBool);
     expect(result?.from).toBe(0);
     expect(result?.to).toBe(4);
   });
@@ -17,7 +17,7 @@ describe("RuleLiteralBool", () => {
     const result = RuleLiteralBool({ source: "false", indexAt: 0 });
 
     expect(result).toBeDefined();
-    expect(result?.type).toBe(RuleName.BoolLiteral);
+    expect(result?.type).toBe(RuleName.LiteralBool);
     expect(result?.from).toBe(0);
     expect(result?.to).toBe(5);
   });

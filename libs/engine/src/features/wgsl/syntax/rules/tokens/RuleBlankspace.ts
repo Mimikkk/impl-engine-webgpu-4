@@ -42,7 +42,7 @@ const blankspaces = [
 
 export type BlankspaceToken = ParseRuleString<
   `
-${RuleName.BlankspaceToken} :
+${RuleName.Blankspace} :
 | '${TokenBlankspace.Space}'
 | '${TokenBlankspace.HorizontalTab}'
 | '${TokenBlankspace.LineFeed}'
@@ -57,4 +57,4 @@ ${RuleName.BlankspaceToken} :
 `
 >;
 
-export const RuleBlankspace = createMatchToken(RuleName.BlankspaceToken, blankspaces);
+export const RuleBlankspace = createMatchToken(RuleName.Blankspace, blankspaces);

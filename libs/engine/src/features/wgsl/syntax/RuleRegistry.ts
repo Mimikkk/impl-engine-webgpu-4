@@ -1,10 +1,22 @@
-import type { BlankspaceToken } from "./rules/blanks/RuleBlankspace.ts";
-import type { LineBreakToken } from "./rules/blanks/RuleLineBreak.ts";
+import type { BlankspaceToken } from "./rules/tokens/RuleBlankspace.ts";
+import type { LineBreakToken } from "./rules/tokens/RuleLineBreak.ts";
+import type { Comment } from "./rules/comments/RuleComment.ts";
 import type { CommentBlock } from "./rules/comments/RuleCommentBlock.ts";
 import type { CommentLine } from "./rules/comments/RuleCommentLine.ts";
 import type { LiteralBool } from "./rules/tokens/literals/RuleLiteralBool.ts";
 import type { LiteralDecimalFloat, LiteralFloat, LiteralFloatHex } from "./rules/tokens/literals/RuleLiteralFloat.ts";
 import type { LiteralInt, LiteralIntDecimal, LiteralIntHex } from "./rules/tokens/literals/RuleLiteralInt.ts";
+import type { AttributeName } from "./rules/tokens/names/RuleAttributeName.ts";
+import type { BuiltinName } from "./rules/tokens/names/RuleBuiltinName.ts";
+import { ContextDependantName } from "./rules/tokens/names/RuleContextDependantName.ts";
+import type { DiagnosticSeverityName } from "./rules/tokens/names/RuleDiagnosticSeverityName.ts";
+import type { DiagnosticName } from "./rules/tokens/names/RuleDiangosticName.ts";
+import { EnableExtensionName } from "./rules/tokens/names/RuleEnableExtensionName.ts";
+import { InterpolationSamplingName } from "./rules/tokens/names/RuleInterpolationSamplingName.ts";
+import { InterpolationTypeName } from "./rules/tokens/names/RuleInterpolationTypeName.ts";
+import { LanguageExtensionName } from "./rules/tokens/names/RuleLanguageExtensionName.ts";
+import { SwizzleName } from "./rules/tokens/names/RuleSwizzleName.ts";
+import type { Identifier, IdentifierPattern } from "./rules/tokens/RuleIdentifier.ts";
 import type { Keyword } from "./rules/tokens/RuleKeyword.ts";
 import type { Literal } from "./rules/tokens/RuleLiteral.ts";
 import type { ReservedWord } from "./rules/tokens/RuleReservedWord.ts";
@@ -15,44 +27,84 @@ export type ProgramEnd = Rule<{ name: RuleName.ProgramEnd; alternatives: [] }>;
 export type Any = Rule<{ name: RuleName.Any; alternatives: [] }>;
 
 export const enum RuleName {
-  BoolLiteral = "bool_literal",
-  DecimalIntLiteral = "decimal_int_literal",
-  HexIntLiteral = "hex_int_literal",
-  IntLiteral = "int_literal",
-  DecimalFloatLiteral = "decimal_float_literal",
-  HexFloatLiteral = "hex_float_literal",
-  FloatLiteral = "float_literal",
+  // Tokens
+  /// Literals
   Literal = "literal",
+  LiteralInt = "int_literal",
+  LiteralIntDecimal = "decimal_int_literal",
+  LiteralIntHex = "hex_int_literal",
+  LiteralFloat = "float_literal",
+  LiteralFloatDecimal = "decimal_float_literal",
+  LiteralFloatHex = "hex_float_literal",
+  LiteralBool = "bool_literal",
+  /// Keywords
   Keyword = "keyword",
   ReservedWord = "_reserved",
-  SyntacticToken = "_syntactic",
-  BlankspaceToken = "_blankspace",
-  LineBreakToken = "_line_break",
+  Syntactic = "_syntactic",
+  Blankspace = "_blankspace",
+  LineBreak = "_line_break",
+  /// Indetifiers
+  Identifier = "ident",
+  IdentifierPattern = "ident_pattern_token",
+  /// Context dependent names
+  ContextDependantName = "context_dependant_name",
+  AttributeName = "attribute_name",
+  BuiltinName = "builtin_name",
+  DiagnosticName = "diagnostic_name",
+  DiagnosticSeverityName = "diagnostic_severity_name",
+  EnableExtensionName = "enable_extension_name",
+  InterpolationTypeName = "interpolation_type_name",
+  InterpolationSamplingName = "interpolation_sampling_name",
+  LanguageExtensionName = "language_extension_name",
+  SwizzleName = "swizzle_name",
+  // Comments
   Comment = "comment",
   CommentLine = "comment_line",
   CommentBlock = "comment_block",
+  // Special
   ProgramEnd = "program_end",
   Any = "_any",
-  Identifier = "_ident",
-  IdentifierPattern = "ident_pattern_token",
+  // Templates
+  DisambiguateTemplate = "_disambiguate_template",
 }
 
 export type RuleRegistry = {
+  // Tokens
+  /// Literals
+  literal: Literal;
   bool_literal: LiteralBool;
+  int_literal: LiteralInt;
   decimal_int_literal: LiteralIntDecimal;
   hex_int_literal: LiteralIntHex;
-  int_literal: LiteralInt;
+  float_literal: LiteralFloat;
   decimal_float_literal: LiteralDecimalFloat;
   hex_float_literal: LiteralFloatHex;
-  float_literal: LiteralFloat;
-  literal: Literal;
+  /// Keywords
   keyword: Keyword;
   _reserved: ReservedWord;
   _syntactic: SyntacticToken;
   _blankspace: BlankspaceToken;
   _line_break: LineBreakToken;
+  /// Indetifiers
+  ident: Identifier;
+  ident_pattern_token: IdentifierPattern;
+  /// Context dependent names
+  context_dependant_name: ContextDependantName;
+  attribute_name: AttributeName;
+  builtin_name: BuiltinName;
+  diagnostic_name: DiagnosticName;
+  diagnostic_severity_name: DiagnosticSeverityName;
+  enable_extension_name: EnableExtensionName;
+  interpolation_type_name: InterpolationTypeName;
+  language_extension_name: LanguageExtensionName;
+  interpolation_sampling_name: InterpolationSamplingName;
+  swizzle_name: SwizzleName;
+  /// Comments
+  comment: Comment;
   comment_line: CommentLine;
   comment_block: CommentBlock;
+  /// Special
   program_end: ProgramEnd;
   _any: Any;
+  // Templates
 };

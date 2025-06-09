@@ -34,7 +34,7 @@ const linebreaks = [
 
 export type LineBreakToken = ParseRuleString<
   `
-${RuleName.LineBreakToken} :
+${RuleName.LineBreak} :
 | '${TokenLineBreak.LineFeed}'
 | '${TokenLineBreak.VerticalTab}'
 | '${TokenLineBreak.FormFeed}'
@@ -46,4 +46,4 @@ ${RuleName.LineBreakToken} :
 `
 >;
 
-export const RuleLineBreak = createMatchToken(RuleName.LineBreakToken, linebreaks);
+export const RuleLineBreak = createMatchToken(RuleName.LineBreak, linebreaks);
