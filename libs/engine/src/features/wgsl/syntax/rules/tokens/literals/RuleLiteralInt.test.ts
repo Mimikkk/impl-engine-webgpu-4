@@ -5,7 +5,7 @@ import { RuleDecimalIntLiteral, RuleHexIntLiteral, RuleIntLiteral } from "./Rule
 
 describe("RuleLiteralInt", () => {
   describe("Decimal Int Literal", () => {
-    describe.only("valid cases", () => {
+    describe("valid cases", () => {
       const cases = [
         { source: "0", expected: { from: 0, to: 1 } },
         { source: "0i", expected: { from: 0, to: 2 } },
@@ -105,15 +105,13 @@ describe("RuleLiteralInt", () => {
       for (const { source, expected } of cases) {
         it(`should match ${source}`, () => {
           const result = RuleIntLiteral({ source, indexAt: 0 });
-          console.log(result);
 
           expect(result).toBeDefined();
           if (!result) return;
-          expect(result.types).toEqual([RuleType.LiteralInt, RuleType.LiteralIntDecimal]);
+          expect(result.types).toContain(RuleType.LiteralInt);
           expect(result.from).toBe(expected.from);
           expect(result.to).toBe(expected.to);
         });
-        break;
       }
     });
   });

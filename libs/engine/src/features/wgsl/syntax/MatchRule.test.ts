@@ -111,8 +111,8 @@ describe("MatchRule", () => {
     });
   });
 
-  describe.only("composeAlternatives", () => {
-    it.only("should match using any of the alternative rules", () => {
+  describe("composeAlternatives", () => {
+    it("should match using any of the alternative rules", () => {
       const rule1 = createMatch(RuleType.B, ({ source, indexAt }) => {
         if (source[indexAt] === "1") return 1;
         return undefined;
