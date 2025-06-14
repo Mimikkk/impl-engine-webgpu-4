@@ -23,7 +23,7 @@ const regex = /([_\p{XID_Start}][\p{XID_Continue}]+)|([\p{XID_Start}])/uy;
 
 const invalid = [...keywords, ...reservedWords, "_", "__"];
 
-export const RuleIdentifierPattern = createMatch(RuleName.IdentifierPattern, ({ source, indexAt }) => {
+export const RuleIdentifier = createMatch(RuleName.IdentifierPattern, ({ source, indexAt }) => {
   regex.lastIndex = indexAt;
   const match = regex.exec(source);
 
