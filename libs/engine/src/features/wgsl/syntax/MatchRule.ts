@@ -1,9 +1,7 @@
 import { isToken } from "../tokens.ts";
-import type { RuleName } from "./RuleRegistry.ts";
 
-export interface MatchRuleResult<R extends RuleName, A extends MatchRule<any, any> | undefined> {
-  type: R;
-  subtype: A;
+export interface MatchRuleResult<Ts extends string[]> {
+  types: Ts;
   from: number;
   to: number;
   size: number;
@@ -12,29 +10,26 @@ export interface MatchRuleResult<R extends RuleName, A extends MatchRule<any, an
 export interface MatchRuleContext {
   source: string;
   indexAt: number;
-  match?: MatchRuleResult<any, any>;
+  match?: MatchRuleResult<any>;
 }
 
 export interface Match {
   (context: MatchRuleContext): number | undefined;
 }
 
-export interface MatchRule<R extends RuleName, A extends MatchRule<any, any> | undefined> {
-  rule: R;
-  (context: MatchRuleContext): MatchRuleResult<R, A> | undefined;
+export interface MatchRule<T extends string[]> {
+  (context: MatchRuleContext): MatchRuleResult<T> | undefined;
   matches(context: MatchRuleContext): boolean;
   advance(context: MatchRuleContext): number | undefined;
 }
 
-const createMatchResult = <R extends RuleName, A extends MatchRule<any, any> | undefined>(
-  type: R,
-  subtype: A,
+const createMatchResult = <Ts extends string[]>(
+  types: Ts,
   from: number,
   size: number,
-  into: MatchRuleResult<R, A> = { type, subtype, from, to: from + size, size },
-): MatchRuleResult<R, A> => {
-  into.type = type;
-  into.subtype = subtype;
+  into: MatchRuleResult<Ts> = { types, from, to: from + size, size },
+): MatchRuleResult<Ts> => {
+  into.types = types;
   into.from = from;
   into.to = from + size;
   into.size = size;
@@ -42,16 +37,15 @@ const createMatchResult = <R extends RuleName, A extends MatchRule<any, any> | u
   return into;
 };
 
-export const createMatch = <R extends RuleName>(name: R, match: Match): MatchRule<R, undefined> => {
-  const rule: MatchRule<R, undefined> = (context) => {
+export const createMatch = <T extends string>(type: T, match: Match): MatchRule<[T]> => {
+  const rule: MatchRule<[T]> = (context) => {
     const size = match(context);
 
     if (size === undefined) return;
 
-    return createMatchResult(name, undefined, context.indexAt, size, context.match);
+    return createMatchResult([type], context.indexAt, size, context.match);
   };
 
-  rule.rule = name;
   rule.matches = (context) => match(context) !== undefined;
   rule.advance = (context) => {
     const size = match(context);
@@ -62,13 +56,16 @@ export const createMatch = <R extends RuleName>(name: R, match: Match): MatchRul
   return rule;
 };
 
-export const composeAlternatives = <R extends RuleName, A extends MatchRule<any, any>>(
+type InferRuleName<T> = T extends MatchRule<infer R> ? R : never;
+type InferRuleNames<T extends any[]> = T extends [infer R, ...infer RA] ? [InferRuleName<R>, ...InferRuleNames<RA>]
+  : [];
+
+export const composeAlternatives = <R extends string, const A extends MatchRule<any>[]>(
   name: R,
-  alternatives: A[],
-): MatchRule<R, A> => {
-  const rule: MatchRule<R, A> = (context) => {
-    let bestCandidate: MatchRuleResult<R, A> | undefined;
-    let bestAlternative: A | undefined;
+  alternatives: A,
+): MatchRule<[R, ...InferRuleNames<A>[number]]> => {
+  const rule: MatchRule<[R, ...InferRuleNames<A>]> = (context) => {
+    let best: MatchRuleResult<InferRuleNames<A>> | undefined;
 
     for (let i = 0; i < alternatives.length; ++i) {
       const alternative = alternatives[i];
@@ -76,19 +73,16 @@ export const composeAlternatives = <R extends RuleName, A extends MatchRule<any,
 
       if (!candidate) continue;
 
-      if (bestCandidate === undefined || bestCandidate.size < candidate.size) {
-        bestCandidate = candidate;
-        bestAlternative = alternative;
+      if (best === undefined || best.size < candidate.size) {
+        best = candidate;
       }
     }
 
-    return bestCandidate === undefined
-      ? undefined
-      : createMatchResult(name, bestAlternative, context.indexAt, bestCandidate.size, context.match);
+    return best ? createMatchResult([name, ...best.types], context.indexAt, best.size, context.match) : undefined;
   };
 
-  rule.rule = name;
   rule.matches = (context) => alternatives.some((alternative) => alternative.matches(context));
+
   rule.advance = (context) => {
     let bestSize: number | undefined;
 
@@ -107,7 +101,7 @@ export const composeAlternatives = <R extends RuleName, A extends MatchRule<any,
   return rule;
 };
 
-export const createMatchRegex = <R extends RuleName>(name: R, regexes: RegExp[]) =>
+export const createMatchRegex = <R extends string>(name: R, regexes: RegExp[]) =>
   createMatch(name, ({ source, indexAt }) => {
     let bestSize: number | undefined;
 
@@ -128,7 +122,7 @@ export const createMatchRegex = <R extends RuleName>(name: R, regexes: RegExp[])
     return bestSize;
   });
 
-export const createMatchToken = <R extends RuleName>(name: R, tokens: string[]) =>
+export const createMatchToken = <R extends string>(name: R, tokens: string[]) =>
   createMatch(name, ({ source, indexAt }) => {
     let bestSize: number | undefined;
 

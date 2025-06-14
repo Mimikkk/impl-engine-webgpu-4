@@ -1,10 +1,10 @@
 import { composeAlternatives, createMatchRegex } from "../../../MatchRule.ts";
 import type { ParseRuleString } from "../../../ParseSyntax.ts";
-import { RuleName } from "../../../RuleRegistry.ts";
+import { RuleType } from "../../../RuleRegistry.ts";
 
 export type LiteralDecimalFloat = ParseRuleString<
   `
-${RuleName.LiteralFloatDecimal} :
+${RuleType.LiteralFloatDecimal} :
 | '/0[fh]/'
 | '/[1-9][0-9]*[fh]/'
 | '/[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?[fh]?/'
@@ -13,7 +13,7 @@ ${RuleName.LiteralFloatDecimal} :
 `
 >;
 
-export const RuleDecimalFloatLiteral = createMatchRegex(RuleName.LiteralFloatDecimal, [
+export const RuleDecimalFloatLiteral = createMatchRegex(RuleType.LiteralFloatDecimal, [
   /0[fh]/y,
   /[1-9][0-9]*[fh]/y,
   /[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?[fh]?/y,
@@ -23,14 +23,14 @@ export const RuleDecimalFloatLiteral = createMatchRegex(RuleName.LiteralFloatDec
 
 export type LiteralFloatHex = ParseRuleString<
   `
-${RuleName.LiteralFloatHex} :
+${RuleType.LiteralFloatHex} :
 | '/0[xX][0-9a-fA-F]*\.[0-9a-fA-F]+([pP][+-]?[0-9]+[fh]?)?/'
 | '/0[xX][0-9a-fA-F]+\.[0-9a-fA-F]*([pP][+-]?[0-9]+[fh]?)?/'
 | '/0[xX][0-9a-fA-F]+[pP][+-]?[0-9]+[fh]?/'
 `
 >;
 
-export const RuleHexFloatLiteral = createMatchRegex(RuleName.LiteralFloatHex, [
+export const RuleHexFloatLiteral = createMatchRegex(RuleType.LiteralFloatHex, [
   /0[xX][0-9a-fA-F]*\.[0-9a-fA-F]+([pP][+-]?[0-9]+[fh]?)?/y,
   /0[xX][0-9a-fA-F]+\.[0-9a-fA-F]*([pP][+-]?[0-9]+[fh]?)?/y,
   /0[xX][0-9a-fA-F]+[pP][+-]?[0-9]+[fh]?/y,
@@ -38,13 +38,13 @@ export const RuleHexFloatLiteral = createMatchRegex(RuleName.LiteralFloatHex, [
 
 export type LiteralFloat = ParseRuleString<
   `
-${RuleName.LiteralFloat} :
-| ${RuleName.LiteralFloatDecimal}
-| ${RuleName.LiteralFloatHex}
+${RuleType.LiteralFloat} :
+| ${RuleType.LiteralFloatDecimal}
+| ${RuleType.LiteralFloatHex}
 `
 >;
 
-export const RuleFloatLiteral = composeAlternatives(RuleName.LiteralFloat, [
+export const RuleFloatLiteral = composeAlternatives(RuleType.LiteralFloat, [
   RuleDecimalFloatLiteral,
   RuleHexFloatLiteral,
 ]);

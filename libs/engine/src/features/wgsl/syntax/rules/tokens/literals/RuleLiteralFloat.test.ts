@@ -1,6 +1,6 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
-import { RuleName } from "../../../RuleRegistry.ts";
+import { RuleType } from "../../../RuleRegistry.ts";
 import { RuleDecimalFloatLiteral, RuleFloatLiteral, RuleHexFloatLiteral } from "./RuleLiteralFloat.ts";
 
 describe("RuleDecimalFloatLiteral", () => {
@@ -12,12 +12,12 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
+        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatDecimal);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -35,12 +35,12 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
+        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatDecimal);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -64,12 +64,12 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
+        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatDecimal);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -89,12 +89,12 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
+        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatDecimal);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -135,12 +135,12 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
+        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatDecimal);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -159,12 +159,12 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
+        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatDecimal);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -199,12 +199,12 @@ describe("RuleDecimalFloatLiteral", () => {
   describe("Position-based matching", () => {
     it("should match at different positions in source", () => {
       const source = "foo 1.23f bar";
-      const result = RuleDecimalFloatLiteral({ source, indexAt: 4 });
+      const result = RuleDecimalFloatLiteral({ source, indexAt: 4 })!;
 
       expect(result).toBeDefined();
-      expect(result?.type).toBe(RuleName.LiteralFloatDecimal);
-      expect(result?.from).toBe(4);
-      expect(result?.to).toBe(9);
+      expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
+      expect(result.from).toBe(4);
+      expect(result.to).toBe(9);
     });
 
     it("should not match when there are no more characters", () => {
@@ -216,34 +216,34 @@ describe("RuleDecimalFloatLiteral", () => {
 
     it("should handle partial matches correctly", () => {
       const source = "1.23f_suffix";
-      const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
+      const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
 
       expect(result).toBeDefined();
-      expect(result?.type).toBe(RuleName.LiteralFloatDecimal);
-      expect(result?.from).toBe(0);
-      expect(result?.to).toBe(5);
+      expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
+      expect(result.from).toBe(0);
+      expect(result.to).toBe(5);
     });
   });
 
   describe("Longest match selection", () => {
     it("should prefer longer matches when multiple patterns apply", () => {
       const source = "0f";
-      const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
+      const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
 
       expect(result).toBeDefined();
-      expect(result?.type).toBe(RuleName.LiteralFloatDecimal);
-      expect(result?.from).toBe(0);
-      expect(result?.to).toBe(2);
+      expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
+      expect(result.from).toBe(0);
+      expect(result.to).toBe(2);
     });
 
     it("should handle overlapping pattern preferences correctly", () => {
       const source = "123f";
-      const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
+      const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
 
       expect(result).toBeDefined();
-      expect(result?.type).toBe(RuleName.LiteralFloatDecimal);
-      expect(result?.from).toBe(0);
-      expect(result?.to).toBe(4);
+      expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
+      expect(result.from).toBe(0);
+      expect(result.to).toBe(4);
     });
   });
 });
@@ -269,12 +269,12 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 });
+        const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatHex);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloatHex]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -295,12 +295,12 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 });
+        const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatHex);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloatHex]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -320,7 +320,7 @@ describe("RuleHexFloatLiteral", () => {
         const result = RuleHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatHex);
+        expect(result?.types).toEqual([RuleType.LiteralFloatHex]);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -346,12 +346,12 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 });
+        const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatHex);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloatHex]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -372,7 +372,7 @@ describe("RuleHexFloatLiteral", () => {
         const result = RuleHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatHex);
+        expect(result?.types).toEqual([RuleType.LiteralFloatHex]);
         expect(result?.from).toBe(expected.from);
         expect(result?.to).toBe(expected.to);
       });
@@ -391,12 +391,12 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 });
+        const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatHex);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloatHex]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -422,12 +422,12 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 });
+        const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatHex);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloatHex]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -446,12 +446,12 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 });
+        const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloatHex);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloatHex]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -482,22 +482,22 @@ describe("RuleHexFloatLiteral", () => {
   describe("Position-based matching", () => {
     it("should match at different positions in source", () => {
       const source = "foo 0x1.2p3 bar";
-      const result = RuleHexFloatLiteral({ source, indexAt: 4 });
+      const result = RuleHexFloatLiteral({ source, indexAt: 4 })!;
 
       expect(result).toBeDefined();
-      expect(result?.type).toBe(RuleName.LiteralFloatHex);
-      expect(result?.from).toBe(4);
-      expect(result?.to).toBe(11);
+      expect(result.types).toEqual([RuleType.LiteralFloatHex]);
+      expect(result.from).toBe(4);
+      expect(result.to).toBe(11);
     });
 
     it("should handle partial matches correctly", () => {
       const source = "0x1.2p3_suffix";
-      const result = RuleHexFloatLiteral({ source, indexAt: 0 });
+      const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
 
       expect(result).toBeDefined();
-      expect(result?.type).toBe(RuleName.LiteralFloatHex);
-      expect(result?.from).toBe(0);
-      expect(result?.to).toBe(7);
+      expect(result.types).toEqual([RuleType.LiteralFloatHex]);
+      expect(result.from).toBe(0);
+      expect(result.to).toBe(7);
     });
   });
 });
@@ -513,12 +513,12 @@ describe("RuleFloatLiteral", () => {
 
     for (const { source, expected, type } of cases) {
       it(`should match ${type} ${source}`, () => {
-        const result = RuleFloatLiteral({ source, indexAt: 0 });
+        const result = RuleFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloat);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloat, RuleType.LiteralFloatDecimal]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });
@@ -534,12 +534,12 @@ describe("RuleFloatLiteral", () => {
 
     for (const { source, expected, type } of cases) {
       it(`should match ${type} ${source}`, () => {
-        const result = RuleFloatLiteral({ source, indexAt: 0 });
+        const result = RuleFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
-        expect(result?.type).toBe(RuleName.LiteralFloat);
-        expect(result?.from).toBe(expected.from);
-        expect(result?.to).toBe(expected.to);
+        expect(result.types).toEqual([RuleType.LiteralFloat, RuleType.LiteralFloatHex]);
+        expect(result.from).toBe(expected.from);
+        expect(result.to).toBe(expected.to);
       });
     }
   });

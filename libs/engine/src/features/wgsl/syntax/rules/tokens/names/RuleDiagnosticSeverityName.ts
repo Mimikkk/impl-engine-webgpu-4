@@ -1,6 +1,6 @@
 import { createMatchToken } from "../../../MatchRule.ts";
 import type { ParseRuleString } from "../../../ParseSyntax.ts";
-import { RuleName } from "../../../RuleRegistry.ts";
+import { RuleType } from "../../../RuleRegistry.ts";
 
 export const enum TokenDiagnosticSeverityName {
   Error = "error",
@@ -18,7 +18,7 @@ export const diagnosticSeverityNames = [
 
 export type DiagnosticSeverityName = ParseRuleString<
   `
-${RuleName.DiagnosticSeverityName} :
+${RuleType.DiagnosticSeverityName} :
 | '${TokenDiagnosticSeverityName.Error}'
 | '${TokenDiagnosticSeverityName.Warning}'
 | '${TokenDiagnosticSeverityName.Info}'
@@ -26,4 +26,4 @@ ${RuleName.DiagnosticSeverityName} :
 `
 >;
 
-export const RuleDiagnosticSeverityName = createMatchToken(RuleName.DiagnosticSeverityName, diagnosticSeverityNames);
+export const RuleDiagnosticSeverityName = createMatchToken(RuleType.DiagnosticSeverityName, diagnosticSeverityNames);

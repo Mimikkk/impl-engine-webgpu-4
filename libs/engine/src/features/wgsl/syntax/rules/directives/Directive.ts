@@ -1,52 +1,52 @@
 import type { ParseRuleString } from "../../ParseSyntax.ts";
-import type { RuleName } from "../../RuleRegistry.ts";
+import type { RuleType } from "../../RuleRegistry.ts";
 
 export type DirectiveDiagnostic = ParseRuleString<
   `
-${RuleName.DirectiveDiagnostic} :
-| 'diagnostic' ${RuleName.DirectiveDiagnosticControl} ';'
+${RuleType.DirectiveDiagnostic} :
+| 'diagnostic' ${RuleType.DirectiveDiagnosticControl} ';'
 `
 >;
 
 export type DirectiveDiagnosticControl = ParseRuleString<
   `
-${RuleName.DirectiveDiagnosticControl} :
-| '(' ${RuleName.DiagnosticSeverityName} ',' ${RuleName.DiagnosticName} ',' ? ')'
+${RuleType.DirectiveDiagnosticControl} :
+| '(' ${RuleType.DiagnosticSeverityName} ',' ${RuleType.DiagnosticName} ',' ? ')'
 `
 >;
 
 export type DirectiveRequires = ParseRuleString<
   `
-${RuleName.DirectiveRequires} :
-| 'requires' ${RuleName.DirectiveRequiresExtensionList} ';'
+${RuleType.DirectiveRequires} :
+| 'requires' ${RuleType.DirectiveRequiresExtensionList} ';'
 `
 >;
 
 export type DirectiveRequiresExtensionList = ParseRuleString<
   `
-${RuleName.DirectiveRequiresExtensionList} :
-| ${RuleName.DiagnosticName} (','.${RuleName.DiagnosticName}).* (',').?
+${RuleType.DirectiveRequiresExtensionList} :
+| ${RuleType.DiagnosticName} (','.${RuleType.DiagnosticName}).* (',').?
 `
 >;
 
 export type DirectiveEnable = ParseRuleString<
   `
-${RuleName.DirectiveEnable} :
-| 'enable' ${RuleName.DirectiveEnableExtensionList} ';'
+${RuleType.DirectiveEnable} :
+| 'enable' ${RuleType.DirectiveEnableExtensionList} ';'
 `
 >;
 export type DirectiveEnableExtensionList = ParseRuleString<
   `
-${RuleName.DirectiveEnableExtensionList} :
-| ${RuleName.EnableExtensionName} (','.${RuleName.EnableExtensionName}).* (',').?
+${RuleType.DirectiveEnableExtensionList} :
+| ${RuleType.EnableExtensionName} (','.${RuleType.EnableExtensionName}).* (',').?
 `
 >;
 
 export type Directive = ParseRuleString<
   `
-${RuleName.Directive} :
-| ${RuleName.DirectiveDiagnostic}
-| ${RuleName.DirectiveRequires}
-| ${RuleName.DirectiveEnable}
+${RuleType.Directive} :
+| ${RuleType.DirectiveDiagnostic}
+| ${RuleType.DirectiveRequires}
+| ${RuleType.DirectiveEnable}
 `
 >;

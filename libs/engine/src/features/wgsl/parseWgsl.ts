@@ -1,17 +1,17 @@
 import { parseTemplateLists, type TemplateList } from "./parseTemplateLists.ts";
 import { removeComments } from "./removeComments.ts";
 import { composeAlternatives } from "./syntax/MatchRule.ts";
-import { RuleName } from "./syntax/RuleRegistry.ts";
+import { RuleType } from "./syntax/RuleRegistry.ts";
+import { RuleLiteral } from "./syntax/rules/tokens/literals/RuleLiteral.ts";
 import { RuleContextDependantName } from "./syntax/rules/tokens/names/RuleContextDependantName.ts";
 import { RuleBlankspace } from "./syntax/rules/tokens/RuleBlankspace.ts";
 import { RuleIdentifier } from "./syntax/rules/tokens/RuleIdentifier.ts";
 import { RuleKeyword } from "./syntax/rules/tokens/RuleKeyword.ts";
-import { RuleLiteral } from "./syntax/rules/tokens/RuleLiteral.ts";
 import { RuleReservedWord } from "./syntax/rules/tokens/RuleReservedWord.ts";
 import { RuleSyntacticToken } from "./syntax/rules/tokens/RuleSyntacticToken.ts";
 import { isProgramEnd, type WGSLSource } from "./tokens.ts";
 
-const matchToken = composeAlternatives(RuleName.Token, [
+const matchToken = composeAlternatives(RuleType.Token, [
   RuleLiteral,
   RuleKeyword,
   RuleReservedWord,
@@ -23,11 +23,11 @@ const matchToken = composeAlternatives(RuleName.Token, [
 const tokenize = function* (
   source: WGSLSource,
   lists: TemplateList[],
-): Generator<{ type: RuleName; from: number; to: number; o: any }> {
+): Generator<{ type: RuleType; from: number; to: number; o: any }> {
   const templateStarts = new Map(lists.map((list) => [list.startAt, list]));
   const templateEnds = new Map(lists.map((list) => [list.endAt, list]));
 
-  yield ({ type: RuleName.ProgramStart, from: 0, to: 0, o: undefined });
+  yield ({ type: RuleType.ProgramStart, from: 0, to: 0, o: undefined });
 
   let i = 0;
   while (!isProgramEnd(source, i)) {
@@ -37,7 +37,7 @@ const tokenize = function* (
     const templateStart = templateStarts.get(i);
     if (templateStart) {
       yield {
-        type: RuleName.TemplateStart,
+        type: RuleType.TemplateStart,
         from: templateStart.startAt,
         to: templateStart.endAt + 1,
         o: templateStart,
@@ -50,7 +50,7 @@ const tokenize = function* (
     const templateEnd = templateEnds.get(i);
     if (templateEnd) {
       yield {
-        type: RuleName.TemplateEnd,
+        type: RuleType.TemplateEnd,
         from: templateEnd.startAt,
         to: templateEnd.endAt + 1,
         o: templateEnd,
@@ -63,16 +63,16 @@ const tokenize = function* (
     if (match) {
       i = match.to;
 
-      yield { type: match.subtype.rule, from: match.from, to: match.to, o: match };
+      yield { type: match.types[0], from: match.from, to: match.to, o: match };
       continue;
     }
 
     console.warn("unconsumed ", { s: source.substring(i) });
-    yield { type: RuleName.Any, from: i, to: i + 1, o: undefined };
+    yield { type: RuleType.Any, from: i, to: i + 1, o: undefined };
     i += 1;
   }
 
-  yield ({ type: RuleName.ProgramEnd, from: i, to: i, o: undefined });
+  yield ({ type: RuleType.ProgramEnd, from: i, to: i, o: undefined });
 };
 
 export const parseWgsl = (source: WGSLSource) => {
@@ -83,7 +83,7 @@ export const parseWgsl = (source: WGSLSource) => {
   const iterator = tokenizer[Symbol.iterator]();
   let current = iterator.next();
 
-  const tokens: { type: RuleName; from: number; to: number; o: any }[] = [];
+  const tokens: { type: RuleType; from: number; to: number; o: any }[] = [];
 
   const peek = () => current.value;
   const consume = () => {
@@ -94,11 +94,11 @@ export const parseWgsl = (source: WGSLSource) => {
     return token;
   };
 
-  const matchEnableRule = (stack: { type: RuleName; from: number; to: number; o: any }[]) => {
+  const matchEnableRule = (stack: { type: RuleType; from: number; to: number; o: any }[]) => {
     const top = stack.length;
     const first = stack[top - 1];
     console.log("first", first, stack);
-    if (first.type === RuleName.Keyword) {
+    if (first.type === RuleType.Keyword) {
       console.log("maybe");
     }
 

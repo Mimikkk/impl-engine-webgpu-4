@@ -1,6 +1,6 @@
 import { createMatchToken } from "../../../MatchRule.ts";
 import type { ParseRuleString } from "../../../ParseSyntax.ts";
-import { RuleName } from "../../../RuleRegistry.ts";
+import { RuleType } from "../../../RuleRegistry.ts";
 
 export const enum TokenLanguageExtensionName {
   ReadonlyAndReadwriteStorageTextures = "readonly_and_readwrite_storage_textures",
@@ -18,7 +18,7 @@ export const languageExtensionNames = [
 
 export type LanguageExtensionName = ParseRuleString<
   `
-${RuleName.LanguageExtensionName} :
+${RuleType.LanguageExtensionName} :
 | '${TokenLanguageExtensionName.ReadonlyAndReadwriteStorageTextures}'
 | '${TokenLanguageExtensionName.Packed4x8IntegerDotProduct}'
 | '${TokenLanguageExtensionName.UnrestrictedPointerParameters}'
@@ -26,4 +26,4 @@ ${RuleName.LanguageExtensionName} :
 `
 >;
 
-export const RuleLanguageExtensionName = createMatchToken(RuleName.LanguageExtensionName, languageExtensionNames);
+export const RuleLanguageExtensionName = createMatchToken(RuleType.LanguageExtensionName, languageExtensionNames);

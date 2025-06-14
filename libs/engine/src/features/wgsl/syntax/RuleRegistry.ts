@@ -10,6 +10,7 @@ import type {
   DirectiveRequires,
   DirectiveRequiresExtensionList,
 } from "./rules/directives/Directive.ts";
+import type { Literal } from "./rules/tokens/literals/RuleLiteral.ts";
 import type { LiteralBool } from "./rules/tokens/literals/RuleLiteralBool.ts";
 import type { LiteralDecimalFloat, LiteralFloat, LiteralFloatHex } from "./rules/tokens/literals/RuleLiteralFloat.ts";
 import type { LiteralInt, LiteralIntDecimal, LiteralIntHex } from "./rules/tokens/literals/RuleLiteralInt.ts";
@@ -27,16 +28,15 @@ import type { BlankspaceToken } from "./rules/tokens/RuleBlankspace.ts";
 import type { Identifier, IdentifierPattern } from "./rules/tokens/RuleIdentifier.ts";
 import type { Keyword } from "./rules/tokens/RuleKeyword.ts";
 import type { LineBreakToken } from "./rules/tokens/RuleLineBreak.ts";
-import type { Literal } from "./rules/tokens/RuleLiteral.ts";
 import type { ReservedWord } from "./rules/tokens/RuleReservedWord.ts";
 import type { SyntacticToken } from "./rules/tokens/RuleSyntacticToken.ts";
 import type { Rule } from "./syntax.ts";
 
-export type ProgramEnd = Rule<{ name: RuleName.ProgramEnd; alternatives: [] }>;
-export type Any = Rule<{ name: RuleName.Any; alternatives: [] }>;
-export type Unknown = Rule<{ name: RuleName.Unknown; alternatives: [] }>;
+export type ProgramEnd = Rule<{ name: RuleType.ProgramEnd; alternatives: [] }>;
+export type Any = Rule<{ name: RuleType.Any; alternatives: [] }>;
+export type Unknown = Rule<{ name: RuleType.Unknown; alternatives: [] }>;
 
-export const enum RuleName {
+export const enum RuleType {
   // Tokens
   Token = "token",
   /// Literals

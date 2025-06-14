@@ -1,6 +1,6 @@
 import { createMatchToken } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
-import { RuleName } from "../../RuleRegistry.ts";
+import { RuleType } from "../../RuleRegistry.ts";
 
 const enum TokenKeyword {
   Alias = "alias",
@@ -62,7 +62,7 @@ export const keywords = [
 
 export type Keyword = ParseRuleString<
   `
-${RuleName.Keyword} :
+${RuleType.Keyword} :
 | '${TokenKeyword.Alias}'
 | '${TokenKeyword.Break}'
 | '${TokenKeyword.Case}'
@@ -92,4 +92,4 @@ ${RuleName.Keyword} :
 `
 >;
 
-export const RuleKeyword = createMatchToken(RuleName.Keyword, keywords);
+export const RuleKeyword = createMatchToken(RuleType.Keyword, keywords);

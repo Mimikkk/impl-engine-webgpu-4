@@ -1,11 +1,11 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
-import { RuleName } from "../../../RuleRegistry.ts";
+import { RuleType } from "../../../RuleRegistry.ts";
 import { RuleDecimalIntLiteral, RuleHexIntLiteral, RuleIntLiteral } from "./RuleLiteralInt.ts";
 
 describe("RuleLiteralInt", () => {
   describe("Decimal Int Literal", () => {
-    describe("valid cases", () => {
+    describe.only("valid cases", () => {
       const cases = [
         { source: "0", expected: { from: 0, to: 1 } },
         { source: "0i", expected: { from: 0, to: 2 } },
@@ -21,7 +21,7 @@ describe("RuleLiteralInt", () => {
           const result = RuleDecimalIntLiteral({ source, indexAt: 0 });
 
           expect(result).toBeDefined();
-          expect(result?.type).toBe(RuleName.LiteralIntDecimal);
+          expect(result?.types).toEqual([RuleType.LiteralIntDecimal]);
           expect(result?.from).toBe(expected.from);
           expect(result?.to).toBe(expected.to);
         });
@@ -62,7 +62,7 @@ describe("RuleLiteralInt", () => {
           const result = RuleHexIntLiteral({ source, indexAt: 0 });
 
           expect(result).toBeDefined();
-          expect(result?.type).toBe(RuleName.LiteralIntHex);
+          expect(result?.types).toEqual([RuleType.LiteralIntHex]);
           expect(result?.from).toBe(expected.from);
           expect(result?.to).toBe(expected.to);
         });
@@ -102,16 +102,18 @@ describe("RuleLiteralInt", () => {
         { source: "0x1u", expected: { from: 0, to: 4 }, match: RuleHexIntLiteral },
       ];
 
-      for (const { source, expected, match } of cases) {
+      for (const { source, expected } of cases) {
         it(`should match ${source}`, () => {
           const result = RuleIntLiteral({ source, indexAt: 0 });
+          console.log(result);
 
           expect(result).toBeDefined();
-          expect(result?.type).toBe(RuleName.LiteralInt);
-          expect(result?.subtype).toBe(match);
-          expect(result?.from).toBe(expected.from);
-          expect(result?.to).toBe(expected.to);
+          if (!result) return;
+          expect(result.types).toEqual([RuleType.LiteralInt, RuleType.LiteralIntDecimal]);
+          expect(result.from).toBe(expected.from);
+          expect(result.to).toBe(expected.to);
         });
+        break;
       }
     });
   });

@@ -1,6 +1,6 @@
 import { createMatchToken } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
-import { RuleName } from "../../RuleRegistry.ts";
+import { RuleType } from "../../RuleRegistry.ts";
 
 export const enum TokenSyntactic {
   // Text: &
@@ -174,7 +174,7 @@ const keywords = [
 
 export type SyntacticToken = ParseRuleString<
   `
-${RuleName.Syntactic} :
+${RuleType.Syntactic} :
 | '${TokenSyntactic.Ampersand}'
 | '${TokenSyntactic.AmpersandAmpersand}'
 | '${TokenSyntactic.Arrow}'
@@ -226,4 +226,4 @@ ${RuleName.Syntactic} :
 `
 >;
 
-export const RuleSyntacticToken = createMatchToken(RuleName.Syntactic, keywords);
+export const RuleSyntacticToken = createMatchToken(RuleType.Syntactic, keywords);

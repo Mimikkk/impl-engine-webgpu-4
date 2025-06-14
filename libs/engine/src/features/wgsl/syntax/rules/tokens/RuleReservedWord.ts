@@ -1,6 +1,6 @@
 import { createMatchToken } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
-import { RuleName } from "../../RuleRegistry.ts";
+import { RuleType } from "../../RuleRegistry.ts";
 
 const enum TokenReserved {
   NULL = "NULL",
@@ -295,7 +295,7 @@ export const reservedWords = [
 ];
 export type ReservedWord = ParseRuleString<
   `
-${RuleName.ReservedWord} :
+${RuleType.ReservedWord} :
 | '${TokenReserved.NULL}'
 | '${TokenReserved.Self}'
 | '${TokenReserved.Abstract}'
@@ -442,4 +442,4 @@ ${RuleName.ReservedWord} :
 `
 >;
 
-export const RuleReservedWord = createMatchToken(RuleName.ReservedWord, reservedWords);
+export const RuleReservedWord = createMatchToken(RuleType.ReservedWord, reservedWords);

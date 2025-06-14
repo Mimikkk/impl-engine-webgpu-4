@@ -1,41 +1,41 @@
 import { composeAlternatives, createMatchRegex } from "../../../MatchRule.ts";
 import type { ParseRuleString } from "../../../ParseSyntax.ts";
-import { RuleName } from "../../../RuleRegistry.ts";
+import { RuleType } from "../../../RuleRegistry.ts";
 
 export type LiteralIntDecimal = ParseRuleString<
   `
-${RuleName.LiteralIntDecimal} :
+${RuleType.LiteralIntDecimal} :
 | '/0[iu]?/'
 | '/[1-9][0-9]*[iu]?/'
 `
 >;
 
-export const RuleDecimalIntLiteral = createMatchRegex(RuleName.LiteralIntDecimal, [
+export const RuleDecimalIntLiteral = createMatchRegex(RuleType.LiteralIntDecimal, [
   /0[iu]?/y,
   /[1-9][0-9]*[iu]?/y,
 ]);
 
 export type LiteralIntHex = ParseRuleString<
   `
-${RuleName.LiteralIntHex} :
+${RuleType.LiteralIntHex} :
 | '/0[xX][0-9a-fA-F]+[iu]?/'
 `
 >;
 
 export const RuleHexIntLiteral = createMatchRegex(
-  RuleName.LiteralIntHex,
+  RuleType.LiteralIntHex,
   [/0[xX][0-9a-fA-F]+[iu]?/y],
 );
 
 export type LiteralInt = ParseRuleString<
   `
-${RuleName.LiteralInt} :
-| ${RuleName.LiteralIntDecimal}
-| ${RuleName.LiteralIntHex}
+${RuleType.LiteralInt} :
+| ${RuleType.LiteralIntDecimal}
+| ${RuleType.LiteralIntHex}
 `
 >;
 
-export const RuleIntLiteral = composeAlternatives(RuleName.LiteralInt, [
+export const RuleIntLiteral = composeAlternatives(RuleType.LiteralInt, [
   RuleDecimalIntLiteral,
   RuleHexIntLiteral,
 ]);

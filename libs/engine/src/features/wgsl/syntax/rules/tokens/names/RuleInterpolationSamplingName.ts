@@ -1,6 +1,6 @@
 import { createMatchToken } from "../../../MatchRule.ts";
 import type { ParseRuleString } from "../../../ParseSyntax.ts";
-import { RuleName } from "../../../RuleRegistry.ts";
+import { RuleType } from "../../../RuleRegistry.ts";
 
 export const enum TokenInterpolationSamplingName {
   Center = "center",
@@ -20,7 +20,7 @@ export const interpolationSamplingNames = [
 
 export type InterpolationSamplingName = ParseRuleString<
   `
-${RuleName.InterpolationSamplingName} :
+${RuleType.InterpolationSamplingName} :
 | '${TokenInterpolationSamplingName.Center}'
 | '${TokenInterpolationSamplingName.Centroid}'
 | '${TokenInterpolationSamplingName.Sample}'
@@ -30,6 +30,6 @@ ${RuleName.InterpolationSamplingName} :
 >;
 
 export const RuleInterpolationSamplingName = createMatchToken(
-  RuleName.InterpolationSamplingName,
+  RuleType.InterpolationSamplingName,
   interpolationSamplingNames,
 );

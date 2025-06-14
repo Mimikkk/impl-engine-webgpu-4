@@ -1,9 +1,9 @@
 import { composeAlternatives } from "./syntax/MatchRule.ts";
-import { RuleName } from "./syntax/RuleRegistry.ts";
+import { RuleType } from "./syntax/RuleRegistry.ts";
 import { RuleComment } from "./syntax/rules/comments/RuleComment.ts";
 import { RuleBlankspace } from "./syntax/rules/tokens/RuleBlankspace.ts";
 import { RuleIdentifierPattern } from "./syntax/rules/tokens/RuleIdentifier.ts";
-import { RuleLiteral } from "./syntax/rules/tokens/RuleLiteral.ts";
+import { RuleLiteral } from "./syntax/rules/tokens/literals/RuleLiteral.ts";
 import { isProgramEnd, type WGSLSource } from "./tokens.ts";
 
 interface UnclosedCandidate {
@@ -19,8 +19,8 @@ export interface TemplateList {
   endAt: number;
 }
 
-const matchBlankOrComment = composeAlternatives(RuleName.Any, [RuleBlankspace, RuleComment]);
-const matchBlankOrCommentOrLiteral = composeAlternatives(RuleName.Any, [
+const matchBlankOrComment = composeAlternatives(RuleType.Any, [RuleBlankspace, RuleComment]);
+const matchBlankOrCommentOrLiteral = composeAlternatives(RuleType.Any, [
   RuleBlankspace,
   RuleComment,
   RuleLiteral,

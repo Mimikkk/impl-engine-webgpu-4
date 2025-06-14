@@ -1,6 +1,6 @@
 import { createMatchToken } from "../../../MatchRule.ts";
 import type { ParseRuleString } from "../../../ParseSyntax.ts";
-import { RuleName } from "../../../RuleRegistry.ts";
+import { RuleType } from "../../../RuleRegistry.ts";
 
 export const enum TokenBuiltinName {
   VertexIndex = "vertex_index",
@@ -38,7 +38,7 @@ export const builtinNames = [
 
 export type BuiltinName = ParseRuleString<
   `
-${RuleName.BuiltinName} :
+${RuleType.BuiltinName} :
 | '${TokenBuiltinName.VertexIndex}'
 | '${TokenBuiltinName.InstanceIndex}'
 | '${TokenBuiltinName.Position}'
@@ -56,4 +56,4 @@ ${RuleName.BuiltinName} :
 `
 >;
 
-export const RuleBuiltinName = createMatchToken(RuleName.BuiltinName, builtinNames);
+export const RuleBuiltinName = createMatchToken(RuleType.BuiltinName, builtinNames);

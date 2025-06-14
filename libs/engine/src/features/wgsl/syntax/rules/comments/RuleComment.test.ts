@@ -1,28 +1,23 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
-import type { MatchRule } from "../../MatchRule.ts";
-import { RuleName } from "../../RuleRegistry.ts";
+import { RuleType } from "../../RuleRegistry.ts";
 import { RuleComment } from "./RuleComment.ts";
-import { RuleCommentBlock } from "./RuleCommentBlock.ts";
-import { RuleCommentLine } from "./RuleCommentLine.ts";
 
 const expectComment = (
-  { source, expected, indexAt, rule, child }: {
+  { source, expected, indexAt, types }: {
     source: string;
     expected: string;
     indexAt: number;
-    rule: RuleName;
-    child: MatchRule<RuleName, any>;
+    types: RuleType[];
   },
 ) => {
-  const result = RuleComment({ source, indexAt });
+  const result = RuleComment({ source, indexAt })!;
 
   expect(result).toBeDefined();
-  expect(result?.type).toBe(rule);
-  expect(result?.from).toBe(0);
-  expect(result?.to).toBe(expected.length);
-  expect(source.slice(result?.from, result?.to)).toBe(expected);
-  expect(result?.subtype).toBe(child);
+  expect(result.types).toEqual(types);
+  expect(result.from).toBe(0);
+  expect(result.to).toBe(expected.length);
+  expect(source.slice(result.from, result.to)).toBe(expected);
 };
 
 describe("RuleComment", () => {
@@ -31,8 +26,7 @@ describe("RuleComment", () => {
       source: "// true /**/",
       expected: "// true /**/",
       indexAt: 0,
-      rule: RuleName.Comment,
-      child: RuleCommentLine,
+      types: [RuleType.Comment, RuleType.CommentLine],
     });
   });
 
@@ -41,8 +35,7 @@ describe("RuleComment", () => {
       source: "/* false */",
       expected: "/* false */",
       indexAt: 0,
-      rule: RuleName.Comment,
-      child: RuleCommentBlock,
+      types: [RuleType.Comment, RuleType.CommentBlock],
     });
   });
 
@@ -51,8 +44,7 @@ describe("RuleComment", () => {
       source: "/* /* false */ */",
       expected: "/* /* false */ */",
       indexAt: 0,
-      rule: RuleName.Comment,
-      child: RuleCommentBlock,
+      types: [RuleType.Comment, RuleType.CommentBlock],
     });
   });
 
@@ -61,8 +53,7 @@ describe("RuleComment", () => {
       source: "/* // false */",
       expected: "/* // false */",
       indexAt: 0,
-      rule: RuleName.Comment,
-      child: RuleCommentBlock,
+      types: [RuleType.Comment, RuleType.CommentBlock],
     });
   });
 
@@ -72,8 +63,7 @@ describe("RuleComment", () => {
       source: "/*\n * false\n */",
       expected: "/*\n * false\n */",
       indexAt: 0,
-      rule: RuleName.Comment,
-      child: RuleCommentBlock,
+      types: [RuleType.Comment, RuleType.CommentBlock],
     });
   });
 
@@ -82,8 +72,7 @@ describe("RuleComment", () => {
       source: "/*\n * false",
       expected: "/*\n * false",
       indexAt: 0,
-      rule: RuleName.Comment,
-      child: RuleCommentBlock,
+      types: [RuleType.Comment, RuleType.CommentBlock],
     });
   });
 

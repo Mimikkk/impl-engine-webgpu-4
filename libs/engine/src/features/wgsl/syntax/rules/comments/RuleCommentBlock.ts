@@ -1,7 +1,7 @@
 import { isProgramEnd, isToken } from "../../../tokens.ts";
 import { createMatch } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
-import { RuleName } from "../../RuleRegistry.ts";
+import { RuleType } from "../../RuleRegistry.ts";
 
 const enum TokenCommentBlock {
   // Text: "/*"
@@ -12,13 +12,13 @@ const enum TokenCommentBlock {
 
 export type CommentBlock = ParseRuleString<
   `
-${RuleName.CommentBlock} :
-| '${TokenCommentBlock.BlockStart}' (${RuleName.Any}).* ${RuleName.ProgramEnd}
-| '${TokenCommentBlock.BlockStart}' (${RuleName.Any}).* '${TokenCommentBlock.BlockEnd}'
+${RuleType.CommentBlock} :
+| '${TokenCommentBlock.BlockStart}' (${RuleType.Any}).* ${RuleType.ProgramEnd}
+| '${TokenCommentBlock.BlockStart}' (${RuleType.Any}).* '${TokenCommentBlock.BlockEnd}'
 `
 >;
 
-export const RuleCommentBlock = createMatch(RuleName.CommentBlock, ({ source, indexAt }) => {
+export const RuleCommentBlock = createMatch(RuleType.CommentBlock, ({ source, indexAt }) => {
   if (isToken(source, indexAt, TokenCommentBlock.BlockStart)) {
     let endAt = indexAt + 2;
     let depth = 1;

@@ -1,6 +1,6 @@
 import { composeAlternatives } from "../../../MatchRule.ts";
 import type { ParseRuleString } from "../../../ParseSyntax.ts";
-import { RuleName } from "../../../RuleRegistry.ts";
+import { RuleType } from "../../../RuleRegistry.ts";
 import { RuleAttributeName } from "./RuleAttributeName.ts";
 import { RuleBuiltinName } from "./RuleBuiltinName.ts";
 import { RuleDiagnosticSeverityName } from "./RuleDiagnosticSeverityName.ts";
@@ -13,20 +13,20 @@ import { RuleSwizzleName } from "./RuleSwizzleName.ts";
 
 export type ContextDependantName = ParseRuleString<
   `
-${RuleName.ContextDependantName} :
-| ${RuleName.AttributeName}
-| ${RuleName.BuiltinName}
-| ${RuleName.DiagnosticSeverityName}
-| ${RuleName.DiagnosticName}
-| ${RuleName.EnableExtensionName}
-| ${RuleName.InterpolationTypeName}
-| ${RuleName.InterpolationSamplingName}
-| ${RuleName.LanguageExtensionName}
-| ${RuleName.SwizzleName}
+${RuleType.ContextDependantName} :
+| ${RuleType.AttributeName}
+| ${RuleType.BuiltinName}
+| ${RuleType.DiagnosticSeverityName}
+| ${RuleType.DiagnosticName}
+| ${RuleType.EnableExtensionName}
+| ${RuleType.InterpolationTypeName}
+| ${RuleType.InterpolationSamplingName}
+| ${RuleType.LanguageExtensionName}
+| ${RuleType.SwizzleName}
 `
 >;
 
-export const RuleContextDependantName = composeAlternatives(RuleName.ContextDependantName, [
+export const RuleContextDependantName = composeAlternatives(RuleType.ContextDependantName, [
   RuleAttributeName,
   RuleBuiltinName,
   RuleDiagnosticSeverityName,
