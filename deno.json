@@ -51,6 +51,10 @@
       "description": "Test the engine",
       "command": "deno task -f lib-engine test"
     },
+    "bench:engine": {
+      "description": "Run benchmarks for the engine",
+      "command": "deno task -f lib-engine bench"
+    },
     "dev:docker:preview": {
       "description": "Run development server for preview in Docker",
       "command": "docker compose -f docker-compose.yml watch app-development"

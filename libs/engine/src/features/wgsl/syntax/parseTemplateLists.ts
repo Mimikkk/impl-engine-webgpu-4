@@ -3,11 +3,12 @@ import { composeAlternatives } from "./MatchRule.ts";
 import { RuleName } from "./RuleRegistry.ts";
 import { RuleComment } from "./rules/comments/RuleComment.ts";
 import { RuleBlankspace } from "./rules/tokens/RuleBlankspace.ts";
-import { RuleIdentifier } from "./rules/tokens/RuleIdentifier.ts";
+import { RuleIdentifierPattern } from "./rules/tokens/RuleIdentifier.ts";
 import { RuleLiteral } from "./rules/tokens/RuleLiteral.ts";
 
 interface UnclosedCandidate {
   parameters: { startAt: number; endAt: number }[];
+  parameterStartAt: number;
   startAt: number;
   depth: number;
 }
@@ -25,7 +26,7 @@ export const parseTemplateLists = (source: WGSLSource): TemplateList[] => {
   let i = 0;
   let depth = 0;
 
-  const matchIdentifier = RuleIdentifier;
+  const matchIdentifierPattern = RuleIdentifierPattern;
   const matchBlankOrComment = composeAlternatives(RuleName.Any, [RuleBlankspace, RuleComment]);
   const matchBlankOrCommentOrLiteral = composeAlternatives(RuleName.Any, [
     RuleBlankspace,
@@ -39,7 +40,7 @@ export const parseTemplateLists = (source: WGSLSource): TemplateList[] => {
       i = result.to;
     }
 
-    const identifier = matchIdentifier({ source, indexAt: i });
+    const identifier = matchIdentifierPattern({ source, indexAt: i });
     if (identifier) {
       i = identifier.to;
 
@@ -49,7 +50,8 @@ export const parseTemplateLists = (source: WGSLSource): TemplateList[] => {
       }
 
       if (source[i] === "<") {
-        candidates.push({ startAt: i, depth, parameters: [] });
+        const parameterStartAt = matchBlankOrComment({ source, indexAt: i + 1 })?.to ?? (i + 1);
+        candidates.push({ startAt: i, depth, parameters: [], parameterStartAt });
 
         i += 1;
         if (source[i] === "<" || source[i] === "=") {
@@ -65,6 +67,16 @@ export const parseTemplateLists = (source: WGSLSource): TemplateList[] => {
     if (source[i] === ">") {
       if (candidates.length > 0 && candidates[candidates.length - 1].depth === depth) {
         const candidate = candidates.pop()!;
+
+        let end = i - 1;
+
+        while (end >= candidate.parameterStartAt && matchBlankOrComment({ source, indexAt: end })) {
+          --end;
+        }
+
+        if (end >= candidate.parameterStartAt) {
+          candidate.parameters.push({ startAt: candidate.parameterStartAt, endAt: end });
+        }
 
         lists.push({
           startAt: candidate.startAt,
@@ -125,6 +137,24 @@ export const parseTemplateLists = (source: WGSLSource): TemplateList[] => {
       }
       i += 2;
       continue;
+    }
+
+    if (source[i] === "," && candidates.length > 0) {
+      const candidate = candidates[candidates.length - 1];
+
+      if (candidate.depth === depth) {
+        let endAt = i - 1;
+
+        while (endAt >= candidate.parameterStartAt && matchBlankOrComment({ source, indexAt: endAt })) {
+          --endAt;
+        }
+
+        if (endAt >= candidate.parameterStartAt) {
+          candidate.parameters.push({ startAt: candidate.parameterStartAt, endAt });
+        }
+
+        candidate.parameterStartAt = matchBlankOrComment({ source, indexAt: i + 1 })?.to ?? (i + 1);
+      }
     }
 
     i += 1;

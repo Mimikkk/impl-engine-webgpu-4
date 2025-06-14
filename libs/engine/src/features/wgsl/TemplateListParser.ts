@@ -18,9 +18,9 @@ export const enum TemplateToken {
 }
 interface UnclosedCandidate {
   parameters: { start: number; end: number }[];
+  parameterStartAt: number;
   position: number;
   depth: number;
-  start: number;
 }
 
 export interface TemplateList {
@@ -77,7 +77,7 @@ export class TemplateListParser {
           }
 
           const start = this.advance.advance(source, indexAt + 1) as number;
-          candidates.push({ position: indexAt, depth, parameters: [], start });
+          candidates.push({ position: indexAt, depth, parameters: [], parameterStartAt: start });
           ++indexAt;
         }
 
@@ -92,12 +92,12 @@ export class TemplateListParser {
           if (top.depth === depth) {
             let end = indexAt - 1;
 
-            while (end >= top.start && this.advance.matches(source, end)) {
+            while (end >= top.parameterStartAt && this.advance.matches(source, end)) {
               --end;
             }
 
-            if (end >= top.start) {
-              top.parameters.push({ start: top.start, end });
+            if (end >= top.parameterStartAt) {
+              top.parameters.push({ start: top.parameterStartAt, end });
             }
 
             lists.push({ from: top.position, to: indexAt, parameters: top.parameters });
@@ -183,15 +183,15 @@ export class TemplateListParser {
         if (top.depth === depth) {
           let endAt = indexAt - 1;
 
-          while (endAt >= top.start && this.advance.matches(source, endAt)) {
+          while (endAt >= top.parameterStartAt && this.advance.matches(source, endAt)) {
             endAt--;
           }
 
-          if (endAt >= top.start) {
-            top.parameters.push({ start: top.start, end: endAt });
+          if (endAt >= top.parameterStartAt) {
+            top.parameters.push({ start: top.parameterStartAt, end: endAt });
           }
 
-          top.start = this.advance.advance(source, indexAt + 1) as number;
+          top.parameterStartAt = this.advance.advance(source, indexAt + 1) as number;
         }
       }
 
