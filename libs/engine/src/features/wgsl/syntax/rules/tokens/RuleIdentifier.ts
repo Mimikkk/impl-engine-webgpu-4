@@ -24,9 +24,9 @@ const regex = /([_\p{XID_Start}][\p{XID_Continue}]+)|([\p{XID_Start}])/uy;
 const invalid = [...keywords, ...reservedWords, "_", "__"];
 
 export const RuleIdentifier = createMatch(RuleName.Identifier, ({ source, indexAt }) => {
-  const at = RuleIdentifierPattern.advance({ source, indexAt });
-  if (at === undefined || isSomeToken(source, at, invalid)) return;
-  return at;
+  const size = RuleIdentifierPattern.advance({ source, indexAt });
+  if (size === undefined || isSomeToken(source, indexAt, invalid)) return;
+  return size;
 });
 
 export const RuleIdentifierPattern = createMatch(RuleName.IdentifierPattern, ({ source, indexAt }) => {

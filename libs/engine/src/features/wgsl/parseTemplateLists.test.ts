@@ -375,5 +375,19 @@ describe("WGSL - TemplateParser", () => {
         },
       ]);
     });
+
+    it("should parse fn main(parameter: vec4<f32>) { }", () => {
+      const source = "fn main(parameter: vec4<f32>) { }";
+      const result = parseTemplateLists(source);
+
+      expectTemplates(source, result, [
+        {
+          parameters: ["f32"],
+          template: "<f32>",
+          from: 23,
+          to: 27,
+        },
+      ]);
+    });
   });
 });

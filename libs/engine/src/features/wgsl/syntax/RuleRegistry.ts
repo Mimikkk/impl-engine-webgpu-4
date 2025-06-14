@@ -1,23 +1,32 @@
-import type { BlankspaceToken } from "./rules/tokens/RuleBlankspace.ts";
-import type { LineBreakToken } from "./rules/tokens/RuleLineBreak.ts";
 import type { Comment } from "./rules/comments/RuleComment.ts";
 import type { CommentBlock } from "./rules/comments/RuleCommentBlock.ts";
 import type { CommentLine } from "./rules/comments/RuleCommentLine.ts";
+import type {
+  Directive,
+  DirectiveDiagnostic,
+  DirectiveDiagnosticControl,
+  DirectiveEnable,
+  DirectiveEnableExtensionList,
+  DirectiveRequires,
+  DirectiveRequiresExtensionList,
+} from "./rules/directives/Directive.ts";
 import type { LiteralBool } from "./rules/tokens/literals/RuleLiteralBool.ts";
 import type { LiteralDecimalFloat, LiteralFloat, LiteralFloatHex } from "./rules/tokens/literals/RuleLiteralFloat.ts";
 import type { LiteralInt, LiteralIntDecimal, LiteralIntHex } from "./rules/tokens/literals/RuleLiteralInt.ts";
 import type { AttributeName } from "./rules/tokens/names/RuleAttributeName.ts";
 import type { BuiltinName } from "./rules/tokens/names/RuleBuiltinName.ts";
-import { ContextDependantName } from "./rules/tokens/names/RuleContextDependantName.ts";
+import type { ContextDependantName } from "./rules/tokens/names/RuleContextDependantName.ts";
 import type { DiagnosticSeverityName } from "./rules/tokens/names/RuleDiagnosticSeverityName.ts";
 import type { DiagnosticName } from "./rules/tokens/names/RuleDiangosticName.ts";
-import { EnableExtensionName } from "./rules/tokens/names/RuleEnableExtensionName.ts";
-import { InterpolationSamplingName } from "./rules/tokens/names/RuleInterpolationSamplingName.ts";
-import { InterpolationTypeName } from "./rules/tokens/names/RuleInterpolationTypeName.ts";
-import { LanguageExtensionName } from "./rules/tokens/names/RuleLanguageExtensionName.ts";
-import { SwizzleName } from "./rules/tokens/names/RuleSwizzleName.ts";
+import type { EnableExtensionName } from "./rules/tokens/names/RuleEnableExtensionName.ts";
+import type { InterpolationSamplingName } from "./rules/tokens/names/RuleInterpolationSamplingName.ts";
+import type { InterpolationTypeName } from "./rules/tokens/names/RuleInterpolationTypeName.ts";
+import type { LanguageExtensionName } from "./rules/tokens/names/RuleLanguageExtensionName.ts";
+import type { SwizzleName } from "./rules/tokens/names/RuleSwizzleName.ts";
+import type { BlankspaceToken } from "./rules/tokens/RuleBlankspace.ts";
 import type { Identifier, IdentifierPattern } from "./rules/tokens/RuleIdentifier.ts";
 import type { Keyword } from "./rules/tokens/RuleKeyword.ts";
+import type { LineBreakToken } from "./rules/tokens/RuleLineBreak.ts";
 import type { Literal } from "./rules/tokens/RuleLiteral.ts";
 import type { ReservedWord } from "./rules/tokens/RuleReservedWord.ts";
 import type { SyntacticToken } from "./rules/tokens/RuleSyntacticToken.ts";
@@ -25,9 +34,11 @@ import type { Rule } from "./syntax.ts";
 
 export type ProgramEnd = Rule<{ name: RuleName.ProgramEnd; alternatives: [] }>;
 export type Any = Rule<{ name: RuleName.Any; alternatives: [] }>;
+export type Unknown = Rule<{ name: RuleName.Unknown; alternatives: [] }>;
 
 export const enum RuleName {
   // Tokens
+  Token = "token",
   /// Literals
   Literal = "literal",
   LiteralInt = "int_literal",
@@ -62,10 +73,22 @@ export const enum RuleName {
   CommentLine = "comment_line",
   CommentBlock = "comment_block",
   // Special
+  ProgramStart = "program_start",
   ProgramEnd = "program_end",
   Any = "_any",
+  Unknown = "_unknown",
   // Templates
+  TemplateStart = "_template_start",
+  TemplateEnd = "_template_end",
   DisambiguateTemplate = "_disambiguate_template",
+  /// Directives
+  Directive = "global_directive",
+  DirectiveDiagnostic = "directive_diagnostic",
+  DirectiveDiagnosticControl = "directive_diagnostic_control",
+  DirectiveRequires = "directive_requires",
+  DirectiveRequiresExtensionList = "directive_requires_extension_list",
+  DirectiveEnable = "directive_enable",
+  DirectiveEnableExtensionList = "directive_enable_extension_list",
 }
 
 export type RuleRegistry = {
@@ -106,5 +129,13 @@ export type RuleRegistry = {
   /// Special
   program_end: ProgramEnd;
   _any: Any;
-  // Templates
+  _unknown: Unknown;
+  // Directives
+  global_directive: Directive;
+  directive_diagnostic: DirectiveDiagnostic;
+  directive_diagnostic_control: DirectiveDiagnosticControl;
+  directive_requires: DirectiveRequires;
+  directive_requires_extension_list: DirectiveRequiresExtensionList;
+  directive_enable: DirectiveEnable;
+  directive_enable_extension_list: DirectiveEnableExtensionList;
 };

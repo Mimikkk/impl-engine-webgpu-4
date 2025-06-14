@@ -33,20 +33,20 @@ export const parseTemplateLists = (source: WGSLSource): TemplateList[] => {
   let depth = 0;
 
   while (!isProgramEnd(source, i)) {
-    const result = matchBlankOrCommentOrLiteral.advance({ source, indexAt: i });
-    if (result) i = result;
+    const size = matchBlankOrCommentOrLiteral.advance({ source, indexAt: i });
+    if (size) i += size;
 
     const identifier = RuleIdentifierPattern.advance({ source, indexAt: i });
     if (identifier) {
-      i = identifier;
+      i += identifier;
 
-      const result = matchBlankOrComment.advance({ source, indexAt: i });
-      if (result) i = result;
+      const size = matchBlankOrComment.advance({ source, indexAt: i });
+      if (size) i += size;
 
       if (source[i] === "<") {
         i += 1;
 
-        const parameterStartAt = matchBlankOrComment.advance({ source, indexAt: i }) ?? i;
+        const parameterStartAt = i + (matchBlankOrComment.advance({ source, indexAt: i }) ?? 0);
         if (source[i] === "<" || source[i] === "=") {
           i += 1;
           continue;

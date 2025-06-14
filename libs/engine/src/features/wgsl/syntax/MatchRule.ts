@@ -20,6 +20,7 @@ export interface Match {
 }
 
 export interface MatchRule<R extends RuleName, A extends MatchRule<any, any> | undefined> {
+  rule: R;
   (context: MatchRuleContext): MatchRuleResult<R, A> | undefined;
   matches(context: MatchRuleContext): boolean;
   advance(context: MatchRuleContext): number | undefined;
@@ -50,11 +51,12 @@ export const createMatch = <R extends RuleName>(name: R, match: Match): MatchRul
     return createMatchResult(name, undefined, context.indexAt, size, context.match);
   };
 
+  rule.rule = name;
   rule.matches = (context) => match(context) !== undefined;
   rule.advance = (context) => {
     const size = match(context);
     if (size === undefined) return;
-    return context.indexAt + size;
+    return size;
   };
 
   return rule;
@@ -85,6 +87,7 @@ export const composeAlternatives = <R extends RuleName, A extends MatchRule<any,
       : createMatchResult(name, bestAlternative, context.indexAt, bestCandidate.size, context.match);
   };
 
+  rule.rule = name;
   rule.matches = (context) => alternatives.some((alternative) => alternative.matches(context));
   rule.advance = (context) => {
     let bestSize: number | undefined;
