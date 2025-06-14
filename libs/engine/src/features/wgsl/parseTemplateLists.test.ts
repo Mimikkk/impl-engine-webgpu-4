@@ -1,7 +1,7 @@
 import { expect } from "@std/expect/expect";
 import { describe, it } from "@std/testing/bdd";
-import type { WGSLSource } from "../tokens.ts";
 import { parseTemplateLists, type TemplateList } from "./parseTemplateLists.ts";
+import type { WGSLSource } from "./tokens.ts";
 
 const expectTemplate = (source: WGSLSource, result: TemplateList, expected: {
   parameters: string[];
