@@ -67,7 +67,7 @@ const tokenize = function* (source: WGSLSource, lists: TemplateList[]): Generato
 };
 
 export interface Tokenizer {
-  next: () => Token | undefined;
+  consume: () => Token | undefined;
   peek: () => Token | undefined;
   isDone: () => boolean;
 }
@@ -89,5 +89,5 @@ export const createTokenizer = (source: WGSLSource): Tokenizer => {
   const peek = () => lookahead;
 
   next();
-  return { next, peek, isDone };
+  return { consume: next, peek, isDone };
 };

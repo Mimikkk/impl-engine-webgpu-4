@@ -14,7 +14,7 @@ describe("createTokenizer", () => {
 
     expect(tokenizer.isDone()).toBe(false);
 
-    expect(tokenizer.next()).toEqual({ type: RuleType.ProgramStart, value: "" });
+    expect(tokenizer.consume()).toEqual({ type: RuleType.ProgramStart, value: "" });
 
     expect(tokenizer.isDone()).toBe(false);
 
@@ -22,13 +22,13 @@ describe("createTokenizer", () => {
 
     expect(tokenizer.isDone()).toBe(false);
 
-    expect(tokenizer.next()).toEqual({ type: RuleType.ProgramEnd, value: "" });
+    expect(tokenizer.consume()).toEqual({ type: RuleType.ProgramEnd, value: "" });
 
     expect(tokenizer.isDone()).toBe(true);
 
     expect(tokenizer.peek()).toEqual(undefined);
 
-    expect(tokenizer.next()).toEqual(undefined);
+    expect(tokenizer.consume()).toEqual(undefined);
 
     expect(tokenizer.isDone()).toBe(true);
   });

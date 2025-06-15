@@ -1,4 +1,4 @@
-import { createTokenizer, type Token, type Tokenizer } from "./createTokenizer.ts";
+import { createTokenizer, type Token } from "./createTokenizer.ts";
 import { removeComments } from "./removeComments.ts";
 import { TokenKeyword } from "./rules/tokens/RuleKeyword.ts";
 import { TokenSyntactic } from "./rules/tokens/RuleSyntacticToken.ts";
@@ -23,12 +23,14 @@ export class ASTNode {
 }
 
 interface ParseContext {
-  tokenizer: Tokenizer;
+  consume: () => void;
+  peek: () => Token | undefined;
+  isDone: () => boolean;
   stack: ASTNode[];
 }
 
-const isMatch = (node: Token, type: RuleType, value?: string) =>
-  node.type === type && (value === undefined || node.value === value);
+const isMatch = (node: Token | undefined, type: RuleType, value?: string): node is Token =>
+  node !== undefined && (node.type === type && (value === undefined || node.value === value));
 
 const createReduction = (type: RuleType, match: (context: ParseContext) => number | undefined) => ({
   type,
@@ -52,6 +54,13 @@ const rules = [
     if (!isMatch(stack[stack.length - 1], RuleType.EnableExtensionName)) {
       return;
     }
+
+    // const next = tokenizer.peek();
+    // if (isMatch(next, RuleType.Syntactic, TokenSyntactic.Comma)) {
+    //   stack.push(ASTNode.create(RuleType.EnableExtensionName, next.value, []));
+
+    //   tokenizer.consume();
+    // }
 
     return 1;
   }),
@@ -110,12 +119,24 @@ export const parseWgsl = (source: WGSLSource) => {
   source = removeComments(source);
   const tokenizer = createTokenizer(source);
 
-  const context: ParseContext = { tokenizer, stack: [] };
+  const context: ParseContext = {
+    consume: () => {
+      const next = tokenizer.consume();
 
-  while (!tokenizer.isDone()) {
-    const next = tokenizer.next()!;
+      if (next) {
+        context.stack.push(ASTNode.create(next.type, next.value, []));
+      }
+    },
+    peek: () => tokenizer.peek(),
+    isDone: () => tokenizer.isDone(),
+    stack: [],
+  };
+
+  while (!context.isDone()) {
+    const next = context.peek()!;
 
     if (next.type === RuleType.ProgramStart) {
+      tokenizer.consume();
       continue;
     }
 
@@ -123,7 +144,7 @@ export const parseWgsl = (source: WGSLSource) => {
       break;
     }
 
-    context.stack.push(ASTNode.create(next.type, next.value, []));
+    context.consume();
     while (reduceRules(context));
   }
 
