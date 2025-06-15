@@ -3,7 +3,7 @@ import { describe, it } from "@std/testing/bdd";
 import { Str } from "../../../../shared/src/mod.ts";
 import { parseWgsl } from "./parseWgsl.ts";
 
-describe.skip("WGSL - Parse", () => {
+describe("WGSL - Parse", () => {
   it("should parse a simple source code", () => {
     const source = Str.trimlines`
     // comment
@@ -18,7 +18,7 @@ describe.skip("WGSL - Parse", () => {
     `);
   });
 
-  it("should tokenize directives", () => {
+  it.only("should tokenize directives", () => {
     const source = Str.trimlines`
     enable f16;
     `;

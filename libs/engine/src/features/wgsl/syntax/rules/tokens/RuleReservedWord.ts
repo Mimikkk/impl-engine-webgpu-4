@@ -2,7 +2,7 @@ import { createMatchToken } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleType } from "../../RuleRegistry.ts";
 
-const enum TokenReserved {
+export const enum TokenReserved {
   NULL = "NULL",
   Self = "Self",
   Abstract = "abstract",

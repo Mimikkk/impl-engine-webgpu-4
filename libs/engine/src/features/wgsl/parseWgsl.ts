@@ -6,10 +6,10 @@ import { RuleLiteral } from "./syntax/rules/tokens/literals/RuleLiteral.ts";
 import { RuleContextDependantName } from "./syntax/rules/tokens/names/RuleContextDependantName.ts";
 import { RuleBlankspace } from "./syntax/rules/tokens/RuleBlankspace.ts";
 import { RuleIdentifier } from "./syntax/rules/tokens/RuleIdentifier.ts";
-import { RuleKeyword } from "./syntax/rules/tokens/RuleKeyword.ts";
+import { RuleKeyword, TokenKeyword } from "./syntax/rules/tokens/RuleKeyword.ts";
 import { RuleReservedWord } from "./syntax/rules/tokens/RuleReservedWord.ts";
-import { RuleSyntacticToken } from "./syntax/rules/tokens/RuleSyntacticToken.ts";
-import { isProgramEnd, type WGSLSource } from "./tokens.ts";
+import { RuleSyntacticToken, TokenSyntactic } from "./syntax/rules/tokens/RuleSyntacticToken.ts";
+import { isProgramEnd, isToken, type WGSLSource } from "./tokens.ts";
 
 const matchToken = composeAlternatives(RuleType.Token, [
   RuleLiteral,
@@ -20,14 +20,15 @@ const matchToken = composeAlternatives(RuleType.Token, [
   RuleIdentifier,
 ]);
 
-const tokenize = function* (
-  source: WGSLSource,
-  lists: TemplateList[],
-): Generator<{ type: RuleType; from: number; to: number; o: any }> {
+type Token = {
+  types: RuleType[];
+  from: number;
+  to: number;
+};
+
+const tokenize = function* (source: WGSLSource, lists: TemplateList[]): Generator<Token> {
   const templateStarts = new Map(lists.map((list) => [list.startAt, list]));
   const templateEnds = new Map(lists.map((list) => [list.endAt, list]));
-
-  yield ({ type: RuleType.ProgramStart, from: 0, to: 0, o: undefined });
 
   let i = 0;
   while (!isProgramEnd(source, i)) {
@@ -37,10 +38,9 @@ const tokenize = function* (
     const templateStart = templateStarts.get(i);
     if (templateStart) {
       yield {
-        type: RuleType.TemplateStart,
+        types: [RuleType.TemplateStart],
         from: templateStart.startAt,
         to: templateStart.endAt + 1,
-        o: templateStart,
       };
 
       i = templateStart.startAt + 1;
@@ -50,10 +50,9 @@ const tokenize = function* (
     const templateEnd = templateEnds.get(i);
     if (templateEnd) {
       yield {
-        type: RuleType.TemplateEnd,
+        types: [RuleType.TemplateEnd],
         from: templateEnd.startAt,
         to: templateEnd.endAt + 1,
-        o: templateEnd,
       };
       i = templateEnd.endAt + 1;
       continue;
@@ -63,17 +62,28 @@ const tokenize = function* (
     if (match) {
       i = match.to;
 
-      yield { type: match.types[0], from: match.from, to: match.to, o: match };
+      yield { types: match.types, from: match.from, to: match.to };
       continue;
     }
 
     console.warn("unconsumed ", { s: source.substring(i) });
-    yield { type: RuleType.Any, from: i, to: i + 1, o: undefined };
+    yield { types: [RuleType.Any], from: i, to: i + 1 };
     i += 1;
   }
-
-  yield ({ type: RuleType.ProgramEnd, from: i, to: i, o: undefined });
 };
+
+export class ASTNode {
+  public static create(type: RuleType, from: number, to: number, children: ASTNode[] = []) {
+    return new ASTNode(type, from, to, children);
+  }
+
+  private constructor(
+    public readonly type: RuleType,
+    public readonly from: number,
+    public readonly to: number,
+    public readonly children: ASTNode[],
+  ) {}
+}
 
 export const parseWgsl = (source: WGSLSource) => {
   source = removeComments(source);
@@ -83,43 +93,128 @@ export const parseWgsl = (source: WGSLSource) => {
   const iterator = tokenizer[Symbol.iterator]();
   let current = iterator.next();
 
-  const tokens: { type: RuleType; from: number; to: number; o: any }[] = [];
+  const stack: ASTNode[] = [];
 
   const peek = () => current.value;
   const consume = () => {
     const token = current.value;
-
     current = iterator.next();
-
     return token;
   };
 
-  const matchEnableRule = (stack: { type: RuleType; from: number; to: number; o: any }[]) => {
-    const top = stack.length;
-    const first = stack[top - 1];
-    console.log("first", first, stack);
-    if (first.type === RuleType.Keyword) {
-      console.log("maybe");
-    }
+  const createReduction = (
+    type: RuleType,
+    size: number,
+    match: (stack: ASTNode[]) => boolean,
+  ) => {
+    return {
+      name: type,
+      valid(stack: ASTNode[]) {
+        return stack.length >= size && match(stack);
+      },
+      match(stack: ASTNode[]) {
+        if (!this.valid(stack)) return;
 
-    return false;
+        const children = stack.slice(-size);
+        const from = children[0].from;
+        const to = children[children.length - 1].to;
+
+        stack.length = stack.length - size;
+        const node = ASTNode.create(type, from, to, children);
+        stack.push(node);
+
+        return true;
+      },
+    };
+  };
+
+  const rules = [
+    createReduction(RuleType.DirectiveEnable, 3, (stack) => {
+      const len = stack.length;
+
+      const enable = stack[len - 3];
+      if (enable.type !== RuleType.Keyword) {
+        return false;
+      }
+
+      if (!isToken(source, enable.from, TokenKeyword.Enable)) {
+        return false;
+      }
+
+      const name = stack[len - 2];
+      if (name.type !== RuleType.EnableExtensionName) {
+        return false;
+      }
+
+      const end = stack[len - 1];
+      if (end.type !== RuleType.Syntactic) {
+        return false;
+      }
+
+      if (!isToken(source, end.from, TokenSyntactic.Semicolon)) {
+        return false;
+      }
+
+      return true;
+    }),
+    createReduction(RuleType.Directive, 1, (stack) => {
+      const len = stack.length;
+      if (len < 1) return false;
+
+      const first = stack[len - 1];
+      if (first.type !== RuleType.DirectiveEnable) {
+        return false;
+      }
+
+      return true;
+    }),
+  ];
+
+  const matchRules = () => {
+    for (let i = 0; i < rules.length; ++i) {
+      const rule = rules[i];
+      const match = rule.match(stack);
+      if (match) return match;
+    }
+    return undefined;
+  };
+
+  const reduce = () => {
+    const match = matchRules();
+    return !!match;
   };
 
   while (!current.done) {
     // SHIFT
+    console.log("shifting");
     const token = peek();
-    tokens.push(token);
-    console.log(token.type, { value: source.substring(token.from, token.to) });
+    const node = ASTNode.create(token.types[token.types.length - 1], token.from, token.to);
+    stack.push(node);
 
-    const match = matchEnableRule(tokens);
-    if (match) {
-      console.log("match", match);
-      // REDUCE
-    } else {
+    // REDUCE
+    while (true) {
+      const match = reduce();
+      if (match) {
+        console.log("reducing");
+      } else {
+        break;
+      }
     }
 
     consume();
   }
 
+  const logTree = (node: ASTNode, depth = 0) => {
+    console.log(
+      `${"  ".repeat(depth)}${node.children.length ? "R" : "T"}[${node.type}] : "${
+        source.substring(node.from, node.to)
+      }"`,
+    );
+    for (const child of node.children) {
+      logTree(child, depth + 1);
+    }
+  };
+
+  logTree(stack[0]);
   return source;
 };

@@ -3,7 +3,7 @@ import { createMatch } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleType } from "../../RuleRegistry.ts";
 
-const enum TokenCommentBlock {
+export const enum TokenCommentBlock {
   // Text: "/*"
   BlockStart = "\u002F\u002A",
   // Text: "*/"

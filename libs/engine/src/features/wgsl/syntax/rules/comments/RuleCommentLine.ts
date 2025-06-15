@@ -4,7 +4,7 @@ import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleType } from "../../RuleRegistry.ts";
 import { RuleLineBreak } from "../tokens/RuleLineBreak.ts";
 
-const enum TokenCommentLine {
+export const enum TokenCommentLine {
   // Text: "//"
   LineStart = "\u002F\u002F",
 }

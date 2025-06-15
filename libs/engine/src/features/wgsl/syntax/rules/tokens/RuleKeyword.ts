@@ -2,7 +2,7 @@ import { createMatchToken } from "../../MatchRule.ts";
 import type { ParseRuleString } from "../../ParseSyntax.ts";
 import { RuleType } from "../../RuleRegistry.ts";
 
-const enum TokenKeyword {
+export const enum TokenKeyword {
   Alias = "alias",
   Break = "break",
   Case = "case",
