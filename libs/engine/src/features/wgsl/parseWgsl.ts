@@ -222,9 +222,11 @@ const rules = [
         i += 1;
         consume();
       }
+
+      return i;
     }
 
-    return i;
+    return;
   }),
 ];
 const reduceRules = (context: ParseContext) => {
