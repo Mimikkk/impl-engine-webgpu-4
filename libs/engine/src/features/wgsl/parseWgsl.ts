@@ -27,6 +27,7 @@ interface ParseContext {
   peek: () => Token | undefined;
   isDone: () => boolean;
   stack: ASTNode[];
+  top: (index: number) => ASTNode | undefined;
 }
 
 const isMatch = (node: Token | undefined, type: RuleType, value?: string): node is Token =>
@@ -46,58 +47,68 @@ const createReduction = (type: RuleType, match: (context: ParseContext) => numbe
 });
 
 const rules = [
-  // enable_extension_list :
-  // | enable_extension_name ( ',' enable_extension_name ) * ',' ?
-  createReduction(RuleType.DirectiveEnableExtensionList, ({ stack }) => {
+  createReduction(RuleType.DirectiveEnableExtensionList, ({ stack, top, peek, consume }) => {
     if (stack.length < 1) return;
 
-    if (!isMatch(stack[stack.length - 1], RuleType.EnableExtensionName)) {
+    let i = 0;
+    if (!isMatch(top(0), RuleType.EnableExtensionName)) {
       return;
     }
 
-    // const next = tokenizer.peek();
-    // if (isMatch(next, RuleType.Syntactic, TokenSyntactic.Comma)) {
-    //   stack.push(ASTNode.create(RuleType.EnableExtensionName, next.value, []));
+    i += 1;
+    if (isMatch(peek(), RuleType.Syntactic, TokenSyntactic.Comma)) {
+      i += 1;
+      consume();
 
-    //   tokenizer.consume();
-    // }
+      while (isMatch(peek(), RuleType.EnableExtensionName)) {
+        i += 1;
+        consume();
 
-    return 1;
+        if (isMatch(peek(), RuleType.Syntactic, TokenSyntactic.Comma)) {
+          i += 1;
+          consume();
+        } else {
+          break;
+        }
+      }
+    }
+
+    return i;
   }),
-  createReduction(RuleType.DirectiveEnable, ({ stack }) => {
+  createReduction(RuleType.DirectiveEnable, ({ stack, top }) => {
     if (stack.length < 3) return;
 
-    const enable = stack[stack.length - 3];
+    const enable = top(2);
     if (!isMatch(enable, RuleType.Keyword, TokenKeyword.Enable)) {
       return;
     }
 
-    const list = stack[stack.length - 2];
+    const list = top(1);
     if (!isMatch(list, RuleType.DirectiveEnableExtensionList)) {
       return;
     }
 
-    const end = stack[stack.length - 1];
+    const end = top(0);
     if (!isMatch(end, RuleType.Syntactic, TokenSyntactic.Semicolon)) {
       return;
     }
 
     return 3;
   }),
-  createReduction(RuleType.Directive, ({ stack }) => {
+  createReduction(RuleType.Directive, ({ stack, top }) => {
     if (stack.length < 1) return;
 
-    const first = stack[stack.length - 1];
+    const first = top(0);
     if (!isMatch(first, RuleType.DirectiveEnable)) {
       return;
     }
 
     return 1;
   }),
-  createReduction(RuleType.TranslationUnit, ({ stack }) => {
-    const first = stack[stack.length - 1];
+  createReduction(RuleType.TranslationUnit, ({ stack, top }) => {
+    if (stack.length < 1) return;
 
-    if (!isMatch(first, RuleType.Directive)) {
+    if (!isMatch(top(0), RuleType.Directive)) {
       return;
     }
 
@@ -129,6 +140,7 @@ export const parseWgsl = (source: WGSLSource) => {
     },
     peek: () => tokenizer.peek(),
     isDone: () => tokenizer.isDone(),
+    top: (index) => context.stack[context.stack.length - 1 - index],
     stack: [],
   };
 
@@ -149,8 +161,7 @@ export const parseWgsl = (source: WGSLSource) => {
   }
 
   logTree(context.stack[0]);
-
-  return "success";
+  return context.stack[0];
 };
 
 const logTree = (node: ASTNode, depth = 0) => {
@@ -160,4 +171,14 @@ const logTree = (node: ASTNode, depth = 0) => {
   for (const child of node.children) {
     logTree(child, depth + 1);
   }
+};
+
+type Tree = { type: RuleType; children: Tree[] } | { type: RuleType; value: string };
+
+export const createNode = (node: Tree): ASTNode => {
+  if ("value" in node) {
+    return ASTNode.create(node.type, node.value, []);
+  }
+
+  return ASTNode.fromChildren(node.type, node.children.map(createNode));
 };
