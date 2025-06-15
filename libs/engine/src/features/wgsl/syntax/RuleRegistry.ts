@@ -8,7 +8,7 @@ import type {
   DirectiveEnable,
   DirectiveEnableExtensionList,
   DirectiveRequires,
-  DirectiveRequiresExtensionList,
+  DirectiveRequiresSoftwareExtensionList,
 } from "../rules/directives/RuleDirective.ts";
 import type { Literal } from "../rules/tokens/literals/RuleLiteral.ts";
 import type { LiteralBool } from "../rules/tokens/literals/RuleLiteralBool.ts";
@@ -17,12 +17,12 @@ import type { LiteralInt, LiteralIntDecimal, LiteralIntHex } from "../rules/toke
 import type { AttributeName } from "../rules/tokens/names/RuleAttributeName.ts";
 import type { BuiltinName } from "../rules/tokens/names/RuleBuiltinName.ts";
 import type { ContextDependantName } from "../rules/tokens/names/RuleContextDependantName.ts";
-import type { DiagnosticSeverityName } from "../rules/tokens/names/RuleDiagnosticSeverityName.ts";
-import type { DiagnosticName } from "../rules/tokens/names/RuleDiangosticName.ts";
+import type { DiagnosticName } from "../rules/tokens/names/RuleDiagnosticName.ts";
 import type { EnableExtensionName } from "../rules/tokens/names/RuleEnableExtensionName.ts";
 import type { InterpolationSamplingName } from "../rules/tokens/names/RuleInterpolationSamplingName.ts";
 import type { InterpolationTypeName } from "../rules/tokens/names/RuleInterpolationTypeName.ts";
-import type { LanguageExtensionName } from "../rules/tokens/names/RuleLanguageExtensionName.ts";
+import type { SeverityControlName } from "../rules/tokens/names/RuleSeverityControlName.ts";
+import type { SoftwareExtensionName } from "../rules/tokens/names/RuleSoftwareExtensionName.ts";
 import type { SwizzleName } from "../rules/tokens/names/RuleSwizzleName.ts";
 import type { BlankspaceToken } from "../rules/tokens/RuleBlankspace.ts";
 import type { Identifier, IdentifierPattern } from "../rules/tokens/RuleIdentifier.ts";
@@ -66,7 +66,7 @@ export const enum RuleType {
   EnableExtensionName = "enable_extension_name",
   InterpolationTypeName = "interpolation_type_name",
   InterpolationSamplingName = "interpolation_sampling_name",
-  LanguageExtensionName = "language_extension_name",
+  SoftwareExtensionName = "software_extension_name",
   SwizzleName = "swizzle_name",
   // Comments
   Comment = "comment",
@@ -86,7 +86,7 @@ export const enum RuleType {
   DirectiveDiagnostic = "directive_diagnostic",
   DirectiveDiagnosticControl = "directive_diagnostic_control",
   DirectiveRequires = "directive_requires",
-  DirectiveRequiresExtensionList = "directive_requires_extension_list",
+  DirectiveRequiresSoftwareExtensionList = "directive_requires_software_extension_list",
   DirectiveEnable = "directive_enable",
   DirectiveEnableExtensionList = "directive_enable_extension_list",
   // Translation Unit
@@ -118,10 +118,10 @@ export type RuleRegistry = {
   attribute_name: AttributeName;
   builtin_name: BuiltinName;
   diagnostic_name: DiagnosticName;
-  diagnostic_severity_name: DiagnosticSeverityName;
+  diagnostic_severity_name: SeverityControlName;
   enable_extension_name: EnableExtensionName;
   interpolation_type_name: InterpolationTypeName;
-  language_extension_name: LanguageExtensionName;
+  software_extension_name: SoftwareExtensionName;
   interpolation_sampling_name: InterpolationSamplingName;
   swizzle_name: SwizzleName;
   /// Comments
@@ -137,7 +137,7 @@ export type RuleRegistry = {
   directive_diagnostic: DirectiveDiagnostic;
   directive_diagnostic_control: DirectiveDiagnosticControl;
   directive_requires: DirectiveRequires;
-  directive_requires_extension_list: DirectiveRequiresExtensionList;
+  directive_requires_software_extension_list: DirectiveRequiresSoftwareExtensionList;
   directive_enable: DirectiveEnable;
   directive_enable_extension_list: DirectiveEnableExtensionList;
 };

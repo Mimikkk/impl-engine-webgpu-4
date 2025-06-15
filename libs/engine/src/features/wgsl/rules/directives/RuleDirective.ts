@@ -18,13 +18,13 @@ ${RuleType.DirectiveDiagnosticControl} :
 export type DirectiveRequires = ParseRuleString<
   `
 ${RuleType.DirectiveRequires} :
-| 'requires' ${RuleType.DirectiveRequiresExtensionList} ';'
+| 'requires' ${RuleType.DirectiveRequiresSoftwareExtensionList} ';'
 `
 >;
 
-export type DirectiveRequiresExtensionList = ParseRuleString<
+export type DirectiveRequiresSoftwareExtensionList = ParseRuleString<
   `
-${RuleType.DirectiveRequiresExtensionList} :
+${RuleType.DirectiveRequiresSoftwareExtensionList} :
 | ${RuleType.DiagnosticName} (','.${RuleType.DiagnosticName}).* (',').?
 `
 >;

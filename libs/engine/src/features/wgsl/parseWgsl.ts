@@ -1,3 +1,4 @@
+import { log } from "node:console";
 import { createTokenizer, type Token } from "./createTokenizer.ts";
 import { removeComments } from "./removeComments.ts";
 import { TokenKeyword } from "./rules/tokens/RuleKeyword.ts";
@@ -95,24 +96,135 @@ const rules = [
 
     return 3;
   }),
+  createReduction(RuleType.DirectiveRequiresSoftwareExtensionList, ({ stack, top, peek, consume }) => {
+    if (stack.length < 1) return;
+
+    let i = 0;
+    if (!isMatch(top(0), RuleType.SoftwareExtensionName)) {
+      return;
+    }
+
+    i += 1;
+    if (isMatch(peek(), RuleType.Syntactic, TokenSyntactic.Comma)) {
+      i += 1;
+      consume();
+
+      while (isMatch(peek(), RuleType.SoftwareExtensionName)) {
+        i += 1;
+        consume();
+
+        if (isMatch(peek(), RuleType.Syntactic, TokenSyntactic.Comma)) {
+          i += 1;
+          consume();
+        } else {
+          break;
+        }
+      }
+    }
+
+    return i;
+  }),
+  createReduction(RuleType.DirectiveRequires, ({ stack, top }) => {
+    if (stack.length < 3) return;
+
+    const diagnostic = top(2);
+    if (!isMatch(diagnostic, RuleType.Keyword, TokenKeyword.Requires)) {
+      return;
+    }
+
+    const list = top(1);
+    if (!isMatch(list, RuleType.DirectiveRequiresSoftwareExtensionList)) {
+      return;
+    }
+
+    const end = top(0);
+    if (!isMatch(end, RuleType.Syntactic, TokenSyntactic.Semicolon)) {
+      return;
+    }
+
+    return 3;
+  }),
+  createReduction(RuleType.DirectiveDiagnosticControl, ({ stack, top, peek, consume }) => {
+    if (stack.length < 5) return;
+
+    if (!isMatch(top(4), RuleType.Syntactic, TokenSyntactic.LeftParenthesis)) {
+      return;
+    }
+
+    if (!isMatch(top(3), RuleType.DiagnosticSeverityName)) {
+      return;
+    }
+
+    if (!isMatch(top(2), RuleType.Syntactic, TokenSyntactic.Comma)) {
+      return;
+    }
+
+    if (!isMatch(top(1), RuleType.DiagnosticName)) {
+      return;
+    }
+
+    if (isMatch(top(0), RuleType.Syntactic, TokenSyntactic.Comma)) {
+      if (isMatch(peek(), RuleType.Syntactic, TokenSyntactic.RightParenthesis)) {
+        consume();
+        return 6;
+      } else {
+        throw new Error("Expected Right Parenthesis after comma.");
+      }
+    } else if (!isMatch(top(0), RuleType.Syntactic, TokenSyntactic.RightParenthesis)) {
+      return;
+    }
+
+    return 5;
+  }),
+  createReduction(RuleType.DirectiveDiagnostic, ({ stack, top }) => {
+    if (stack.length < 3) return;
+
+    const diagnostic = top(2);
+    if (!isMatch(diagnostic, RuleType.Keyword, TokenKeyword.Diagnostic)) {
+      return;
+    }
+
+    const list = top(1);
+    if (!isMatch(list, RuleType.DirectiveDiagnosticControl)) {
+      return;
+    }
+
+    const end = top(0);
+    if (!isMatch(end, RuleType.Syntactic, TokenSyntactic.Semicolon)) {
+      return;
+    }
+
+    return 3;
+  }),
   createReduction(RuleType.Directive, ({ stack, top }) => {
     if (stack.length < 1) return;
 
     const first = top(0);
-    if (!isMatch(first, RuleType.DirectiveEnable)) {
+    if (
+      !isMatch(first, RuleType.DirectiveEnable) &&
+      !isMatch(first, RuleType.DirectiveRequires) &&
+      !isMatch(first, RuleType.DirectiveDiagnostic)
+    ) {
       return;
     }
 
     return 1;
   }),
-  createReduction(RuleType.TranslationUnit, ({ stack, top }) => {
+  createReduction(RuleType.TranslationUnit, ({ stack, top, peek, consume }) => {
     if (stack.length < 1) return;
+    log(stack);
 
-    if (!isMatch(top(0), RuleType.Directive)) {
-      return;
+    let i = 0;
+    if (isMatch(top(0), RuleType.Directive)) {
+      i += 1;
+
+      while (isMatch(peek(), RuleType.Directive)) {
+        i += 1;
+        consume();
+      }
     }
 
-    return 1;
+    return i;
   }),
 ];
 const reduceRules = (context: ParseContext) => {

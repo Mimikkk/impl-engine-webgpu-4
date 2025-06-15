@@ -3,12 +3,12 @@ import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
 import { RuleType } from "../../../syntax/RuleRegistry.ts";
 import { RuleAttributeName } from "./RuleAttributeName.ts";
 import { RuleBuiltinName } from "./RuleBuiltinName.ts";
-import { RuleDiagnosticSeverityName } from "./RuleDiagnosticSeverityName.ts";
-import { RuleDiagnosticName } from "./RuleDiangosticName.ts";
+import { RuleDiagnosticName } from "./RuleDiagnosticName.ts";
 import { RuleEnableExtensionName } from "./RuleEnableExtensionName.ts";
 import { RuleInterpolationSamplingName } from "./RuleInterpolationSamplingName.ts";
 import { RuleInterpolationTypeName } from "./RuleInterpolationTypeName.ts";
-import { RuleLanguageExtensionName } from "./RuleLanguageExtensionName.ts";
+import { RuleSeverityControlName } from "./RuleSeverityControlName.ts";
+import { RuleSoftwareExtensionName } from "./RuleSoftwareExtensionName.ts";
 import { RuleSwizzleName } from "./RuleSwizzleName.ts";
 
 export type ContextDependantName = ParseRuleString<
@@ -21,7 +21,7 @@ ${RuleType.ContextDependantName} :
 | ${RuleType.EnableExtensionName}
 | ${RuleType.InterpolationTypeName}
 | ${RuleType.InterpolationSamplingName}
-| ${RuleType.LanguageExtensionName}
+| ${RuleType.SoftwareExtensionName}
 | ${RuleType.SwizzleName}
 `
 >;
@@ -29,11 +29,11 @@ ${RuleType.ContextDependantName} :
 export const RuleContextDependantName = composeMatchRules(RuleType.ContextDependantName, [
   RuleAttributeName,
   RuleBuiltinName,
-  RuleDiagnosticSeverityName,
+  RuleSeverityControlName,
   RuleDiagnosticName,
   RuleEnableExtensionName,
   RuleInterpolationTypeName,
   RuleInterpolationSamplingName,
-  RuleLanguageExtensionName,
+  RuleSoftwareExtensionName,
   RuleSwizzleName,
 ]);
