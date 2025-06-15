@@ -2,13 +2,13 @@ import { parseTemplateLists, type TemplateList } from "./parseTemplateLists.ts";
 import { removeComments } from "./removeComments.ts";
 import { composeAlternatives } from "./syntax/MatchRule.ts";
 import { RuleType } from "./syntax/RuleRegistry.ts";
-import { RuleLiteral } from "./syntax/rules/tokens/literals/RuleLiteral.ts";
-import { RuleContextDependantName } from "./syntax/rules/tokens/names/RuleContextDependantName.ts";
-import { RuleBlankspace } from "./syntax/rules/tokens/RuleBlankspace.ts";
-import { RuleIdentifier } from "./syntax/rules/tokens/RuleIdentifier.ts";
-import { RuleKeyword, TokenKeyword } from "./syntax/rules/tokens/RuleKeyword.ts";
-import { RuleReservedWord } from "./syntax/rules/tokens/RuleReservedWord.ts";
-import { RuleSyntacticToken, TokenSyntactic } from "./syntax/rules/tokens/RuleSyntacticToken.ts";
+import { RuleLiteral } from "./rules/tokens/literals/RuleLiteral.ts";
+import { RuleContextDependantName } from "./rules/tokens/names/RuleContextDependantName.ts";
+import { RuleBlankspace } from "./rules/tokens/RuleBlankspace.ts";
+import { RuleIdentifier } from "./rules/tokens/RuleIdentifier.ts";
+import { RuleKeyword, TokenKeyword } from "./rules/tokens/RuleKeyword.ts";
+import { RuleReservedWord } from "./rules/tokens/RuleReservedWord.ts";
+import { RuleSyntacticToken, TokenSyntactic } from "./rules/tokens/RuleSyntacticToken.ts";
 import { isProgramEnd, isToken, type WGSLSource } from "./tokens.ts";
 
 const matchToken = composeAlternatives(RuleType.Token, [

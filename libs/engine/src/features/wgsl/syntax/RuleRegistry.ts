@@ -1,6 +1,6 @@
-import type { Comment } from "./rules/comments/RuleComment.ts";
-import type { CommentBlock } from "./rules/comments/RuleCommentBlock.ts";
-import type { CommentLine } from "./rules/comments/RuleCommentLine.ts";
+import type { Comment } from "../rules/comments/RuleComment.ts";
+import type { CommentBlock } from "../rules/comments/RuleCommentBlock.ts";
+import type { CommentLine } from "../rules/comments/RuleCommentLine.ts";
 import type {
   Directive,
   DirectiveDiagnostic,
@@ -9,27 +9,27 @@ import type {
   DirectiveEnableExtensionList,
   DirectiveRequires,
   DirectiveRequiresExtensionList,
-} from "./rules/directives/Directive.ts";
-import type { Literal } from "./rules/tokens/literals/RuleLiteral.ts";
-import type { LiteralBool } from "./rules/tokens/literals/RuleLiteralBool.ts";
-import type { LiteralDecimalFloat, LiteralFloat, LiteralFloatHex } from "./rules/tokens/literals/RuleLiteralFloat.ts";
-import type { LiteralInt, LiteralIntDecimal, LiteralIntHex } from "./rules/tokens/literals/RuleLiteralInt.ts";
-import type { AttributeName } from "./rules/tokens/names/RuleAttributeName.ts";
-import type { BuiltinName } from "./rules/tokens/names/RuleBuiltinName.ts";
-import type { ContextDependantName } from "./rules/tokens/names/RuleContextDependantName.ts";
-import type { DiagnosticSeverityName } from "./rules/tokens/names/RuleDiagnosticSeverityName.ts";
-import type { DiagnosticName } from "./rules/tokens/names/RuleDiangosticName.ts";
-import type { EnableExtensionName } from "./rules/tokens/names/RuleEnableExtensionName.ts";
-import type { InterpolationSamplingName } from "./rules/tokens/names/RuleInterpolationSamplingName.ts";
-import type { InterpolationTypeName } from "./rules/tokens/names/RuleInterpolationTypeName.ts";
-import type { LanguageExtensionName } from "./rules/tokens/names/RuleLanguageExtensionName.ts";
-import type { SwizzleName } from "./rules/tokens/names/RuleSwizzleName.ts";
-import type { BlankspaceToken } from "./rules/tokens/RuleBlankspace.ts";
-import type { Identifier, IdentifierPattern } from "./rules/tokens/RuleIdentifier.ts";
-import type { Keyword } from "./rules/tokens/RuleKeyword.ts";
-import type { LineBreakToken } from "./rules/tokens/RuleLineBreak.ts";
-import type { ReservedWord } from "./rules/tokens/RuleReservedWord.ts";
-import type { SyntacticToken } from "./rules/tokens/RuleSyntacticToken.ts";
+} from "../rules/directives/RuleDirective.ts";
+import type { Literal } from "../rules/tokens/literals/RuleLiteral.ts";
+import type { LiteralBool } from "../rules/tokens/literals/RuleLiteralBool.ts";
+import type { LiteralDecimalFloat, LiteralFloat, LiteralFloatHex } from "../rules/tokens/literals/RuleLiteralFloat.ts";
+import type { LiteralInt, LiteralIntDecimal, LiteralIntHex } from "../rules/tokens/literals/RuleLiteralInt.ts";
+import type { AttributeName } from "../rules/tokens/names/RuleAttributeName.ts";
+import type { BuiltinName } from "../rules/tokens/names/RuleBuiltinName.ts";
+import type { ContextDependantName } from "../rules/tokens/names/RuleContextDependantName.ts";
+import type { DiagnosticSeverityName } from "../rules/tokens/names/RuleDiagnosticSeverityName.ts";
+import type { DiagnosticName } from "../rules/tokens/names/RuleDiangosticName.ts";
+import type { EnableExtensionName } from "../rules/tokens/names/RuleEnableExtensionName.ts";
+import type { InterpolationSamplingName } from "../rules/tokens/names/RuleInterpolationSamplingName.ts";
+import type { InterpolationTypeName } from "../rules/tokens/names/RuleInterpolationTypeName.ts";
+import type { LanguageExtensionName } from "../rules/tokens/names/RuleLanguageExtensionName.ts";
+import type { SwizzleName } from "../rules/tokens/names/RuleSwizzleName.ts";
+import type { BlankspaceToken } from "../rules/tokens/RuleBlankspace.ts";
+import type { Identifier, IdentifierPattern } from "../rules/tokens/RuleIdentifier.ts";
+import type { Keyword } from "../rules/tokens/RuleKeyword.ts";
+import type { LineBreakToken } from "../rules/tokens/RuleLineBreak.ts";
+import type { ReservedWord } from "../rules/tokens/RuleReservedWord.ts";
+import type { SyntacticToken } from "../rules/tokens/RuleSyntacticToken.ts";
 import type { Rule } from "./syntax.ts";
 
 export type ProgramEnd = Rule<{ name: RuleType.ProgramEnd; alternatives: [] }>;

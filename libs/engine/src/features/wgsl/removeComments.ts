@@ -1,4 +1,4 @@
-import { RuleComment } from "./syntax/rules/comments/RuleComment.ts";
+import { RuleComment } from "./rules/comments/RuleComment.ts";
 import { isProgramEnd, removeSourceFromTo, type WGSLSource } from "./tokens.ts";
 
 export const removeComments = (source: WGSLSource): WGSLSource => {
