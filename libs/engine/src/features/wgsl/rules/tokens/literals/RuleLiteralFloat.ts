@@ -1,4 +1,4 @@
-import { composeAlternatives, createMatchRegex } from "../../../syntax/MatchRule.ts";
+import { composeMatchRules, createMatchRegex } from "../../../syntax/MatchRule.ts";
 import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
 import { RuleType } from "../../../syntax/RuleRegistry.ts";
 
@@ -44,7 +44,7 @@ ${RuleType.LiteralFloat} :
 `
 >;
 
-export const RuleFloatLiteral = composeAlternatives(RuleType.LiteralFloat, [
+export const RuleFloatLiteral = composeMatchRules(RuleType.LiteralFloat, [
   RuleDecimalFloatLiteral,
   RuleHexFloatLiteral,
 ]);

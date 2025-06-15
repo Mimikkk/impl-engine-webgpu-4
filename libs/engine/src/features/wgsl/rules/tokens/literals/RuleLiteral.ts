@@ -1,4 +1,4 @@
-import { composeAlternatives } from "../../../syntax/MatchRule.ts";
+import { composeMatchRules } from "../../../syntax/MatchRule.ts";
 import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
 import { RuleType } from "../../../syntax/RuleRegistry.ts";
 import { RuleLiteralBool } from "./RuleLiteralBool.ts";
@@ -14,7 +14,7 @@ ${RuleType.Literal} :
 `
 >;
 
-export const RuleLiteral = composeAlternatives(RuleType.Literal, [
+export const RuleLiteral = composeMatchRules(RuleType.Literal, [
   RuleIntLiteral,
   RuleFloatLiteral,
   RuleLiteralBool,

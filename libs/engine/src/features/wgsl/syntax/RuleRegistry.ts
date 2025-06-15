@@ -89,6 +89,8 @@ export const enum RuleType {
   DirectiveRequiresExtensionList = "directive_requires_extension_list",
   DirectiveEnable = "directive_enable",
   DirectiveEnableExtensionList = "directive_enable_extension_list",
+  // Translation Unit
+  TranslationUnit = "translation_unit",
 }
 
 export type RuleRegistry = {

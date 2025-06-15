@@ -60,15 +60,15 @@ type InferRuleType<T> = T extends MatchRule<infer R> ? R : never;
 type InferRuleTypes<T extends any[]> = T extends [infer R, ...infer RA] ? [InferRuleType<R>, ...InferRuleTypes<RA>]
   : [];
 
-export const composeAlternatives = <const R extends string, const A extends MatchRule<any>[]>(
+export const composeMatchRules = <const R extends string, const A extends MatchRule<any>[]>(
   name: R,
-  alternatives: A,
+  rules: A,
 ): MatchRule<[R, ...InferRuleTypes<A>[number]]> => {
   const rule: MatchRule<[R, ...InferRuleTypes<A>]> = (context) => {
     let best: MatchRuleResult<InferRuleTypes<A>> | undefined;
 
-    for (let i = 0; i < alternatives.length; ++i) {
-      const alternative = alternatives[i];
+    for (let i = 0; i < rules.length; ++i) {
+      const alternative = rules[i];
       const candidate = alternative(context);
 
       if (!candidate) continue;
@@ -78,16 +78,16 @@ export const composeAlternatives = <const R extends string, const A extends Matc
       }
     }
 
-    return best ? createMatchResult([name, ...best.types], context.indexAt, best.size, context.match) : undefined;
+    return best ? createMatchResult([...best.types, name], context.indexAt, best.size, context.match) : undefined;
   };
 
-  rule.matches = (context) => alternatives.some((alternative) => alternative.matches(context));
+  rule.matches = (context) => rules.some((alternative) => alternative.matches(context));
 
   rule.advance = (context) => {
     let bestSize: number | undefined;
 
-    for (let i = 0; i < alternatives.length; ++i) {
-      const alternative = alternatives[i];
+    for (let i = 0; i < rules.length; ++i) {
+      const alternative = rules[i];
       const size = alternative.advance(context);
       if (size === undefined) continue;
       if (bestSize === undefined || bestSize < size) {

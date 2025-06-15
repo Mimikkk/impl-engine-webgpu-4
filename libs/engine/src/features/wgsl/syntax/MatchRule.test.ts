@@ -1,6 +1,6 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
-import { composeAlternatives, createMatch, createMatchRegex, createMatchToken } from "./MatchRule.ts";
+import { composeMatchRules, createMatch, createMatchRegex, createMatchToken } from "./MatchRule.ts";
 
 const enum RuleType {
   A = "a",
@@ -111,7 +111,7 @@ describe("MatchRule", () => {
     });
   });
 
-  describe("composeAlternatives", () => {
+  describe("composeMatchRules", () => {
     it("should match using any of the alternative rules", () => {
       const rule1 = createMatch(RuleType.B, ({ source, indexAt }) => {
         if (source[indexAt] === "1") return 1;
@@ -123,15 +123,15 @@ describe("MatchRule", () => {
         return undefined;
       });
 
-      const composed = composeAlternatives(RuleType.A, [rule1, rule2]);
+      const composed = composeMatchRules(RuleType.A, [rule1, rule2]);
 
       const result1 = composed({ source: "1", indexAt: 0 })!;
       expect(result1).toBeDefined();
-      expect(result1.types).toEqual([RuleType.A, RuleType.B]);
+      expect(result1.types).toEqual([RuleType.B, RuleType.A]);
 
       const result2 = composed({ source: "a", indexAt: 0 })!;
       expect(result2).toBeDefined();
-      expect(result2.types).toEqual([RuleType.A, RuleType.B]);
+      expect(result2.types).toEqual([RuleType.B, RuleType.A]);
     });
 
     it("should use the longest matching alternative", () => {
@@ -145,7 +145,7 @@ describe("MatchRule", () => {
         return undefined;
       });
 
-      const composed = composeAlternatives(RuleType.A, [rule1, rule2]);
+      const composed = composeMatchRules(RuleType.A, [rule1, rule2]);
 
       const result = composed({ source: "1", indexAt: 0 })!;
       expect(result).toBeDefined();
@@ -163,7 +163,7 @@ describe("MatchRule", () => {
         return undefined;
       });
 
-      const composed = composeAlternatives(RuleType.A, [rule1, rule2]);
+      const composed = composeMatchRules(RuleType.A, [rule1, rule2]);
 
       const result = composed({ source: "b", indexAt: 0 });
       expect(result).toBeUndefined();

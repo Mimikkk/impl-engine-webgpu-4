@@ -1,4 +1,4 @@
-import { composeAlternatives } from "../../syntax/MatchRule.ts";
+import { composeMatchRules } from "../../syntax/MatchRule.ts";
 import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
 import { RuleType } from "../../syntax/RuleRegistry.ts";
 import { RuleCommentBlock } from "./RuleCommentBlock.ts";
@@ -12,7 +12,7 @@ ${RuleType.Comment} :
 `
 >;
 
-export const RuleComment = composeAlternatives(RuleType.Comment, [
+export const RuleComment = composeMatchRules(RuleType.Comment, [
   RuleCommentLine,
   RuleCommentBlock,
 ]);

@@ -1,4 +1,4 @@
-import { composeAlternatives } from "../../../syntax/MatchRule.ts";
+import { composeMatchRules } from "../../../syntax/MatchRule.ts";
 import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
 import { RuleType } from "../../../syntax/RuleRegistry.ts";
 import { RuleAttributeName } from "./RuleAttributeName.ts";
@@ -26,7 +26,7 @@ ${RuleType.ContextDependantName} :
 `
 >;
 
-export const RuleContextDependantName = composeAlternatives(RuleType.ContextDependantName, [
+export const RuleContextDependantName = composeMatchRules(RuleType.ContextDependantName, [
   RuleAttributeName,
   RuleBuiltinName,
   RuleDiagnosticSeverityName,

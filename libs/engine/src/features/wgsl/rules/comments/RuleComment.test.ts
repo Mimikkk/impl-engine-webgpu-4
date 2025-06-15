@@ -26,7 +26,7 @@ describe("RuleComment", () => {
       source: "// true /**/",
       expected: "// true /**/",
       indexAt: 0,
-      types: [RuleType.Comment, RuleType.CommentLine],
+      types: [RuleType.CommentLine, RuleType.Comment],
     });
   });
 
@@ -35,7 +35,7 @@ describe("RuleComment", () => {
       source: "/* false */",
       expected: "/* false */",
       indexAt: 0,
-      types: [RuleType.Comment, RuleType.CommentBlock],
+      types: [RuleType.CommentBlock, RuleType.Comment],
     });
   });
 
@@ -44,7 +44,7 @@ describe("RuleComment", () => {
       source: "/* /* false */ */",
       expected: "/* /* false */ */",
       indexAt: 0,
-      types: [RuleType.Comment, RuleType.CommentBlock],
+      types: [RuleType.CommentBlock, RuleType.Comment],
     });
   });
 
@@ -53,7 +53,7 @@ describe("RuleComment", () => {
       source: "/* // false */",
       expected: "/* // false */",
       indexAt: 0,
-      types: [RuleType.Comment, RuleType.CommentBlock],
+      types: [RuleType.CommentBlock, RuleType.Comment],
     });
   });
 
@@ -63,7 +63,7 @@ describe("RuleComment", () => {
       source: "/*\n * false\n */",
       expected: "/*\n * false\n */",
       indexAt: 0,
-      types: [RuleType.Comment, RuleType.CommentBlock],
+      types: [RuleType.CommentBlock, RuleType.Comment],
     });
   });
 
@@ -72,7 +72,7 @@ describe("RuleComment", () => {
       source: "/*\n * false",
       expected: "/*\n * false",
       indexAt: 0,
-      types: [RuleType.Comment, RuleType.CommentBlock],
+      types: [RuleType.CommentBlock, RuleType.Comment],
     });
   });
 

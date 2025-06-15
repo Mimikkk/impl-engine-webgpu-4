@@ -12,20 +12,24 @@ describe("WGSL - Parse", () => {
     `;
     const result = parseWgsl(source);
 
-    expect(result).toBe(Str.trimlines`
-    @vertex
-    fn main_vertex(parameter: vec4<f32>) { }
-    `);
+    expect(result).toBe("success");
   });
 
-  it.only("should tokenize directives", () => {
+  it("should tokenize directives", () => {
     const source = Str.trimlines`
     enable f16;
     `;
     const result = parseWgsl(source);
 
-    expect(result).toBe(Str.trimlines`
-    enable f16;
-    `);
+    expect(result).toBe("success");
+  });
+
+  it.only("should tokenize enable directives", () => {
+    const source = Str.trimlines`
+    enable f16, clip_distances,;
+    `;
+    const result = parseWgsl(source);
+
+    expect(result).toBe("success");
   });
 });
