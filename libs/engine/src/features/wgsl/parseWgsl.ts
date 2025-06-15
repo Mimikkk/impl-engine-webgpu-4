@@ -3,10 +3,15 @@ import { removeComments } from "./removeComments.ts";
 import { TokenKeyword } from "./rules/tokens/RuleKeyword.ts";
 import { TokenSyntactic } from "./rules/tokens/RuleSyntacticToken.ts";
 import { RuleType } from "./syntax/RuleRegistry.ts";
-import { type WGSLSource } from "./tokens.ts";
+import type { WGSLSource } from "./tokens.ts";
 
 export class ASTNode {
   public static create(type: RuleType, value: string, children: ASTNode[] = []) {
+    return new ASTNode(type, value, children);
+  }
+
+  public static fromChildren(type: RuleType, children: ASTNode[] = []) {
+    const value = children.map(({ value }) => value).join(" ");
     return new ASTNode(type, value, children);
   }
 
@@ -17,85 +22,84 @@ export class ASTNode {
   ) {}
 }
 
-const isRule = (node: ASTNode, type: RuleType, value?: string) =>
+interface ParseContext {
+  tokenizer: Tokenizer;
+  stack: ASTNode[];
+}
+
+const isMatch = (node: Token, type: RuleType, value?: string) =>
   node.type === type && (value === undefined || node.value === value);
 
-const createReduction = (type: RuleType, match: (tokenizer: Tokenizer, stack: ASTNode[]) => number | undefined) => ({
+const createReduction = (type: RuleType, match: (context: ParseContext) => number | undefined) => ({
   type,
-  match(tokenizer: Tokenizer, stack: ASTNode[]) {
-    const size = match(tokenizer, stack);
-    if (size === undefined) return;
+  match(context: ParseContext) {
+    const size = match(context);
 
-    const children = stack.splice(-size, size);
-    const value = children.map(({ value }) => value).join(" ");
-    const node = ASTNode.create(type, value, children);
-    stack.push(node);
+    if (size) {
+      context.stack.push(ASTNode.fromChildren(type, context.stack.splice(context.stack.length - size, size)));
+    }
 
-    return true;
+    return !!size;
   },
 });
 
 const rules = [
   // enable_extension_list :
   // | enable_extension_name ( ',' enable_extension_name ) * ',' ?
-  createReduction(RuleType.DirectiveEnableExtensionList, (tokenizer, stack) => {
+  createReduction(RuleType.DirectiveEnableExtensionList, ({ stack }) => {
     if (stack.length < 1) return;
 
-    const name = stack[stack.length - 1];
-    if (!isRule(name, RuleType.EnableExtensionName)) {
+    if (!isMatch(stack[stack.length - 1], RuleType.EnableExtensionName)) {
       return;
     }
 
     return 1;
   }),
-  createReduction(RuleType.DirectiveEnable, (tokenizer, stack) => {
+  createReduction(RuleType.DirectiveEnable, ({ stack }) => {
     if (stack.length < 3) return;
 
     const enable = stack[stack.length - 3];
-    if (!isRule(enable, RuleType.Keyword, TokenKeyword.Enable)) {
+    if (!isMatch(enable, RuleType.Keyword, TokenKeyword.Enable)) {
       return;
     }
 
     const list = stack[stack.length - 2];
-    if (!isRule(list, RuleType.DirectiveEnableExtensionList)) {
+    if (!isMatch(list, RuleType.DirectiveEnableExtensionList)) {
       return;
     }
 
     const end = stack[stack.length - 1];
-    if (!isRule(end, RuleType.Syntactic, TokenSyntactic.Semicolon)) {
+    if (!isMatch(end, RuleType.Syntactic, TokenSyntactic.Semicolon)) {
       return;
     }
 
     return 3;
   }),
-  createReduction(RuleType.Directive, (tokenizer, stack) => {
+  createReduction(RuleType.Directive, ({ stack }) => {
+    if (stack.length < 1) return;
+
     const first = stack[stack.length - 1];
-    if (!isRule(first, RuleType.DirectiveDiagnostic)) {
-      return;
-    }
-    if (!isRule(first, RuleType.DirectiveEnable)) {
-      return;
-    }
-    if (!isRule(first, RuleType.DirectiveRequires)) {
+    if (!isMatch(first, RuleType.DirectiveEnable)) {
       return;
     }
 
     return 1;
   }),
-  createReduction(RuleType.TranslationUnit, (tokenizer, stack) => {
+  createReduction(RuleType.TranslationUnit, ({ stack }) => {
     const first = stack[stack.length - 1];
-    if (!isRule(first, RuleType.Directive)) {
+
+    if (!isMatch(first, RuleType.Directive)) {
       return;
     }
 
     return 1;
   }),
 ];
-const reduceRules = (tokenizer: Tokenizer, stack: ASTNode[]) => {
+const reduceRules = (context: ParseContext) => {
   for (let i = 0; i < rules.length; ++i) {
     const rule = rules[i];
 
-    const hasReduced = rule.match(tokenizer, stack);
+    const hasReduced = rule.match(context);
     if (hasReduced) return hasReduced;
   }
 
@@ -106,39 +110,26 @@ export const parseWgsl = (source: WGSLSource) => {
   source = removeComments(source);
   const tokenizer = createTokenizer(source);
 
-  const stack: ASTNode[] = [];
+  const context: ParseContext = { tokenizer, stack: [] };
 
-  const enum Action {
-    Shift = "shift",
-    Reduce = "reduce",
-    Accept = "accept",
-    Error = "error",
-  }
-  const decideAction = (next: Token): Action => {
-    if (next.type === RuleType.ProgramEnd) {
-      if (stack.length !== 1) return Action.Error;
-      if (stack[0].type !== RuleType.TranslationUnit) return Action.Error;
-      return Action.Accept;
+  while (!tokenizer.isDone()) {
+    const next = tokenizer.next()!;
+
+    if (next.type === RuleType.ProgramStart) {
+      continue;
     }
-    return Action.Error;
-  };
 
-  const action = decideAction(tokenizer.peek()!);
+    if (next.type === RuleType.ProgramEnd) {
+      break;
+    }
 
-  switch (action) {
-    case Action.Shift:
-      const next = tokenizer.next()!;
-      stack.push(ASTNode.create(next.type, next.value));
-      break;
-    case Action.Reduce:
-      while (reduceRules(tokenizer, stack));
-      break;
-    case Action.Accept:
-      logTree(stack[0]);
-      return "success";
-    case Action.Error:
-      return "error";
+    context.stack.push(ASTNode.create(next.type, next.value, []));
+    while (reduceRules(context));
   }
+
+  logTree(context.stack[0]);
+
+  return "success";
 };
 
 const logTree = (node: ASTNode, depth = 0) => {

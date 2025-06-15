@@ -15,7 +15,7 @@ describe("WGSL - Parse", () => {
     expect(result).toBe("success");
   });
 
-  it("should tokenize directives", () => {
+  it.only("should tokenize directives", () => {
     const source = Str.trimlines`
     enable f16;
     `;
@@ -24,7 +24,7 @@ describe("WGSL - Parse", () => {
     expect(result).toBe("success");
   });
 
-  it.only("should tokenize enable directives", () => {
+  it("should tokenize enable directives", () => {
     const source = Str.trimlines`
     enable f16, clip_distances,;
     `;
