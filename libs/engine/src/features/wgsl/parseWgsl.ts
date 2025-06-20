@@ -79,6 +79,45 @@ const logTree = (node: ASTNode, depth = 0) => {
   }
 };
 
+function matchBy(context: ParseContext, options: {
+  optional?: boolean;
+  type: RuleType;
+  value?: string;
+}[]): ASTNode[] | undefined {
+  const nodes: ASTNode[] = [];
+
+  for (let i = 0; i < options.length; i++) {
+    const option = options[i];
+
+    const node = grammar[option.type]?.(context) ?? matchToken(context, option.type, option.value);
+
+    if (!option.optional && !node) return;
+    if (node) nodes.push(node);
+  }
+
+  return nodes;
+}
+
+function createMatchBy(options: {
+  optional?: boolean;
+  type: RuleType;
+  value?: string;
+}[]) {
+  return (context: ParseContext) => matchBy(context, options);
+}
+
+function createMatchOneOf(options: RuleType[]) {
+  return (context: ParseContext) => matchOneOf(context, options);
+}
+
+function matchOneOf(context: ParseContext, options: RuleType[]): ASTNode[] | undefined {
+  for (let i = 0; i < options.length; i++) {
+    const node = grammar[options[i]](context);
+    if (node) return [node];
+  }
+  return;
+}
+
 const createTokenRule = (rule: RuleType) => (context: ParseContext) => matchToken(context, rule);
 const createGroupRule =
   (rule: RuleType, match: (context: ParseContext) => ASTNode[] | undefined) => (context: ParseContext) => {
@@ -88,12 +127,25 @@ const createGroupRule =
   };
 
 type Rule = (context: ParseContext) => ASTNode | undefined;
+
 const grammar: Record<string, Rule> = {
   [RuleType.TranslationUnit]: createGroupRule(RuleType.TranslationUnit, (context) => {
     const nodes: ASTNode[] = [];
 
     while (true) {
       const node = grammar[RuleType.GlobalDirective](context);
+
+      if (node) {
+        nodes.push(node);
+      } else {
+        break;
+      }
+    }
+
+    while (true) {
+      const node = grammar[RuleType.GlobalDeclaration](context) ??
+        grammar[RuleType.GlobalAssert](context) ??
+        matchToken(context, RuleType.Syntactic, TokenSyntactic.Semicolon);
 
       if (node) {
         nodes.push(node);
@@ -187,45 +239,9 @@ const grammar: Record<string, Rule> = {
   [RuleType.DiagnosticSeverityName]: createTokenRule(RuleType.DiagnosticSeverityName),
   [RuleType.DiagnosticName]: createTokenRule(RuleType.DiagnosticName),
   [RuleType.GlobalDeclaration]: createGroupRule(RuleType.GlobalDeclaration, (context) => {
-    return [];
+    return;
+  }),
+  [RuleType.GlobalAssert]: createGroupRule(RuleType.GlobalDeclaration, (context) => {
+    return;
   }),
 };
-
-function matchBy(context: ParseContext, options: {
-  optional?: boolean;
-  type: RuleType;
-  value?: string;
-}[]): ASTNode[] | undefined {
-  const nodes: ASTNode[] = [];
-
-  for (let i = 0; i < options.length; i++) {
-    const option = options[i];
-
-    const node = grammar[option.type]?.(context) ?? matchToken(context, option.type, option.value);
-
-    if (!option.optional && !node) return;
-    if (node) nodes.push(node);
-  }
-
-  return nodes;
-}
-
-function createMatchBy(options: {
-  optional?: boolean;
-  type: RuleType;
-  value?: string;
-}[]) {
-  return (context: ParseContext) => matchBy(context, options);
-}
-
-function createMatchOneOf(options: RuleType[]) {
-  return (context: ParseContext) => matchOneOf(context, options);
-}
-
-function matchOneOf(context: ParseContext, options: RuleType[]): ASTNode[] | undefined {
-  for (let i = 0; i < options.length; i++) {
-    const node = grammar[options[i]](context);
-    if (node) return [node];
-  }
-  return;
-}

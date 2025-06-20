@@ -1,6 +1,7 @@
 import type { Comment } from "../rules/comments/MatchComment.ts";
 import type { CommentBlock } from "../rules/comments/MatchCommentBlock.ts";
 import type { CommentLine } from "../rules/comments/MatchCommentLine.ts";
+import { GlobalAssert } from "../rules/declarations/RuleGlobalAssert.ts";
 import {
   DeclarationFunction,
   DeclarationStruct,
@@ -106,6 +107,8 @@ export const enum RuleType {
   GlobalDeclarationTypeAlias = "global_type_alias_decl",
   DeclarationStruct = "struct_decl",
   DeclarationFunction = "function_decl",
+  // Global Assertions
+  GlobalAssert = "global_assert",
 }
 
 export type RuleRegistry = {
@@ -162,4 +165,6 @@ export type RuleRegistry = {
   global_type_alias_decl: GlobalDeclarationTypeAlias;
   struct_decl: DeclarationStruct;
   function_decl: DeclarationFunction;
+  // Global Assertions
+  global_assert: GlobalAssert;
 };
