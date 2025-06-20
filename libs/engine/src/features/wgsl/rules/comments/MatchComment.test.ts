@@ -1,7 +1,7 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
 import { RuleType } from "../../syntax/RuleRegistry.ts";
-import { RuleComment } from "./RuleComment.ts";
+import { matchComment } from "./MatchComment.ts";
 
 const expectComment = (
   { source, expected, indexAt, types }: {
@@ -11,7 +11,7 @@ const expectComment = (
     types: RuleType[];
   },
 ) => {
-  const result = RuleComment({ source, indexAt })!;
+  const result = matchComment({ source, indexAt })!;
 
   expect(result).toBeDefined();
   expect(result.types).toEqual(types);
@@ -77,7 +77,7 @@ describe("RuleComment", () => {
   });
 
   it("should not match other tokens", () => {
-    const result = RuleComment({ source: "foo", indexAt: 0 });
+    const result = matchComment({ source: "foo", indexAt: 0 });
 
     expect(result).toBeUndefined();
   });

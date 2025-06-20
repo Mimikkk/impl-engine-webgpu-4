@@ -1,6 +1,6 @@
-import { composeMatchRules, createMatchRegex } from "../../../syntax/MatchRule.ts";
-import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
-import { RuleType } from "../../../syntax/RuleRegistry.ts";
+import { composeMatches, createMatchRegex } from "../../syntax/MatchToken.ts";
+import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export type LiteralIntDecimal = ParseRuleString<
   `
@@ -10,7 +10,7 @@ ${RuleType.LiteralIntDecimal} :
 `
 >;
 
-export const RuleDecimalIntLiteral = createMatchRegex(RuleType.LiteralIntDecimal, [
+export const matchTokenDecimalIntLiteral = createMatchRegex(RuleType.LiteralIntDecimal, [
   /0[iu]?/y,
   /[1-9][0-9]*[iu]?/y,
 ]);
@@ -22,7 +22,7 @@ ${RuleType.LiteralIntHex} :
 `
 >;
 
-export const RuleHexIntLiteral = createMatchRegex(
+export const matchTokenHexIntLiteral = createMatchRegex(
   RuleType.LiteralIntHex,
   [/0[xX][0-9a-fA-F]+[iu]?/y],
 );
@@ -35,7 +35,7 @@ ${RuleType.LiteralInt} :
 `
 >;
 
-export const RuleIntLiteral = composeMatchRules(RuleType.LiteralInt, [
-  RuleDecimalIntLiteral,
-  RuleHexIntLiteral,
+export const matchTokenIntLiteral = composeMatches(RuleType.LiteralInt, [
+  matchTokenDecimalIntLiteral,
+  matchTokenHexIntLiteral,
 ]);

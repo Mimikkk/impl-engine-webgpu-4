@@ -1,6 +1,6 @@
-import { createMatchToken } from "../../../syntax/MatchRule.ts";
-import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
-import { RuleType } from "../../../syntax/RuleRegistry.ts";
+import { createMatchToken } from "../../syntax/MatchToken.ts";
+import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export const enum TokenAttributeName {
   Align = "align",
@@ -63,4 +63,4 @@ ${RuleType.AttributeName} :
 `
 >;
 
-export const RuleAttributeName = createMatchToken(RuleType.AttributeName, attributeNames);
+export const matchTokenAttributeName = createMatchToken(RuleType.AttributeName, attributeNames);

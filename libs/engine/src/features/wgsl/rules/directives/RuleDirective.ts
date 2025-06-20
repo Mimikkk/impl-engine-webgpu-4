@@ -25,7 +25,7 @@ ${RuleType.DirectiveRequires} :
 export type DirectiveRequiresSoftwareExtensionList = ParseRuleString<
   `
 ${RuleType.DirectiveRequiresSoftwareExtensionList} :
-| ${RuleType.DiagnosticName} (','.${RuleType.DiagnosticName}).* (',').?
+| ${RuleType.SoftwareExtensionName} (','.${RuleType.SoftwareExtensionName}).* (',').?
 `
 >;
 
@@ -42,9 +42,9 @@ ${RuleType.DirectiveEnableExtensionList} :
 `
 >;
 
-export type Directive = ParseRuleString<
+export type GlobalDirective = ParseRuleString<
   `
-${RuleType.Directive} :
+${RuleType.GlobalDirective} :
 | ${RuleType.DirectiveDiagnostic}
 | ${RuleType.DirectiveRequires}
 | ${RuleType.DirectiveEnable}

@@ -1,6 +1,6 @@
-import { createMatchToken } from "../../syntax/MatchRule.ts";
-import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
-import { RuleType } from "../../syntax/RuleRegistry.ts";
+import { createMatchToken } from "../syntax/MatchToken.ts";
+import type { ParseRuleString } from "../syntax/ParseSyntax.ts";
+import { RuleType } from "../syntax/RuleRegistry.ts";
 export const enum TokenBlankspace {
   // Text: " "
   Space = "\u0020",
@@ -57,4 +57,4 @@ ${RuleType.Blankspace} :
 `
 >;
 
-export const RuleBlankspace = createMatchToken(RuleType.Blankspace, blankspaces);
+export const matchTokenBlankspace = createMatchToken(RuleType.Blankspace, blankspaces);

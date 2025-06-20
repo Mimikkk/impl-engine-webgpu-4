@@ -1,8 +1,8 @@
-import { RuleComment } from "./rules/comments/RuleComment.ts";
-import { RuleBlankspace } from "./rules/tokens/RuleBlankspace.ts";
-import { RuleIdentifierPattern } from "./rules/tokens/RuleIdentifier.ts";
-import { RuleLiteral } from "./rules/tokens/literals/RuleLiteral.ts";
-import { composeMatchRules } from "./syntax/MatchRule.ts";
+import { matchComment } from "./rules/comments/MatchComment.ts";
+import { matchTokenBlankspace } from "./tokens/MatchTokenBlankspace.ts";
+import { RuleIdentifierPattern } from "./tokens/MatchTokenIdentifier.ts";
+import { matchTokenLiteral } from "./tokens/literals/MatchTokenLiteral.ts";
+import { composeMatches } from "./syntax/MatchToken.ts";
 import { RuleType } from "./syntax/RuleRegistry.ts";
 import { isProgramEnd, type WGSLSource } from "./tokens.ts";
 
@@ -19,11 +19,11 @@ export interface TemplateList {
   endAt: number;
 }
 
-const matchBlankOrComment = composeMatchRules(RuleType.Any, [RuleBlankspace, RuleComment]);
-const matchBlankOrCommentOrLiteral = composeMatchRules(RuleType.Any, [
-  RuleBlankspace,
-  RuleComment,
-  RuleLiteral,
+const matchBlankOrComment = composeMatches(RuleType.Any, [matchTokenBlankspace, matchComment]);
+const matchBlankOrCommentOrLiteral = composeMatches(RuleType.Any, [
+  matchTokenBlankspace,
+  matchComment,
+  matchTokenLiteral,
 ]);
 export const parseTemplateLists = (source: WGSLSource): TemplateList[] => {
   const candidates: UnclosedCandidate[] = [];

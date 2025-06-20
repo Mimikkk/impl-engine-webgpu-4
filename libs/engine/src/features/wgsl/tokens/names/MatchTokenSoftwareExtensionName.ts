@@ -1,6 +1,6 @@
-import { createMatchToken } from "../../../syntax/MatchRule.ts";
-import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
-import { RuleType } from "../../../syntax/RuleRegistry.ts";
+import { createMatchToken } from "../../syntax/MatchToken.ts";
+import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export const enum TokenSoftwareExtensionName {
   ReadonlyAndReadwriteStorageTextures = "readonly_and_readwrite_storage_textures",
@@ -26,7 +26,7 @@ ${RuleType.SoftwareExtensionName} :
 `
 >;
 
-export const RuleSoftwareExtensionName = createMatchToken(
+export const matchTokenSoftwareExtensionName = createMatchToken(
   RuleType.SoftwareExtensionName,
   softwareExtensionNames,
 );

@@ -1,22 +1,22 @@
 import { parseTemplateLists, type TemplateList } from "./parseTemplateLists.ts";
-import { RuleLiteral } from "./rules/tokens/literals/RuleLiteral.ts";
-import { RuleContextDependantName } from "./rules/tokens/names/RuleContextDependantName.ts";
-import { RuleBlankspace } from "./rules/tokens/RuleBlankspace.ts";
-import { RuleIdentifier } from "./rules/tokens/RuleIdentifier.ts";
-import { RuleKeyword } from "./rules/tokens/RuleKeyword.ts";
-import { RuleReservedWord } from "./rules/tokens/RuleReservedWord.ts";
-import { RuleSyntacticToken } from "./rules/tokens/RuleSyntacticToken.ts";
-import { composeMatchRules } from "./syntax/MatchRule.ts";
+import { composeMatches } from "./syntax/MatchToken.ts";
 import { RuleType } from "./syntax/RuleRegistry.ts";
 import { isProgramEnd, type WGSLSource } from "./tokens.ts";
+import { matchTokenLiteral } from "./tokens/literals/MatchTokenLiteral.ts";
+import { matchTokenBlankspace } from "./tokens/MatchTokenBlankspace.ts";
+import { matchTokenIdentifier } from "./tokens/MatchTokenIdentifier.ts";
+import { matchTokenKeyword } from "./tokens/MatchTokenKeyword.ts";
+import { matchTokenReservedWord } from "./tokens/MatchTokenReservedWord.ts";
+import { matchTokenSyntacticToken } from "./tokens/MatchTokenSyntacticToken.ts";
+import { matchTokenContextDependantName } from "./tokens/names/MatchTokenContextDependantName.ts";
 
-const matchToken = composeMatchRules(RuleType.Token, [
-  RuleLiteral,
-  RuleKeyword,
-  RuleReservedWord,
-  RuleSyntacticToken,
-  RuleContextDependantName,
-  RuleIdentifier,
+const matchToken = composeMatches(RuleType.Token, [
+  matchTokenLiteral,
+  matchTokenKeyword,
+  matchTokenReservedWord,
+  matchTokenSyntacticToken,
+  matchTokenContextDependantName,
+  matchTokenIdentifier,
 ]);
 export type Token = { type: RuleType; value: string };
 
@@ -28,7 +28,7 @@ const tokenize = function* (source: WGSLSource, lists: TemplateList[]): Generato
 
   let i = 0;
   while (!isProgramEnd(source, i)) {
-    const size = RuleBlankspace.advance({ source, indexAt: i });
+    const size = matchTokenBlankspace.advance({ source, indexAt: i });
     if (size) i += size;
 
     const templateStart = templateStarts.get(i);

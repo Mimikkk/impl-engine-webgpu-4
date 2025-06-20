@@ -1,6 +1,6 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
-import { composeMatchRules, createMatch, createMatchRegex, createMatchToken } from "./MatchRule.ts";
+import { composeMatches, createMatch, createMatchRegex, createMatchToken } from "./MatchToken.ts";
 
 const enum RuleType {
   A = "a",
@@ -123,7 +123,7 @@ describe("MatchRule", () => {
         return undefined;
       });
 
-      const composed = composeMatchRules(RuleType.A, [rule1, rule2]);
+      const composed = composeMatches(RuleType.A, [rule1, rule2]);
 
       const result1 = composed({ source: "1", indexAt: 0 })!;
       expect(result1).toBeDefined();
@@ -145,7 +145,7 @@ describe("MatchRule", () => {
         return undefined;
       });
 
-      const composed = composeMatchRules(RuleType.A, [rule1, rule2]);
+      const composed = composeMatches(RuleType.A, [rule1, rule2]);
 
       const result = composed({ source: "1", indexAt: 0 })!;
       expect(result).toBeDefined();
@@ -163,7 +163,7 @@ describe("MatchRule", () => {
         return undefined;
       });
 
-      const composed = composeMatchRules(RuleType.A, [rule1, rule2]);
+      const composed = composeMatches(RuleType.A, [rule1, rule2]);
 
       const result = composed({ source: "b", indexAt: 0 });
       expect(result).toBeUndefined();

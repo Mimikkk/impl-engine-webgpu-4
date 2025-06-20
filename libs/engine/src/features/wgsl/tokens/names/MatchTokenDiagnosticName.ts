@@ -1,6 +1,6 @@
-import { createMatchToken } from "../../../syntax/MatchRule.ts";
-import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
-import { RuleType } from "../../../syntax/RuleRegistry.ts";
+import { createMatchToken } from "../../syntax/MatchToken.ts";
+import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export const enum TokenDiagnosticName {
   DerivativeUniformity = "derivative_uniformity",
@@ -20,4 +20,4 @@ ${RuleType.DiagnosticName} :
 `
 >;
 
-export const RuleDiagnosticName = createMatchToken(RuleType.DiagnosticName, diagnosticNames);
+export const matchTokenDiagnosticName = createMatchToken(RuleType.DiagnosticName, diagnosticNames);

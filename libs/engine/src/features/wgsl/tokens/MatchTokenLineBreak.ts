@@ -1,6 +1,6 @@
-import { createMatchToken } from "../../syntax/MatchRule.ts";
-import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
-import { RuleType } from "../../syntax/RuleRegistry.ts";
+import { createMatchToken } from "../syntax/MatchToken.ts";
+import type { ParseRuleString } from "../syntax/ParseSyntax.ts";
+import { RuleType } from "../syntax/RuleRegistry.ts";
 
 export const enum TokenLineBreak {
   // Text: "\n"
@@ -46,4 +46,4 @@ ${RuleType.LineBreak} :
 `
 >;
 
-export const RuleLineBreak = createMatchToken(RuleType.LineBreak, linebreaks);
+export const matchTokenLineBreak = createMatchToken(RuleType.LineBreak, linebreaks);

@@ -1,6 +1,6 @@
-import { createMatchRegex } from "../../../syntax/MatchRule.ts";
-import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
-import { RuleType } from "../../../syntax/RuleRegistry.ts";
+import { createMatchRegex } from "../../syntax/MatchToken.ts";
+import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export type SwizzleName = ParseRuleString<
   `
@@ -16,7 +16,7 @@ ${RuleType.SwizzleName} :
 `
 >;
 
-export const RuleSwizzleName = createMatchRegex(RuleType.SwizzleName, [
+export const matchTokenSwizzleName = createMatchRegex(RuleType.SwizzleName, [
   /[rgba]{1,4}/y,
   /[xyzw]{1,4}/y,
 ]);

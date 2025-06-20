@@ -1,11 +1,11 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
-import { RuleType } from "../../../syntax/RuleRegistry.ts";
-import { RuleLiteralBool } from "./RuleLiteralBool.ts";
+import { RuleType } from "../../syntax/RuleRegistry.ts";
+import { matchTokenLiteralBool } from "./MatchTokenLiteralBool.ts";
 
 describe("RuleLiteralBool", () => {
   it("should match true", () => {
-    const result = RuleLiteralBool({ source: "true", indexAt: 0 })!;
+    const result = matchTokenLiteralBool({ source: "true", indexAt: 0 })!;
 
     expect(result).toBeDefined();
     expect(result.types).toEqual([RuleType.LiteralBool]);
@@ -14,7 +14,7 @@ describe("RuleLiteralBool", () => {
   });
 
   it("should match false", () => {
-    const result = RuleLiteralBool({ source: "false", indexAt: 0 })!;
+    const result = matchTokenLiteralBool({ source: "false", indexAt: 0 })!;
 
     expect(result).toBeDefined();
     expect(result.types).toEqual([RuleType.LiteralBool]);
@@ -23,7 +23,7 @@ describe("RuleLiteralBool", () => {
   });
 
   it("should not match other tokens", () => {
-    const result = RuleLiteralBool({ source: "foo", indexAt: 0 });
+    const result = matchTokenLiteralBool({ source: "foo", indexAt: 0 });
 
     expect(result).toBeUndefined();
   });

@@ -1,6 +1,6 @@
-import { createMatchToken } from "../../../syntax/MatchRule.ts";
-import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
-import { RuleType } from "../../../syntax/RuleRegistry.ts";
+import { createMatchToken } from "../../syntax/MatchToken.ts";
+import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export const enum TokenLiteralBool {
   True = "true",
@@ -17,4 +17,4 @@ ${RuleType.LiteralBool} :
 
 const booleans = [TokenLiteralBool.True, TokenLiteralBool.False];
 
-export const RuleLiteralBool = createMatchToken(RuleType.LiteralBool, booleans);
+export const matchTokenLiteralBool = createMatchToken(RuleType.LiteralBool, booleans);

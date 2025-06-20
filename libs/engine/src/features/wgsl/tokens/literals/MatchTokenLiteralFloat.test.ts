@@ -1,7 +1,11 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
-import { RuleType } from "../../../syntax/RuleRegistry.ts";
-import { RuleDecimalFloatLiteral, RuleFloatLiteral, RuleHexFloatLiteral } from "./RuleLiteralFloat.ts";
+import { RuleType } from "../../syntax/RuleRegistry.ts";
+import {
+  matchTokenDecimalFloatLiteral,
+  matchTokenFloatLiteral,
+  matchTokenHexFloatLiteral,
+} from "./MatchTokenLiteralFloat.ts";
 
 describe("RuleDecimalFloatLiteral", () => {
   describe("Zero with suffix patterns", () => {
@@ -12,7 +16,7 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenDecimalFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
@@ -35,7 +39,7 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenDecimalFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
@@ -64,7 +68,7 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenDecimalFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
@@ -89,7 +93,7 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenDecimalFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
@@ -135,7 +139,7 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenDecimalFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
@@ -159,7 +163,7 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenDecimalFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
@@ -189,7 +193,7 @@ describe("RuleDecimalFloatLiteral", () => {
 
     for (const { source, reason } of cases) {
       it(`should not match ${source} (${reason})`, () => {
-        const result = RuleDecimalFloatLiteral({ source, indexAt: 0 });
+        const result = matchTokenDecimalFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeUndefined();
       });
@@ -199,7 +203,7 @@ describe("RuleDecimalFloatLiteral", () => {
   describe("Position-based matching", () => {
     it("should match at different positions in source", () => {
       const source = "foo 1.23f bar";
-      const result = RuleDecimalFloatLiteral({ source, indexAt: 4 })!;
+      const result = matchTokenDecimalFloatLiteral({ source, indexAt: 4 })!;
 
       expect(result).toBeDefined();
       expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
@@ -209,14 +213,14 @@ describe("RuleDecimalFloatLiteral", () => {
 
     it("should not match when there are no more characters", () => {
       const source = "1.23f";
-      const result = RuleDecimalFloatLiteral({ source, indexAt: 5 });
+      const result = matchTokenDecimalFloatLiteral({ source, indexAt: 5 });
 
       expect(result).toBeUndefined();
     });
 
     it("should handle partial matches correctly", () => {
       const source = "1.23f_suffix";
-      const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
+      const result = matchTokenDecimalFloatLiteral({ source, indexAt: 0 })!;
 
       expect(result).toBeDefined();
       expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
@@ -228,7 +232,7 @@ describe("RuleDecimalFloatLiteral", () => {
   describe("Longest match selection", () => {
     it("should prefer longer matches when multiple patterns apply", () => {
       const source = "0f";
-      const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
+      const result = matchTokenDecimalFloatLiteral({ source, indexAt: 0 })!;
 
       expect(result).toBeDefined();
       expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
@@ -238,7 +242,7 @@ describe("RuleDecimalFloatLiteral", () => {
 
     it("should handle overlapping pattern preferences correctly", () => {
       const source = "123f";
-      const result = RuleDecimalFloatLiteral({ source, indexAt: 0 })!;
+      const result = matchTokenDecimalFloatLiteral({ source, indexAt: 0 })!;
 
       expect(result).toBeDefined();
       expect(result.types).toEqual([RuleType.LiteralFloatDecimal]);
@@ -269,7 +273,7 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenHexFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatHex]);
@@ -295,7 +299,7 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenHexFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatHex]);
@@ -317,7 +321,7 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 });
+        const result = matchTokenHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
         expect(result?.types).toEqual([RuleType.LiteralFloatHex]);
@@ -346,7 +350,7 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenHexFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatHex]);
@@ -369,7 +373,7 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 });
+        const result = matchTokenHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeDefined();
         expect(result?.types).toEqual([RuleType.LiteralFloatHex]);
@@ -391,7 +395,7 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenHexFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatHex]);
@@ -422,7 +426,7 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenHexFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatHex]);
@@ -446,7 +450,7 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, expected } of cases) {
       it(`should match ${source}`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenHexFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatHex]);
@@ -472,7 +476,7 @@ describe("RuleHexFloatLiteral", () => {
 
     for (const { source, reason } of cases) {
       it(`should not match ${source} (${reason})`, () => {
-        const result = RuleHexFloatLiteral({ source, indexAt: 0 });
+        const result = matchTokenHexFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeUndefined();
       });
@@ -482,7 +486,7 @@ describe("RuleHexFloatLiteral", () => {
   describe("Position-based matching", () => {
     it("should match at different positions in source", () => {
       const source = "foo 0x1.2p3 bar";
-      const result = RuleHexFloatLiteral({ source, indexAt: 4 })!;
+      const result = matchTokenHexFloatLiteral({ source, indexAt: 4 })!;
 
       expect(result).toBeDefined();
       expect(result.types).toEqual([RuleType.LiteralFloatHex]);
@@ -492,7 +496,7 @@ describe("RuleHexFloatLiteral", () => {
 
     it("should handle partial matches correctly", () => {
       const source = "0x1.2p3_suffix";
-      const result = RuleHexFloatLiteral({ source, indexAt: 0 })!;
+      const result = matchTokenHexFloatLiteral({ source, indexAt: 0 })!;
 
       expect(result).toBeDefined();
       expect(result.types).toEqual([RuleType.LiteralFloatHex]);
@@ -513,7 +517,7 @@ describe("RuleFloatLiteral", () => {
 
     for (const { source, expected, type } of cases) {
       it(`should match ${type} ${source}`, () => {
-        const result = RuleFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatDecimal, RuleType.LiteralFloat]);
@@ -534,7 +538,7 @@ describe("RuleFloatLiteral", () => {
 
     for (const { source, expected, type } of cases) {
       it(`should match ${type} ${source}`, () => {
-        const result = RuleFloatLiteral({ source, indexAt: 0 })!;
+        const result = matchTokenFloatLiteral({ source, indexAt: 0 })!;
 
         expect(result).toBeDefined();
         expect(result.types).toEqual([RuleType.LiteralFloatHex, RuleType.LiteralFloat]);
@@ -555,7 +559,7 @@ describe("RuleFloatLiteral", () => {
 
     for (const { source, reason } of cases) {
       it(`should not match ${source} (${reason})`, () => {
-        const result = RuleFloatLiteral({ source, indexAt: 0 });
+        const result = matchTokenFloatLiteral({ source, indexAt: 0 });
 
         expect(result).toBeUndefined();
       });

@@ -60,7 +60,7 @@ type InferRuleType<T> = T extends MatchRule<infer R> ? R : never;
 type InferRuleTypes<T extends any[]> = T extends [infer R, ...infer RA] ? [InferRuleType<R>, ...InferRuleTypes<RA>]
   : [];
 
-export const composeMatchRules = <const R extends string, const A extends MatchRule<any>[]>(
+export const composeMatches = <const R extends string, const A extends MatchRule<any>[]>(
   name: R,
   rules: A,
 ): MatchRule<[R, ...InferRuleTypes<A>[number]]> => {

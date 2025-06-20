@@ -1,35 +1,35 @@
-import type { Comment } from "../rules/comments/RuleComment.ts";
-import type { CommentBlock } from "../rules/comments/RuleCommentBlock.ts";
-import type { CommentLine } from "../rules/comments/RuleCommentLine.ts";
+import type { Comment } from "../rules/comments/MatchComment.ts";
+import type { CommentBlock } from "../rules/comments/MatchCommentBlock.ts";
+import type { CommentLine } from "../rules/comments/MatchCommentLine.ts";
 import type {
-  Directive,
   DirectiveDiagnostic,
   DirectiveDiagnosticControl,
   DirectiveEnable,
   DirectiveEnableExtensionList,
   DirectiveRequires,
   DirectiveRequiresSoftwareExtensionList,
+  GlobalDirective,
 } from "../rules/directives/RuleDirective.ts";
-import type { Literal } from "../rules/tokens/literals/RuleLiteral.ts";
-import type { LiteralBool } from "../rules/tokens/literals/RuleLiteralBool.ts";
-import type { LiteralDecimalFloat, LiteralFloat, LiteralFloatHex } from "../rules/tokens/literals/RuleLiteralFloat.ts";
-import type { LiteralInt, LiteralIntDecimal, LiteralIntHex } from "../rules/tokens/literals/RuleLiteralInt.ts";
-import type { AttributeName } from "../rules/tokens/names/RuleAttributeName.ts";
-import type { BuiltinName } from "../rules/tokens/names/RuleBuiltinName.ts";
-import type { ContextDependantName } from "../rules/tokens/names/RuleContextDependantName.ts";
-import type { DiagnosticName } from "../rules/tokens/names/RuleDiagnosticName.ts";
-import type { EnableExtensionName } from "../rules/tokens/names/RuleEnableExtensionName.ts";
-import type { InterpolationSamplingName } from "../rules/tokens/names/RuleInterpolationSamplingName.ts";
-import type { InterpolationTypeName } from "../rules/tokens/names/RuleInterpolationTypeName.ts";
-import type { SeverityControlName } from "../rules/tokens/names/RuleSeverityControlName.ts";
-import type { SoftwareExtensionName } from "../rules/tokens/names/RuleSoftwareExtensionName.ts";
-import type { SwizzleName } from "../rules/tokens/names/RuleSwizzleName.ts";
-import type { BlankspaceToken } from "../rules/tokens/RuleBlankspace.ts";
-import type { Identifier, IdentifierPattern } from "../rules/tokens/RuleIdentifier.ts";
-import type { Keyword } from "../rules/tokens/RuleKeyword.ts";
-import type { LineBreakToken } from "../rules/tokens/RuleLineBreak.ts";
-import type { ReservedWord } from "../rules/tokens/RuleReservedWord.ts";
-import type { SyntacticToken } from "../rules/tokens/RuleSyntacticToken.ts";
+import type { Literal } from "../tokens/literals/MatchTokenLiteral.ts";
+import type { LiteralBool } from "../tokens/literals/MatchTokenLiteralBool.ts";
+import type { LiteralDecimalFloat, LiteralFloat, LiteralFloatHex } from "../tokens/literals/MatchTokenLiteralFloat.ts";
+import type { LiteralInt, LiteralIntDecimal, LiteralIntHex } from "../tokens/literals/MatchTokenLiteralInt.ts";
+import type { BlankspaceToken } from "../tokens/MatchTokenBlankspace.ts";
+import type { Identifier, IdentifierPattern } from "../tokens/MatchTokenIdentifier.ts";
+import type { Keyword } from "../tokens/MatchTokenKeyword.ts";
+import type { LineBreakToken } from "../tokens/MatchTokenLineBreak.ts";
+import type { ReservedWord } from "../tokens/MatchTokenReservedWord.ts";
+import type { SyntacticToken } from "../tokens/MatchTokenSyntacticToken.ts";
+import type { AttributeName } from "../tokens/names/MatchTokenAttributeName.ts";
+import type { BuiltinName } from "../tokens/names/MatchTokenBuiltinName.ts";
+import type { ContextDependantName } from "../tokens/names/MatchTokenContextDependantName.ts";
+import type { DiagnosticName } from "../tokens/names/MatchTokenDiagnosticName.ts";
+import type { EnableExtensionName } from "../tokens/names/MatchTokenEnableExtensionName.ts";
+import type { InterpolationSamplingName } from "../tokens/names/MatchTokenInterpolationSamplingName.ts";
+import type { InterpolationTypeName } from "../tokens/names/MatchTokenInterpolationTypeName.ts";
+import type { SeverityControlName } from "../tokens/names/MatchTokenSeverityControlName.ts";
+import type { SoftwareExtensionName } from "../tokens/names/MatchTokenSoftwareExtensionName.ts";
+import type { SwizzleName } from "../tokens/names/MatchTokenSwizzleName.ts";
 import type { Rule } from "./syntax.ts";
 
 export type ProgramEnd = Rule<{ name: RuleType.ProgramEnd; alternatives: [] }>;
@@ -82,7 +82,7 @@ export const enum RuleType {
   TemplateEnd = "_template_end",
   DisambiguateTemplate = "_disambiguate_template",
   /// Directives
-  Directive = "global_directive",
+  GlobalDirective = "global_directive",
   DirectiveDiagnostic = "directive_diagnostic",
   DirectiveDiagnosticControl = "directive_diagnostic_control",
   DirectiveRequires = "directive_requires",
@@ -133,7 +133,7 @@ export type RuleRegistry = {
   _any: Any;
   _unknown: Unknown;
   // Directives
-  global_directive: Directive;
+  global_directive: GlobalDirective;
   directive_diagnostic: DirectiveDiagnostic;
   directive_diagnostic_control: DirectiveDiagnosticControl;
   directive_requires: DirectiveRequires;

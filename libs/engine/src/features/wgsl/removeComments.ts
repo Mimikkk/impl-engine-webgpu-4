@@ -1,4 +1,4 @@
-import { RuleComment } from "./rules/comments/RuleComment.ts";
+import { matchComment } from "./rules/comments/MatchComment.ts";
 import { isProgramEnd, removeSourceFromTo, type WGSLSource } from "./tokens.ts";
 
 export const removeComments = (source: WGSLSource): WGSLSource => {
@@ -7,12 +7,12 @@ export const removeComments = (source: WGSLSource): WGSLSource => {
   const comments: { from: number; to: number }[] = [];
 
   while (!isProgramEnd(source, context.indexAt)) {
-    let match = RuleComment(context);
+    let match = matchComment(context);
     while (match) {
       comments.push(match);
       context.indexAt = match.to;
 
-      match = RuleComment(context);
+      match = matchComment(context);
     }
 
     context.indexAt += 1;

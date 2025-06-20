@@ -1,6 +1,6 @@
-import { createMatchToken } from "../../../syntax/MatchRule.ts";
-import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
-import { RuleType } from "../../../syntax/RuleRegistry.ts";
+import { createMatchToken } from "../../syntax/MatchToken.ts";
+import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export const enum TokenInterpolationTypeName {
   Perspective = "perspective",
@@ -23,4 +23,4 @@ ${RuleType.InterpolationTypeName} :
 `
 >;
 
-export const RuleInterpolationTypeName = createMatchToken(RuleType.InterpolationTypeName, interpolationTypeNames);
+export const matchTokenInterpolationTypeName = createMatchToken(RuleType.InterpolationTypeName, interpolationTypeNames);

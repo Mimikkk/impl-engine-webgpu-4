@@ -1,7 +1,7 @@
 import { expect } from "@std/expect";
 import { describe, it } from "@std/testing/bdd";
-import { RuleType } from "../../../syntax/RuleRegistry.ts";
-import { RuleDecimalIntLiteral, RuleHexIntLiteral, RuleIntLiteral } from "./RuleLiteralInt.ts";
+import { RuleType } from "../../syntax/RuleRegistry.ts";
+import { matchTokenDecimalIntLiteral, matchTokenHexIntLiteral, matchTokenIntLiteral } from "./MatchTokenLiteralInt.ts";
 
 describe("RuleLiteralInt", () => {
   describe("Decimal Int Literal", () => {
@@ -18,7 +18,7 @@ describe("RuleLiteralInt", () => {
 
       for (const { source, expected } of cases) {
         it(`should match ${source}`, () => {
-          const result = RuleDecimalIntLiteral({ source, indexAt: 0 });
+          const result = matchTokenDecimalIntLiteral({ source, indexAt: 0 });
 
           expect(result).toBeDefined();
           expect(result?.types).toEqual([RuleType.LiteralIntDecimal]);
@@ -35,7 +35,7 @@ describe("RuleLiteralInt", () => {
 
       for (const { source, reason } of cases) {
         it(`should not match ${source} (${reason})`, () => {
-          const result = RuleDecimalIntLiteral({ source, indexAt: 0 });
+          const result = matchTokenDecimalIntLiteral({ source, indexAt: 0 });
 
           expect(result).toBeUndefined();
         });
@@ -59,7 +59,7 @@ describe("RuleLiteralInt", () => {
 
       for (const { source, expected } of cases) {
         it(`should match ${source}`, () => {
-          const result = RuleHexIntLiteral({ source, indexAt: 0 });
+          const result = matchTokenHexIntLiteral({ source, indexAt: 0 });
 
           expect(result).toBeDefined();
           expect(result?.types).toEqual([RuleType.LiteralIntHex]);
@@ -76,7 +76,7 @@ describe("RuleLiteralInt", () => {
 
       for (const { source, reason } of cases) {
         it(`should not match ${source} (${reason})`, () => {
-          const result = RuleHexIntLiteral({ source, indexAt: 0 });
+          const result = matchTokenHexIntLiteral({ source, indexAt: 0 });
 
           expect(result).toBeUndefined();
         });
@@ -87,24 +87,24 @@ describe("RuleLiteralInt", () => {
   describe("Int Literal", () => {
     describe("valid cases", () => {
       const cases = [
-        { source: "0", expected: { from: 0, to: 1 }, match: RuleDecimalIntLiteral },
-        { source: "0i", expected: { from: 0, to: 2 }, match: RuleDecimalIntLiteral },
-        { source: "0u", expected: { from: 0, to: 2 }, match: RuleDecimalIntLiteral },
-        { source: "1", expected: { from: 0, to: 1 }, match: RuleDecimalIntLiteral },
-        { source: "1i", expected: { from: 0, to: 2 }, match: RuleDecimalIntLiteral },
-        { source: "1u", expected: { from: 0, to: 2 }, match: RuleDecimalIntLiteral },
-        { source: "123", expected: { from: 0, to: 3 }, match: RuleDecimalIntLiteral },
-        { source: "0x0", expected: { from: 0, to: 3 }, match: RuleHexIntLiteral },
-        { source: "0x0i", expected: { from: 0, to: 4 }, match: RuleHexIntLiteral },
-        { source: "0x0u", expected: { from: 0, to: 4 }, match: RuleHexIntLiteral },
-        { source: "0x1", expected: { from: 0, to: 3 }, match: RuleHexIntLiteral },
-        { source: "0x1i", expected: { from: 0, to: 4 }, match: RuleHexIntLiteral },
-        { source: "0x1u", expected: { from: 0, to: 4 }, match: RuleHexIntLiteral },
+        { source: "0", expected: { from: 0, to: 1 }, match: matchTokenDecimalIntLiteral },
+        { source: "0i", expected: { from: 0, to: 2 }, match: matchTokenDecimalIntLiteral },
+        { source: "0u", expected: { from: 0, to: 2 }, match: matchTokenDecimalIntLiteral },
+        { source: "1", expected: { from: 0, to: 1 }, match: matchTokenDecimalIntLiteral },
+        { source: "1i", expected: { from: 0, to: 2 }, match: matchTokenDecimalIntLiteral },
+        { source: "1u", expected: { from: 0, to: 2 }, match: matchTokenDecimalIntLiteral },
+        { source: "123", expected: { from: 0, to: 3 }, match: matchTokenDecimalIntLiteral },
+        { source: "0x0", expected: { from: 0, to: 3 }, match: matchTokenHexIntLiteral },
+        { source: "0x0i", expected: { from: 0, to: 4 }, match: matchTokenHexIntLiteral },
+        { source: "0x0u", expected: { from: 0, to: 4 }, match: matchTokenHexIntLiteral },
+        { source: "0x1", expected: { from: 0, to: 3 }, match: matchTokenHexIntLiteral },
+        { source: "0x1i", expected: { from: 0, to: 4 }, match: matchTokenHexIntLiteral },
+        { source: "0x1u", expected: { from: 0, to: 4 }, match: matchTokenHexIntLiteral },
       ];
 
       for (const { source, expected } of cases) {
         it(`should match ${source}`, () => {
-          const result = RuleIntLiteral({ source, indexAt: 0 });
+          const result = matchTokenIntLiteral({ source, indexAt: 0 });
 
           expect(result).toBeDefined();
           if (!result) return;

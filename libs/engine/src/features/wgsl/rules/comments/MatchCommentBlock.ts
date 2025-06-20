@@ -1,4 +1,4 @@
-import { createMatch } from "../../syntax/MatchRule.ts";
+import { createMatch } from "../../syntax/MatchToken.ts";
 import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
 import { RuleType } from "../../syntax/RuleRegistry.ts";
 import { isProgramEnd, isToken } from "../../tokens.ts";
@@ -18,7 +18,7 @@ ${RuleType.CommentBlock} :
 `
 >;
 
-export const RuleCommentBlock = createMatch(RuleType.CommentBlock, ({ source, indexAt }) => {
+export const matchCommentBlock = createMatch(RuleType.CommentBlock, ({ source, indexAt }) => {
   if (isToken(source, indexAt, TokenCommentBlock.BlockStart)) {
     let endAt = indexAt + 2;
     let depth = 1;

@@ -1,14 +1,24 @@
 import { expect } from "@std/expect/expect";
 import { describe, it } from "@std/testing/bdd";
 import { Str } from "../../../../shared/src/mod.ts";
-import { createNode, parseWgsl } from "./parseWgsl.ts";
-import { TokenDiagnosticName } from "./rules/tokens/names/RuleDiagnosticName.ts";
-import { TokenEnableExtensionName } from "./rules/tokens/names/RuleEnableExtensionName.ts";
-import { TokenSeverityControlName as TokenDiagnosticSeverityName } from "./rules/tokens/names/RuleSeverityControlName.ts";
-import { TokenSoftwareExtensionName } from "./rules/tokens/names/RuleSoftwareExtensionName.ts";
-import { TokenKeyword } from "./rules/tokens/RuleKeyword.ts";
-import { TokenSyntactic } from "./rules/tokens/RuleSyntacticToken.ts";
+import { ASTNode, parseWgsl } from "./parseWgsl.ts";
 import { RuleType } from "./syntax/RuleRegistry.ts";
+import { TokenKeyword } from "./tokens/MatchTokenKeyword.ts";
+import { TokenSyntactic } from "./tokens/MatchTokenSyntacticToken.ts";
+import { TokenDiagnosticName } from "./tokens/names/MatchTokenDiagnosticName.ts";
+import { TokenEnableExtensionName } from "./tokens/names/MatchTokenEnableExtensionName.ts";
+import { TokenSeverityControlName as TokenDiagnosticSeverityName } from "./tokens/names/MatchTokenSeverityControlName.ts";
+import { TokenSoftwareExtensionName } from "./tokens/names/MatchTokenSoftwareExtensionName.ts";
+
+type Tree = { type: RuleType; children: Tree[] } | { type: RuleType; value: string };
+
+export const createNode = (node: Tree): ASTNode => {
+  if ("value" in node) {
+    return ASTNode.create(node.type, node.value, []);
+  }
+
+  return ASTNode.fromChildren(node.type, node.children.map(createNode));
+};
 
 describe("WGSL - Parse", () => {
   describe("Directives", () => {
@@ -24,7 +34,7 @@ describe("WGSL - Parse", () => {
             type: RuleType.TranslationUnit,
             children: [
               {
-                type: RuleType.Directive,
+                type: RuleType.GlobalDirective,
                 children: [
                   {
                     type: RuleType.DirectiveDiagnostic,
@@ -82,7 +92,7 @@ describe("WGSL - Parse", () => {
             type: RuleType.TranslationUnit,
             children: [
               {
-                type: RuleType.Directive,
+                type: RuleType.GlobalDirective,
                 children: [
                   {
                     type: RuleType.DirectiveDiagnostic,
@@ -146,7 +156,7 @@ describe("WGSL - Parse", () => {
             type: RuleType.TranslationUnit,
             children: [
               {
-                type: RuleType.Directive,
+                type: RuleType.GlobalDirective,
                 children: [
                   {
                     type: RuleType.DirectiveEnable,
@@ -188,7 +198,7 @@ describe("WGSL - Parse", () => {
             type: RuleType.TranslationUnit,
             children: [
               {
-                type: RuleType.Directive,
+                type: RuleType.GlobalDirective,
                 children: [
                   {
                     type: RuleType.DirectiveEnable,
@@ -234,7 +244,7 @@ describe("WGSL - Parse", () => {
             type: RuleType.TranslationUnit,
             children: [
               {
-                type: RuleType.Directive,
+                type: RuleType.GlobalDirective,
                 children: [
                   {
                     type: RuleType.DirectiveEnable,
@@ -284,7 +294,7 @@ describe("WGSL - Parse", () => {
             type: RuleType.TranslationUnit,
             children: [
               {
-                type: RuleType.Directive,
+                type: RuleType.GlobalDirective,
                 children: [
                   {
                     type: RuleType.DirectiveEnable,
@@ -340,7 +350,7 @@ describe("WGSL - Parse", () => {
             type: RuleType.TranslationUnit,
             children: [
               {
-                type: RuleType.Directive,
+                type: RuleType.GlobalDirective,
                 children: [
                   {
                     type: RuleType.DirectiveRequires,
@@ -382,7 +392,7 @@ describe("WGSL - Parse", () => {
             type: RuleType.TranslationUnit,
             children: [
               {
-                type: RuleType.Directive,
+                type: RuleType.GlobalDirective,
                 children: [
                   {
                     type: RuleType.DirectiveRequires,
@@ -428,7 +438,7 @@ describe("WGSL - Parse", () => {
             type: RuleType.TranslationUnit,
             children: [
               {
-                type: RuleType.Directive,
+                type: RuleType.GlobalDirective,
                 children: [
                   {
                     type: RuleType.DirectiveRequires,
@@ -478,7 +488,7 @@ describe("WGSL - Parse", () => {
             type: RuleType.TranslationUnit,
             children: [
               {
-                type: RuleType.Directive,
+                type: RuleType.GlobalDirective,
                 children: [
                   {
                     type: RuleType.DirectiveRequires,
@@ -522,7 +532,7 @@ describe("WGSL - Parse", () => {
       });
     });
 
-    describe.only("All", () => {
+    describe("All", () => {
       it("should handle all", () => {
         const source = Str.trimlines`
         enable f16;
@@ -537,7 +547,7 @@ describe("WGSL - Parse", () => {
             type: RuleType.TranslationUnit,
             children: [
               {
-                type: RuleType.Directive,
+                type: RuleType.GlobalDirective,
                 children: [
                   {
                     type: RuleType.DirectiveEnable,
@@ -561,6 +571,11 @@ describe("WGSL - Parse", () => {
                       },
                     ],
                   },
+                ],
+              },
+              {
+                type: RuleType.GlobalDirective,
+                children: [
                   {
                     type: RuleType.DirectiveRequires,
                     children: [
@@ -583,6 +598,11 @@ describe("WGSL - Parse", () => {
                       },
                     ],
                   },
+                ],
+              },
+              {
+                type: RuleType.GlobalDirective,
+                children: [
                   {
                     type: RuleType.DirectiveDiagnostic,
                     children: [

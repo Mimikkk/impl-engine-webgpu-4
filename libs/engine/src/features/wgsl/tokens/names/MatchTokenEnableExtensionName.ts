@@ -1,6 +1,6 @@
-import { createMatchToken } from "../../../syntax/MatchRule.ts";
-import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
-import { RuleType } from "../../../syntax/RuleRegistry.ts";
+import { createMatchToken } from "../../syntax/MatchToken.ts";
+import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export const enum TokenEnableExtensionName {
   F16 = "f16",
@@ -26,4 +26,4 @@ ${RuleType.EnableExtensionName} :
 `
 >;
 
-export const RuleEnableExtensionName = createMatchToken(RuleType.EnableExtensionName, enableExtensionNames);
+export const matchTokenEnableExtensionName = createMatchToken(RuleType.EnableExtensionName, enableExtensionNames);

@@ -1,6 +1,6 @@
-import { composeMatchRules, createMatchRegex } from "../../../syntax/MatchRule.ts";
-import type { ParseRuleString } from "../../../syntax/ParseSyntax.ts";
-import { RuleType } from "../../../syntax/RuleRegistry.ts";
+import { composeMatches, createMatchRegex } from "../../syntax/MatchToken.ts";
+import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export type LiteralDecimalFloat = ParseRuleString<
   `
@@ -13,7 +13,7 @@ ${RuleType.LiteralFloatDecimal} :
 `
 >;
 
-export const RuleDecimalFloatLiteral = createMatchRegex(RuleType.LiteralFloatDecimal, [
+export const matchTokenDecimalFloatLiteral = createMatchRegex(RuleType.LiteralFloatDecimal, [
   /0[fh]/y,
   /[1-9][0-9]*[fh]/y,
   /[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?[fh]?/y,
@@ -30,7 +30,7 @@ ${RuleType.LiteralFloatHex} :
 `
 >;
 
-export const RuleHexFloatLiteral = createMatchRegex(RuleType.LiteralFloatHex, [
+export const matchTokenHexFloatLiteral = createMatchRegex(RuleType.LiteralFloatHex, [
   /0[xX][0-9a-fA-F]*\.[0-9a-fA-F]+([pP][+-]?[0-9]+[fh]?)?/y,
   /0[xX][0-9a-fA-F]+\.[0-9a-fA-F]*([pP][+-]?[0-9]+[fh]?)?/y,
   /0[xX][0-9a-fA-F]+[pP][+-]?[0-9]+[fh]?/y,
@@ -44,7 +44,7 @@ ${RuleType.LiteralFloat} :
 `
 >;
 
-export const RuleFloatLiteral = composeMatchRules(RuleType.LiteralFloat, [
-  RuleDecimalFloatLiteral,
-  RuleHexFloatLiteral,
+export const matchTokenFloatLiteral = composeMatches(RuleType.LiteralFloat, [
+  matchTokenDecimalFloatLiteral,
+  matchTokenHexFloatLiteral,
 ]);
