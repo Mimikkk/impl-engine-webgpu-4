@@ -1,5 +1,5 @@
 import { createMatchToken } from "../../syntax/MatchToken.ts";
-import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import type { ParseRule } from "../../syntax/ParseSyntax.ts";
 import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export const enum TokenSeverityControlName {
@@ -14,19 +14,8 @@ export const severityControlNames = [
   TokenSeverityControlName.Warning,
   TokenSeverityControlName.Info,
   TokenSeverityControlName.Off,
-];
+] as const;
 
-export type SeverityControlName = ParseRuleString<
-  `
-${RuleType.DiagnosticSeverityName} :
-| '${TokenSeverityControlName.Error}'
-| '${TokenSeverityControlName.Warning}'
-| '${TokenSeverityControlName.Info}'
-| '${TokenSeverityControlName.Off}'
-`
->;
+export type SeverityControlName = ParseRule<RuleType.DiagnosticSeverityName, typeof severityControlNames>;
 
-export const matchTokenSeverityControlName = createMatchToken(
-  RuleType.DiagnosticSeverityName,
-  severityControlNames,
-);
+export const matchTokenSeverityControlName = createMatchToken(RuleType.DiagnosticSeverityName, severityControlNames);

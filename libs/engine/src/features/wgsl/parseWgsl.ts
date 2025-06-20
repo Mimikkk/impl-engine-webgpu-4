@@ -186,6 +186,9 @@ const grammar: Record<string, Rule> = {
   ),
   [RuleType.DiagnosticSeverityName]: createTokenRule(RuleType.DiagnosticSeverityName),
   [RuleType.DiagnosticName]: createTokenRule(RuleType.DiagnosticName),
+  [RuleType.GlobalDeclaration]: createGroupRule(RuleType.GlobalDeclaration, (context) => {
+    return [];
+  }),
 };
 
 function matchBy(context: ParseContext, options: {

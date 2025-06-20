@@ -1,6 +1,14 @@
 import type { Comment } from "../rules/comments/MatchComment.ts";
 import type { CommentBlock } from "../rules/comments/MatchCommentBlock.ts";
 import type { CommentLine } from "../rules/comments/MatchCommentLine.ts";
+import {
+  DeclarationFunction,
+  DeclarationStruct,
+  GlobalDeclaration,
+  GlobalDeclarationTypeAlias,
+  GlobalDeclarationValue,
+  GlobalDeclarationVariable,
+} from "../rules/declarations/RuleGlobalDeclaration.ts";
 import type {
   DirectiveDiagnostic,
   DirectiveDiagnosticControl,
@@ -9,12 +17,12 @@ import type {
   DirectiveRequires,
   DirectiveRequiresSoftwareExtensionList,
   GlobalDirective,
-} from "../rules/directives/RuleDirective.ts";
+} from "../rules/directives/RuleGlobalDirective.ts";
 import type { Literal } from "../tokens/literals/MatchTokenLiteral.ts";
 import type { LiteralBool } from "../tokens/literals/MatchTokenLiteralBool.ts";
 import type { LiteralDecimalFloat, LiteralFloat, LiteralFloatHex } from "../tokens/literals/MatchTokenLiteralFloat.ts";
 import type { LiteralInt, LiteralIntDecimal, LiteralIntHex } from "../tokens/literals/MatchTokenLiteralInt.ts";
-import type { BlankspaceToken } from "../tokens/MatchTokenBlankspace.ts";
+import type { Blankspace } from "../tokens/MatchTokenBlankspace.ts";
 import type { Identifier, IdentifierPattern } from "../tokens/MatchTokenIdentifier.ts";
 import type { Keyword } from "../tokens/MatchTokenKeyword.ts";
 import type { LineBreakToken } from "../tokens/MatchTokenLineBreak.ts";
@@ -91,6 +99,13 @@ export const enum RuleType {
   DirectiveEnableExtensionList = "directive_enable_extension_list",
   // Translation Unit
   TranslationUnit = "translation_unit",
+  // Global Declarations
+  GlobalDeclaration = "global_decl",
+  GlobalDeclarationVariable = "global_variable_decl",
+  GlobalDeclarationValue = "global_value_decl",
+  GlobalDeclarationTypeAlias = "global_type_alias_decl",
+  DeclarationStruct = "struct_decl",
+  DeclarationFunction = "function_decl",
 }
 
 export type RuleRegistry = {
@@ -108,7 +123,7 @@ export type RuleRegistry = {
   keyword: Keyword;
   _reserved: ReservedWord;
   _syntactic: SyntacticToken;
-  _blankspace: BlankspaceToken;
+  _blankspace: Blankspace;
   _line_break: LineBreakToken;
   /// Indetifiers
   ident: Identifier;
@@ -140,4 +155,11 @@ export type RuleRegistry = {
   directive_requires_software_extension_list: DirectiveRequiresSoftwareExtensionList;
   directive_enable: DirectiveEnable;
   directive_enable_extension_list: DirectiveEnableExtensionList;
+  // Global Declarations
+  global_decl: GlobalDeclaration;
+  global_variable_decl: GlobalDeclarationVariable;
+  global_value_decl: GlobalDeclarationValue;
+  global_type_alias_decl: GlobalDeclarationTypeAlias;
+  struct_decl: DeclarationStruct;
+  function_decl: DeclarationFunction;
 };

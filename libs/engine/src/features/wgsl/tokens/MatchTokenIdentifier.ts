@@ -1,23 +1,17 @@
 import { createMatch, createMatchRegex } from "../syntax/MatchToken.ts";
-import type { ParseRuleString } from "../syntax/ParseSyntax.ts";
+import type { ParseRule } from "../syntax/ParseSyntax.ts";
 import { RuleType } from "../syntax/RuleRegistry.ts";
 import { isSomeToken } from "../tokens.ts";
 import { keywords } from "./MatchTokenKeyword.ts";
 import { reservedWords } from "./MatchTokenReservedWord.ts";
 
-export type Identifier = ParseRuleString<
-  `
-${RuleType.Identifier} :
-| ${RuleType.IdentifierPattern} ${RuleType.DisambiguateTemplate}
-`
->;
+export type Identifier = ParseRule<RuleType.Identifier, [
+  `${RuleType.IdentifierPattern} ${RuleType.DisambiguateTemplate}`,
+]>;
 
-export type IdentifierPattern = ParseRuleString<
-  `
-${RuleType.IdentifierPattern} :
-| '/([_\p{XID_Start}][\p{XID_Continue}]+)|([\p{XID_Start}])/u'
-`
->;
+export type IdentifierPattern = ParseRule<RuleType.IdentifierPattern, [
+  "'/([_\p{XID_Start}][\p{XID_Continue}]+)|([\p{XID_Start}])/'",
+]>;
 
 export const RuleIdentifierPattern = createMatchRegex(RuleType.IdentifierPattern, [
   /([_\p{XID_Start}][\p{XID_Continue}]+)|([\p{XID_Start}])/uy,

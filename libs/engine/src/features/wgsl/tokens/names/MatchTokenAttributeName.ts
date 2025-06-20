@@ -1,5 +1,5 @@
 import { createMatchToken } from "../../syntax/MatchToken.ts";
-import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import type { ParseRule } from "../../syntax/ParseSyntax.ts";
 import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export const enum TokenAttributeName {
@@ -38,29 +38,8 @@ export const attributeNames = [
   TokenAttributeName.BlendSrc,
   TokenAttributeName.MustUse,
   TokenAttributeName.Size,
-];
+] as const;
 
-export type AttributeName = ParseRuleString<
-  `
-${RuleType.AttributeName} :
-| '${TokenAttributeName.Align}'
-| '${TokenAttributeName.Binding}'
-| '${TokenAttributeName.Builtin}'
-| '${TokenAttributeName.Compute}'
-| '${TokenAttributeName.Const}'
-| '${TokenAttributeName.Diagnostic}'
-| '${TokenAttributeName.Fragment}'
-| '${TokenAttributeName.Group}'
-| '${TokenAttributeName.Id}'
-| '${TokenAttributeName.Interpolate}'
-| '${TokenAttributeName.Invariant}'
-| '${TokenAttributeName.Location}'
-| '${TokenAttributeName.BlendSrc}'
-| '${TokenAttributeName.MustUse}'
-| '${TokenAttributeName.Size}'
-| '${TokenAttributeName.Vertex}'
-| '${TokenAttributeName.WorkgroupSize}'
-`
->;
+export type AttributeName = ParseRule<RuleType.AttributeName, typeof attributeNames>;
 
 export const matchTokenAttributeName = createMatchToken(RuleType.AttributeName, attributeNames);

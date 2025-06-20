@@ -1,5 +1,5 @@
 import { createMatchToken } from "../syntax/MatchToken.ts";
-import type { ParseRuleString } from "../syntax/ParseSyntax.ts";
+import type { ParseRule } from "../syntax/ParseSyntax.ts";
 import { RuleType } from "../syntax/RuleRegistry.ts";
 
 export const enum TokenKeyword {
@@ -58,38 +58,8 @@ export const keywords = [
   TokenKeyword.True,
   TokenKeyword.Var,
   TokenKeyword.While,
-];
+] as const;
 
-export type Keyword = ParseRuleString<
-  `
-${RuleType.Keyword} :
-| '${TokenKeyword.Alias}'
-| '${TokenKeyword.Break}'
-| '${TokenKeyword.Case}'
-| '${TokenKeyword.Const}'
-| '${TokenKeyword.ConstAssert}'
-| '${TokenKeyword.Continue}'
-| '${TokenKeyword.Continuing}'
-| '${TokenKeyword.Default}'
-| '${TokenKeyword.Diagnostic}'
-| '${TokenKeyword.Discard}'
-| '${TokenKeyword.Else}'
-| '${TokenKeyword.Enable}'
-| '${TokenKeyword.False}'
-| '${TokenKeyword.Fn}'
-| '${TokenKeyword.For}'
-| '${TokenKeyword.If}'
-| '${TokenKeyword.Let}'
-| '${TokenKeyword.Loop}'
-| '${TokenKeyword.Override}'
-| '${TokenKeyword.Requires}'
-| '${TokenKeyword.Return}'
-| '${TokenKeyword.Struct}'
-| '${TokenKeyword.Switch}'
-| '${TokenKeyword.True}'
-| '${TokenKeyword.Var}'
-| '${TokenKeyword.While}'
-`
->;
+export type Keyword = ParseRule<RuleType.Keyword, typeof keywords>;
 
 export const matchTokenKeyword = createMatchToken(RuleType.Keyword, keywords);

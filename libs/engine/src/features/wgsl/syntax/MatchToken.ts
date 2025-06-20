@@ -101,7 +101,7 @@ export const composeMatches = <const R extends string, const A extends MatchRule
   return rule;
 };
 
-export const createMatchRegex = <const R extends string>(name: R, regexes: RegExp[]) =>
+export const createMatchRegex = <const R extends string>(name: R, regexes: readonly RegExp[]) =>
   createMatch(name, ({ source, indexAt }) => {
     let bestSize: number | undefined;
 
@@ -122,7 +122,7 @@ export const createMatchRegex = <const R extends string>(name: R, regexes: RegEx
     return bestSize;
   });
 
-export const createMatchToken = <const R extends string>(name: R, tokens: string[]) =>
+export const createMatchToken = <const R extends string>(name: R, tokens: readonly string[]) =>
   createMatch(name, ({ source, indexAt }) => {
     let bestSize: number | undefined;
 

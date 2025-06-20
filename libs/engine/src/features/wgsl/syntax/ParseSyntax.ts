@@ -3,8 +3,19 @@ import type { Alternative, Element, Group, GroupRelation, Rule, Token } from "./
 
 export type RuleString<T extends Rule> = `\n${T["name"]} :\n${AlternativesString<T["alternatives"]>}\n`;
 
-export type ParseRuleString<T extends string> = T extends `\n${infer NameStr} :\n${infer AlternativesString}\n`
-  ? { name: NameStr; alternatives: ParseAlternativesString<AlternativesString> }
+type JoinAlternatives<T extends string[]> = T extends [infer A extends string] ? `| ${A}`
+  : T extends [infer A extends string, ...infer B extends string[]] ? `| ${A}\n${JoinAlternatives<B>}`
+  : never;
+
+type AsTokenStrings<T extends readonly string[]> = T extends
+  readonly [infer A extends string, ...infer B extends string[]] ? [`'${A}'`, ...AsTokenStrings<B>]
+  : [];
+
+export type ParseRule<Name extends string, T extends string | string[] | readonly string[]> = T extends string[]
+  ? { name: Name; alternatives: ParseAlternativesString<JoinAlternatives<T>> }
+  : T extends readonly string[]
+    ? { name: Name; alternatives: ParseAlternativesString<JoinAlternatives<AsTokenStrings<T>>> }
+  : T extends string ? { name: Name; alternatives: ParseAlternativesString<T> }
   : never;
 
 type Join<T extends string[], Separator extends string> = T extends [infer H extends string] ? H

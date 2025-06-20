@@ -1,5 +1,5 @@
 import { createMatchToken } from "../../syntax/MatchToken.ts";
-import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import type { ParseRule } from "../../syntax/ParseSyntax.ts";
 import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export const enum TokenDiagnosticName {
@@ -10,14 +10,8 @@ export const enum TokenDiagnosticName {
 export const diagnosticNames = [
   TokenDiagnosticName.DerivativeUniformity,
   TokenDiagnosticName.SubgroupUniformity,
-];
+] as const;
 
-export type DiagnosticName = ParseRuleString<
-  `
-${RuleType.DiagnosticName} :
-| '${TokenDiagnosticName.DerivativeUniformity}'
-| '${TokenDiagnosticName.SubgroupUniformity}'
-`
->;
+export type DiagnosticName = ParseRule<RuleType.DiagnosticName, typeof diagnosticNames>;
 
 export const matchTokenDiagnosticName = createMatchToken(RuleType.DiagnosticName, diagnosticNames);

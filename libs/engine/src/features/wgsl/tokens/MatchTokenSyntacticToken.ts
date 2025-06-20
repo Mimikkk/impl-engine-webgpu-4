@@ -1,5 +1,5 @@
 import { createMatchToken } from "../syntax/MatchToken.ts";
-import type { ParseRuleString } from "../syntax/ParseSyntax.ts";
+import { ParseRule } from "../syntax/ParseSyntax.ts";
 import { RuleType } from "../syntax/RuleRegistry.ts";
 
 export const enum TokenSyntactic {
@@ -121,7 +121,7 @@ export const enum TokenSyntactic {
   DisambiguateTemplate = "\u003C",
 }
 
-const keywords = [
+const syntactics = [
   TokenSyntactic.Ampersand,
   TokenSyntactic.AmpersandAmpersand,
   TokenSyntactic.Arrow,
@@ -170,60 +170,8 @@ const keywords = [
   TokenSyntactic.TemplateArgsEnd,
   TokenSyntactic.TemplateArgsStart,
   TokenSyntactic.DisambiguateTemplate,
-];
+] as const;
 
-export type SyntacticToken = ParseRuleString<
-  `
-${RuleType.Syntactic} :
-| '${TokenSyntactic.Ampersand}'
-| '${TokenSyntactic.AmpersandAmpersand}'
-| '${TokenSyntactic.Arrow}'
-| '${TokenSyntactic.At}'
-| '${TokenSyntactic.Slash}'
-| '${TokenSyntactic.Exclamation}'
-| '${TokenSyntactic.LeftBracket}'
-| '${TokenSyntactic.RightBracket}'
-| '${TokenSyntactic.LeftBrace}'
-| '${TokenSyntactic.RightBrace}'
-| '${TokenSyntactic.Colon}'
-| '${TokenSyntactic.Comma}'
-| '${TokenSyntactic.Equal}'
-| '${TokenSyntactic.EqualEqual}'
-| '${TokenSyntactic.ExclamationEqual}'
-| '${TokenSyntactic.GreaterThan}'
-| '${TokenSyntactic.GreaterThanEqual}'
-| '${TokenSyntactic.ShiftRight}'
-| '${TokenSyntactic.LessThan}'
-| '${TokenSyntactic.LessThanEqual}'
-| '${TokenSyntactic.ShiftLeft}'
-| '${TokenSyntactic.Percent}'
-| '${TokenSyntactic.Dash}'
-| '${TokenSyntactic.DashDash}'
-| '${TokenSyntactic.Dot}'
-| '${TokenSyntactic.Plus}'
-| '${TokenSyntactic.PlusPlus}'
-| '${TokenSyntactic.Pipe}'
-| '${TokenSyntactic.PipePipe}'
-| '${TokenSyntactic.LeftParenthesis}'
-| '${TokenSyntactic.RightParenthesis}'
-| '${TokenSyntactic.Semicolon}'
-| '${TokenSyntactic.Asterisk}'
-| '${TokenSyntactic.Underscore}'
-| '${TokenSyntactic.Caret}'
-| '${TokenSyntactic.PlusEqual}'
-| '${TokenSyntactic.DashEqual}'
-| '${TokenSyntactic.AsteriskEqual}'
-| '${TokenSyntactic.SlashEqual}'
-| '${TokenSyntactic.PercentEqual}'
-| '${TokenSyntactic.AmpersandEqual}'
-| '${TokenSyntactic.PipeEqual}'
-| '${TokenSyntactic.CaretEqual}'
-| '${TokenSyntactic.ShiftRightEqual}'
-| '${TokenSyntactic.ShiftLeftEqual}'
-| '${TokenSyntactic.TemplateArgsEnd}'
-| '${TokenSyntactic.TemplateArgsStart}'
-| '${TokenSyntactic.DisambiguateTemplate}'
-`
->;
+export type SyntacticToken = ParseRule<RuleType.Syntactic, typeof syntactics>;
 
-export const matchTokenSyntacticToken = createMatchToken(RuleType.Syntactic, keywords);
+export const matchTokenSyntacticToken = createMatchToken(RuleType.Syntactic, syntactics);

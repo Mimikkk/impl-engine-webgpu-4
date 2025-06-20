@@ -1,5 +1,5 @@
 import { createMatch } from "../../syntax/MatchToken.ts";
-import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import type { ParseRule } from "../../syntax/ParseSyntax.ts";
 import { RuleType } from "../../syntax/RuleRegistry.ts";
 import { isProgramEnd, isToken } from "../../tokens.ts";
 import { matchTokenLineBreak } from "../../tokens/MatchTokenLineBreak.ts";
@@ -8,13 +8,10 @@ export const enum TokenCommentLine {
   // Text: "//"
   LineStart = "\u002F\u002F",
 }
-export type CommentLine = ParseRuleString<
-  `
-${RuleType.CommentLine} :
-| '${TokenCommentLine.LineStart}' (${RuleType.Any}).* ${RuleType.ProgramEnd}
-| '${TokenCommentLine.LineStart}' (${RuleType.Any}).* ${RuleType.LineBreak}
-`
->;
+export type CommentLine = ParseRule<RuleType.CommentLine, [
+  `'${TokenCommentLine.LineStart}' (${RuleType.Any}).* ${RuleType.ProgramEnd}`,
+  `'${TokenCommentLine.LineStart}' (${RuleType.Any}).* ${RuleType.LineBreak}`,
+]>;
 
 export const matchCommentLine = createMatch(RuleType.CommentLine, ({ source, indexAt }) => {
   if (isToken(source, indexAt, TokenCommentLine.LineStart)) {

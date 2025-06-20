@@ -1,5 +1,5 @@
 import { createMatchToken } from "../../syntax/MatchToken.ts";
-import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import type { ParseRule } from "../../syntax/ParseSyntax.ts";
 import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export const enum TokenSoftwareExtensionName {
@@ -14,17 +14,9 @@ export const softwareExtensionNames = [
   TokenSoftwareExtensionName.Packed4x8IntegerDotProduct,
   TokenSoftwareExtensionName.UnrestrictedPointerParameters,
   TokenSoftwareExtensionName.PointerCompositeAccess,
-];
+] as const;
 
-export type SoftwareExtensionName = ParseRuleString<
-  `
-${RuleType.SoftwareExtensionName} :
-| '${TokenSoftwareExtensionName.ReadonlyAndReadwriteStorageTextures}'
-| '${TokenSoftwareExtensionName.Packed4x8IntegerDotProduct}'
-| '${TokenSoftwareExtensionName.UnrestrictedPointerParameters}'
-| '${TokenSoftwareExtensionName.PointerCompositeAccess}'
-`
->;
+export type SoftwareExtensionName = ParseRule<RuleType.SoftwareExtensionName, typeof softwareExtensionNames>;
 
 export const matchTokenSoftwareExtensionName = createMatchToken(
   RuleType.SoftwareExtensionName,

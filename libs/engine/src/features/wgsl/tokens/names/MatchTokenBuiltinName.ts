@@ -1,5 +1,5 @@
 import { createMatchToken } from "../../syntax/MatchToken.ts";
-import type { ParseRuleString } from "../../syntax/ParseSyntax.ts";
+import type { ParseRule } from "../../syntax/ParseSyntax.ts";
 import { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export const enum TokenBuiltinName {
@@ -36,24 +36,6 @@ export const builtinNames = [
   TokenBuiltinName.SubgroupSize,
 ];
 
-export type BuiltinName = ParseRuleString<
-  `
-${RuleType.BuiltinName} :
-| '${TokenBuiltinName.VertexIndex}'
-| '${TokenBuiltinName.InstanceIndex}'
-| '${TokenBuiltinName.Position}'
-| '${TokenBuiltinName.FrontFacing}'
-| '${TokenBuiltinName.FragDepth}'
-| '${TokenBuiltinName.SampleIndex}'
-| '${TokenBuiltinName.SampleMask}'
-| '${TokenBuiltinName.LocalInvocationId}'
-| '${TokenBuiltinName.LocalInvocationIndex}'
-| '${TokenBuiltinName.GlobalInvocationId}'
-| '${TokenBuiltinName.WorkgroupId}'
-| '${TokenBuiltinName.NumWorkgroups}'
-| '${TokenBuiltinName.SubgroupInvocationId}'
-| '${TokenBuiltinName.SubgroupSize}'
-`
->;
+export type BuiltinName = ParseRule<RuleType.BuiltinName, typeof builtinNames>;
 
 export const matchTokenBuiltinName = createMatchToken(RuleType.BuiltinName, builtinNames);
