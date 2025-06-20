@@ -2,11 +2,11 @@ import type { ParseRule } from "../../syntax/ParseSyntax.ts";
 import type { RuleType } from "../../syntax/RuleRegistry.ts";
 
 export type DirectiveDiagnostic = ParseRule<RuleType.DirectiveDiagnostic, [
-  `'diagnostic' ${RuleType.DirectiveDiagnosticControl} ';'`,
+  `'diagnostic' ${RuleType.DiagnosticControl} ';'`,
 ]>;
 
-export type DirectiveDiagnosticControl = ParseRule<RuleType.DirectiveDiagnosticControl, [
-  `'(' ${RuleType.DiagnosticSeverityName} ',' ${RuleType.DiagnosticName} ',' ? ')'`,
+export type DiagnosticControl = ParseRule<RuleType.DiagnosticControl, [
+  `'(' ${RuleType.DiagnosticSeverityName} ',' ${RuleType.DiagnosticName} (',').? ')'`,
 ]>;
 
 export type DirectiveRequires = ParseRule<RuleType.DirectiveRequires, [

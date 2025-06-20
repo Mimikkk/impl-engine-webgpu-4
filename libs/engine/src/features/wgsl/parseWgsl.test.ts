@@ -44,7 +44,7 @@ describe("WGSL - Parse", () => {
                         value: TokenKeyword.Diagnostic,
                       },
                       {
-                        type: RuleType.DirectiveDiagnosticControl,
+                        type: RuleType.DiagnosticControl,
                         children: [
                           {
                             type: RuleType.Syntactic,
@@ -102,7 +102,7 @@ describe("WGSL - Parse", () => {
                         value: TokenKeyword.Diagnostic,
                       },
                       {
-                        type: RuleType.DirectiveDiagnosticControl,
+                        type: RuleType.DiagnosticControl,
                         children: [
                           {
                             type: RuleType.Syntactic,
@@ -611,7 +611,7 @@ describe("WGSL - Parse", () => {
                         value: TokenKeyword.Diagnostic,
                       },
                       {
-                        type: RuleType.DirectiveDiagnosticControl,
+                        type: RuleType.DiagnosticControl,
                         children: [
                           {
                             type: RuleType.Syntactic,

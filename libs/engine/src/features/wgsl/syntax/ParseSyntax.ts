@@ -31,6 +31,7 @@ type StringifyRelation<T extends GroupRelation> = {
   "at-least-one": "+";
   "one": "";
   "zero-or-more": "*";
+  "one-of": "|";
 }[T];
 
 type RelationString<T extends GroupRelation> = T extends "one" ? "" : `.${StringifyRelation<T>}`;

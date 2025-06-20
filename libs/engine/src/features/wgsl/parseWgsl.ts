@@ -221,12 +221,12 @@ const grammar: Record<string, Rule> = {
     RuleType.DirectiveDiagnostic,
     createMatchBy([
       { type: RuleType.Keyword, value: TokenKeyword.Diagnostic },
-      { type: RuleType.DirectiveDiagnosticControl },
+      { type: RuleType.DiagnosticControl },
       { type: RuleType.Syntactic, value: TokenSyntactic.Semicolon },
     ]),
   ),
-  [RuleType.DirectiveDiagnosticControl]: createGroupRule(
-    RuleType.DirectiveDiagnosticControl,
+  [RuleType.DiagnosticControl]: createGroupRule(
+    RuleType.DiagnosticControl,
     createMatchBy([
       { type: RuleType.Syntactic, value: TokenSyntactic.LeftParenthesis },
       { type: RuleType.DiagnosticSeverityName },

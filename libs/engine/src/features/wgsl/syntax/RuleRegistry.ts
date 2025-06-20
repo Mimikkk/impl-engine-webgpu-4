@@ -1,24 +1,50 @@
+import type { ConstAssert, GlobalAssert } from "../rules/asserts/RuleGlobalAssert.ts";
+import type {
+  Attribute,
+  AttributeAlign,
+  AttributeBinding,
+  AttributeBlendSrc,
+  AttributeBuiltin,
+  AttributeCompute,
+  AttributeConst,
+  AttributeDiagnostic,
+  AttributeFragment,
+  AttributeGroup,
+  AttributeId,
+  AttributeInterpolate,
+  AttributeInvariant,
+  AttributeLocation,
+  AttributeMustUse,
+  AttributeSize,
+  AttributeVertex,
+  AttributeWorkgroupSize,
+} from "../rules/attributes/RuleAttribute.ts";
 import type { Comment } from "../rules/comments/MatchComment.ts";
 import type { CommentBlock } from "../rules/comments/MatchCommentBlock.ts";
 import type { CommentLine } from "../rules/comments/MatchCommentLine.ts";
-import { GlobalAssert } from "../rules/declarations/RuleGlobalAssert.ts";
-import {
+import type {
   DeclarationFunction,
   DeclarationStruct,
+  DeclarationStructBody,
   GlobalDeclaration,
   GlobalDeclarationTypeAlias,
   GlobalDeclarationValue,
   GlobalDeclarationVariable,
+  StructAttribute,
+  StructMember,
 } from "../rules/declarations/RuleGlobalDeclaration.ts";
 import type {
+  DiagnosticControl,
   DirectiveDiagnostic,
-  DirectiveDiagnosticControl,
   DirectiveEnable,
   DirectiveEnableExtensionList,
   DirectiveRequires,
   DirectiveRequiresSoftwareExtensionList,
   GlobalDirective,
 } from "../rules/directives/RuleGlobalDirective.ts";
+import type { Expression } from "../rules/expressions/RuleExpression.ts";
+import type { TranslationUnit, TranslationUnitItem } from "../rules/RuleTranslationUnit.ts";
+import type { TypeSpecifier } from "../rules/types/Types.ts";
 import type { Literal } from "../tokens/literals/MatchTokenLiteral.ts";
 import type { LiteralBool } from "../tokens/literals/MatchTokenLiteralBool.ts";
 import type { LiteralDecimalFloat, LiteralFloat, LiteralFloatHex } from "../tokens/literals/MatchTokenLiteralFloat.ts";
@@ -93,22 +119,50 @@ export const enum RuleType {
   /// Directives
   GlobalDirective = "global_directive",
   DirectiveDiagnostic = "directive_diagnostic",
-  DirectiveDiagnosticControl = "directive_diagnostic_control",
+  DiagnosticControl = "directive_diagnostic_control",
   DirectiveRequires = "directive_requires",
   DirectiveRequiresSoftwareExtensionList = "directive_requires_software_extension_list",
   DirectiveEnable = "directive_enable",
   DirectiveEnableExtensionList = "directive_enable_extension_list",
   // Translation Unit
   TranslationUnit = "translation_unit",
+  TranslationUnitItem = "translation_unit_item",
   // Global Declarations
   GlobalDeclaration = "global_decl",
   GlobalDeclarationVariable = "global_variable_decl",
   GlobalDeclarationValue = "global_value_decl",
   GlobalDeclarationTypeAlias = "global_type_alias_decl",
   DeclarationStruct = "struct_decl",
+  DeclarationStructBody = "struct_body_decl",
+  DeclarationStructMember = "struct_member_decl",
+  StructAttribute = "struct_attribute",
   DeclarationFunction = "function_decl",
   // Global Assertions
   GlobalAssert = "global_assert",
+  ConstAssert = "const_assert",
+  // Expressions
+  Expression = "expression",
+  // Attributes
+  Attribute = "attribute",
+  AttributeAlign = "align_attr",
+  AttributeBinding = "binding_attr",
+  AttributeBlendSrc = "blend_src_attr",
+  AttributeBuiltin = "builtin_attr",
+  AttributeConst = "const_attr",
+  AttributeDiagnostic = "diagnostic_attr",
+  AttributeGroup = "group_attr",
+  AttributeId = "id_attr",
+  AttributeInterpolate = "interpolate_attr",
+  AttributeInvariant = "invariant_attr",
+  AttributeLocation = "location_attr",
+  AttributeMustUse = "must_use_attr",
+  AttributeSize = "size_attr",
+  AttributeWorkgroupSize = "workgroup_size_attr",
+  AttributeVertex = "vertex_attr",
+  AttributeFragment = "fragment_attr",
+  AttributeCompute = "compute_attr",
+  // Types
+  TypeSpecifier = "type_specifier",
 }
 
 export type RuleRegistry = {
@@ -153,18 +207,48 @@ export type RuleRegistry = {
   // Directives
   global_directive: GlobalDirective;
   directive_diagnostic: DirectiveDiagnostic;
-  directive_diagnostic_control: DirectiveDiagnosticControl;
+  directive_diagnostic_control: DiagnosticControl;
   directive_requires: DirectiveRequires;
   directive_requires_software_extension_list: DirectiveRequiresSoftwareExtensionList;
   directive_enable: DirectiveEnable;
   directive_enable_extension_list: DirectiveEnableExtensionList;
+  // Translation Unit
+  translation_unit: TranslationUnit;
+  translation_unit_item: TranslationUnitItem;
   // Global Declarations
   global_decl: GlobalDeclaration;
   global_variable_decl: GlobalDeclarationVariable;
   global_value_decl: GlobalDeclarationValue;
   global_type_alias_decl: GlobalDeclarationTypeAlias;
   struct_decl: DeclarationStruct;
+  struct_body_decl: DeclarationStructBody;
+  struct_member_decl: StructMember;
+  struct_attribute: StructAttribute;
   function_decl: DeclarationFunction;
   // Global Assertions
   global_assert: GlobalAssert;
+  const_assert: ConstAssert;
+  // Expressions
+  expression: Expression;
+  // Attributes
+  attribute: Attribute;
+  align_attr: AttributeAlign;
+  binding_attr: AttributeBinding;
+  blend_src_attr: AttributeBlendSrc;
+  builtin_attr: AttributeBuiltin;
+  const_attr: AttributeConst;
+  diagnostic_attr: AttributeDiagnostic;
+  group_attr: AttributeGroup;
+  id_attr: AttributeId;
+  interpolate_attr: AttributeInterpolate;
+  invariant_attr: AttributeInvariant;
+  location_attr: AttributeLocation;
+  must_use_attr: AttributeMustUse;
+  size_attr: AttributeSize;
+  workgroup_size_attr: AttributeWorkgroupSize;
+  vertex_attr: AttributeVertex;
+  fragment_attr: AttributeFragment;
+  compute_attr: AttributeCompute;
+  // Types
+  type_specifier: TypeSpecifier;
 };
