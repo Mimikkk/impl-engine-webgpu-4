@@ -1,5 +1,5 @@
 import { createMatchToken } from "../syntax/MatchToken.ts";
-import { ParseRule } from "../syntax/ParseSyntax.ts";
+import type { ParseRule } from "../syntax/ParseSyntax.ts";
 import { RuleType } from "../syntax/RuleRegistry.ts";
 
 export const enum TokenSyntactic {
